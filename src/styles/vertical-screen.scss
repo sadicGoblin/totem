@@ -1,0 +1,105 @@
+/* Estilos específicos para pantallas en orientación vertical */
+
+.vertical-screen {
+  // Variables para componentes responsive
+  --column-count: 1;
+  --card-width: 90%;
+  --sidebar-width: 100%;
+  --content-padding: 10px;
+  
+  // Home component específico
+  .home-container {
+    flex-direction: column;
+    
+    .sidebar {
+      width: var(--sidebar-width);
+      height: auto;
+      position: relative;
+      top: 0;
+      
+      .categories {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 10px;
+        
+        .category {
+          flex: 0 0 auto;
+          margin-right: 10px;
+          white-space: nowrap;
+        }
+      }
+    }
+    
+    .content {
+      padding: var(--content-padding);
+    }
+  }
+  
+  // Product grid específico
+  .product-grid {
+    grid-template-columns: repeat(var(--column-count), 1fr);
+    
+    .product-card {
+      width: var(--card-width);
+      margin: 0 auto 20px;
+    }
+  }
+  
+  // Checkout component
+  .checkout-container {
+    .checkout-items {
+      max-height: 60vh;
+    }
+    
+    .cart-item {
+      flex-direction: column;
+      
+      .item-details {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      
+      .item-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+    
+    .order-summary {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 15px;
+    }
+  }
+  
+  // Modal específico
+  .modal-content {
+    width: 95%;
+    max-height: 80vh;
+  }
+}
+
+/* Orientación vertical para dispositivos pequeños (teléfonos) */
+@media (max-width: 480px) and (orientation: portrait) {
+  .vertical-screen {
+    --card-width: 100%;
+    --content-padding: 5px;
+    
+    .product-card {
+      .product-details {
+        padding: 8px;
+      }
+      
+      .product-name {
+        font-size: 16px;
+      }
+      
+      .product-price {
+        font-size: 14px;
+      }
+    }
+  }
+}
