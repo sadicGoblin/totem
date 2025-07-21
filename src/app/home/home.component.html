@@ -58,8 +58,8 @@
           <span class="tag-icon">Oferta</span>
         </div>
 
-        <!-- Product image -->
-        <div class="product-image">
+        <!-- Product image (clickeable) -->
+        <div class="product-image" (click)="openProductModal(product)">
           <img [src]="product.image" [alt]="product.name" />
         </div>
 
@@ -123,3 +123,12 @@
     {{ category }}
   </button>
 </div>
+
+<!-- Modal para detalles del producto -->
+<app-modal
+  [product]="selectedProduct"
+  [isOpen]="showModal"
+  [initialQuantity]="selectedProduct ? getItemQuantityInCart(selectedProduct.id) : 0"
+  (close)="closeModal()"
+  (addToCart)="handleAddToCartFromModal($event)"
+></app-modal>

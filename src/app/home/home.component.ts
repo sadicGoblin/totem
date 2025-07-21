@@ -2,11 +2,12 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product, CartItem } from '../models/products.model';
 import { ProductService } from '../services/product.service';
+import { ModalComponent } from '../components/modal/modal.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ModalComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   host: {
@@ -20,6 +21,10 @@ export class HomeComponent implements OnInit {
   cartTotal: number = 0;
   cartItemCount: number = 0;
   showCart: boolean = false;
+  
+  // Modal properties
+  selectedProduct: Product | null = null;
+  showModal: boolean = false;
   
   categories = [
     'HAMBURGUESAS',
@@ -97,5 +102,39 @@ export class HomeComponent implements OnInit {
   getItemQuantityInCart(productId: number): number {
     const item = this.cartItems.find(item => item.productId === productId);
     return item ? item.quantity : 0;
+  }
+  
+  // Modal methods
+  openProductModal(product: Product): void {
+    this.selectedProduct = product;
+    this.showModal = true;
+  }
+  
+  closeModal(): void {
+    this.showModal = false;
+    this.selectedProduct = null;
+  }
+  
+  // Método para manejar la adición de productos desde el modal con cantidades específicas
+  handleAddToCartFromModal(data: {product: Product, quantity: number}): void {
+    const { product, quantity } = data;
+    
+    // Buscar el producto en el carrito
+    const existingItem = this.cartItems.find(item => item.productId === product.id);
+    
+    if (existingItem) {
+      // Si el producto ya está en el carrito, actualizar la cantidad
+      existingItem.quantity = quantity;
+    } else {
+      // Si el producto no está en el carrito, agregarlo
+      this.cartItems.push({
+        productId: product.id,
+        product: product,
+        quantity: quantity
+      });
+    }
+    
+    // Actualizar el total y el contador del carrito
+    this.updateCartTotals();
   }
 }
