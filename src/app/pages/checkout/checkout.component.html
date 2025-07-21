@@ -17,10 +17,23 @@
   <!-- Pantalla de pedido completado -->
   <div class="order-complete" *ngIf="orderComplete">
     <div class="success-message">
-      <h2>¡Pedido Completado!</h2>
-      <div class="order-number">Número de pedido: #{{ orderNumber }}</div>
+      <h1>¡Pedido Completado!</h1>
+      <p class="order-number">Número de pedido: #{{ orderNumber }}</p>
       <p>Tu pedido ha sido procesado correctamente.</p>
-      <button class="home-btn" (click)="goToHome()">Volver al inicio</button>
+      
+      <div class="receipt-printing">
+        <div class="printer-icon">
+          <i class="fas fa-print"></i>
+          <div class="paper-animation">
+            <div class="paper"></div>
+          </div>
+        </div>
+        <p>Imprimiendo comprobante...</p>
+      </div>
+      
+      <button class="back-btn" (click)="goToHome()">
+        Volver al inicio
+      </button>
     </div>
   </div>
 
