@@ -1,0 +1,118 @@
+<!-- Botón flotante de carrito -->
+<div class="cart-floating-button" (click)="showCart = !showCart">
+  <div class="cart-button-content">
+    <div class="cart-text">Carrito</div>
+    <div *ngIf="cartItemCount > 0" class="cart-count">{{ cartItemCount }}</div>
+    <div class="cart-amount">{{ formatPrice(cartTotal) }}</div>
+  </div>
+</div>
+
+<!-- Vista detalle del carrito -->
+<div class="cart-detail" [class.show-cart]="showCart">
+  <div class="cart-header">
+    <div class="cart-title">Tu pedido</div>
+    <button class="close-cart" (click)="showCart = false">×</button>
+  </div>
+  <div class="cart-items" *ngIf="cartItems.length > 0">
+    <div class="cart-item" *ngFor="let item of cartItems">
+      <div class="item-image">
+        <img [src]="item.product.image" [alt]="item.product.name">
+      </div>
+      <div class="item-info">
+        <div class="item-name">{{ item.product.name }}</div>
+        <div class="item-price">{{ formatPrice(item.product.price) }}</div>
+      </div>
+      <div class="item-quantity">
+        <button class="quantity-btn" (click)="decreaseQuantity(item.product)">-</button>
+        <span class="quantity">{{ item.quantity }}</span>
+        <button class="quantity-btn" (click)="addToCart(item.product)">+</button>
+      </div>
+      <div class="item-total">{{ formatPrice(item.product.price * item.quantity) }}</div>
+    </div>
+  </div>
+  <div class="cart-empty" *ngIf="cartItems.length === 0">
+    <div class="empty-message">Tu carrito está vacío</div>
+    <button class="continue-btn" (click)="showCart = false">Seguir comprando</button>
+  </div>
+  <div class="cart-footer" *ngIf="cartItems.length > 0">
+    <div class="cart-total-row">
+      <span>Total:</span>
+      <span class="total-amount">{{ formatPrice(cartTotal) }}</span>
+    </div>
+    <button class="checkout-btn">Completar pedido</button>
+  </div>
+</div>
+
+<div class="main-container">
+  <!-- Main content area with products grid -->
+  <div class="content-area">
+    <div class="products-grid">
+      <div class="product-card" *ngFor="let product of getFilteredProducts()">
+        <!-- Special tag -->
+        <div class="special-tag" *ngIf="product.specialTag">
+          {{ product.specialTag }}
+        </div>
+        
+        <!-- Discount tag -->
+        <div class="discount-tag" *ngIf="product.discount">
+          <span class="tag-icon">Oferta</span>
+        </div>
+
+        <!-- Product image -->
+        <div class="product-image">
+          <img [src]="product.image" [alt]="product.name" />
+        </div>
+
+        <!-- Product info -->
+        <div class="product-info">
+          <div class="product-name">{{ product.name }}</div>
+          <div class="product-description">{{ product.description }}</div>
+          <div class="product-price">
+            <span class="current-price">{{ formatPrice(product.price) }}</span>
+            <span class="original-price" *ngIf="product.originalPrice">
+              {{ formatPrice(product.originalPrice) }}
+            </span>
+          </div>
+        </div>
+        
+        <!-- Add to cart button as rectangle at bottom -->
+        <button class="add-to-cart-btn" (click)="addToCart(product)">
+          <span class="btn-icon">+</span>
+          <span
+            class="item-count"
+            *ngIf="getItemQuantityInCart(product.id) > 0"
+          >
+            {{ getItemQuantityInCart(product.id) }}
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Promo banner for specials -->
+  <div class="promo-banner" *ngIf="selectedCategory === 'HAMBURGUESAS'">
+    <div class="banner-content">
+      <div class="banner-icon">
+        <span class="icon-food"></span>
+        <h3>Combo Especial</h3>
+      </div>
+      <div class="banner-description">
+        <p>Hamburguesa + Papas + Bebida</p>
+        <p class="banner-price">{{ formatPrice(12900) }}</p>
+      </div>
+    </div>
+    <img src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?q=80&w=400&h=200&auto=format" alt="Combo Especial" />
+  </div>
+
+<!-- Navigation buttons (bottom in portrait) -->
+<div class="nav-buttons" [class.horizontal]="isLandscapeMode">
+  <button
+    class="nav-button"
+    *ngFor="let category of categories"
+    [class.active]="selectedCategory === category"
+    (click)="setCategory(category)"
+  >
+    {{ category }}
+  </button>
+</div>
