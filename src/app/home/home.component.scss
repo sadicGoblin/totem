@@ -298,7 +298,7 @@ $discount-red: #c44545;
   
   /* Mejorar el scroll en pantallas táctiles */
   &::-webkit-scrollbar {
-    width: 12px;
+    display: none;
   }
   
   &::-webkit-scrollbar-thumb {
@@ -322,9 +322,19 @@ $discount-red: #c44545;
 // Products grid
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(3, 1fr); // Cambiado a 3 columnas fijas
+  gap: 25px; // Mayor espacio entre elementos
   margin-bottom: 60px;
+  
+  // Ajuste para pantallas pequeñas
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  // Ajuste para pantallas muy pequeñas
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 // Product card
@@ -376,7 +386,7 @@ $discount-red: #c44545;
   }
   
   .product-image {
-    height: 180px;
+    height: 250px; // Aumentado de 180px
     overflow: hidden;
     border-radius: 8px 8px 0 0;
     cursor: pointer;
@@ -398,14 +408,14 @@ $discount-red: #c44545;
     flex-direction: column;
     
     .product-name {
-      font-size: 16px;
+      font-size: 20px; // Aumentado de 16px
       font-weight: 600;
-      margin-bottom: 8px;
-      color: $secondary-blue;
+      margin-bottom: 10px;
+      line-height: 1.3;
     }
     
     .product-description {
-      font-size: 13px;
+      font-size: 15px; // Aumentado de 13px
       color: lighten($dark-gray, 15%);
       margin-bottom: 10px;
       line-height: 1.3;
