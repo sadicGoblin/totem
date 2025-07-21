@@ -1,0 +1,50 @@
+<div class="modal-backdrop" *ngIf="isOpen && product" (click)="onBackdropClick($event)">
+  <div class="modal-container">
+    <button class="close-button" (click)="closeModal()">
+      <span>&times;</span>
+    </button>
+    
+    <div class="modal-content">
+      <!-- Imagen a la izquierda -->
+      <div class="product-image">
+        <img [src]="product.image" [alt]="product.name">
+        <div class="discount-tag" *ngIf="product.discount">
+          -{{product.discount}}%
+        </div>
+        <div class="special-tag" *ngIf="product.specialTag">
+          {{product.specialTag}}
+        </div>
+      </div>
+      
+      <!-- Detalles a la derecha -->
+      <div class="product-details">
+        <h2 class="product-name">{{product.name}}</h2>
+        
+        <p class="product-description">{{product.description}}</p>
+        
+        <div class="product-price">
+          <span class="current-price" [class.discounted]="product.discount">
+            {{formatPrice(product.price)}}
+          </span>
+          <span class="original-price" *ngIf="product.discount">
+            {{formatPrice(product.price * 100 / (100 - product.discount))}}
+          </span>
+        </div>
+        
+        <div class="quantity-controls">
+          <button class="quantity-btn" (click)="decrease()" [disabled]="localQuantity === 0">
+            <span>-</span>
+          </button>
+          <span class="quantity">{{localQuantity}}</span>
+          <button class="quantity-btn" (click)="increase()">
+            <span>+</span>
+          </button>
+        </div>
+        
+        <button class="add-to-cart-btn" (click)="addToCartClicked()" [disabled]="localQuantity === 0">
+          <span class="btn-text">Agregar al carrito</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
