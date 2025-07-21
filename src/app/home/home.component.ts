@@ -15,7 +15,7 @@ import { ProductService } from '../services/product.service';
 })
 export class HomeComponent implements OnInit {
   isLandscapeMode: boolean = false;
-  selectedCategory: string = 'HAMBURGUESAS';
+  selectedCategory: string | null = 'HAMBURGUESAS';
   cartItems: CartItem[] = [];
   cartTotal: number = 0;
   cartItemCount: number = 0;
@@ -46,12 +46,14 @@ export class HomeComponent implements OnInit {
     this.isLandscapeMode = window.innerWidth > window.innerHeight;
   }
 
-  setCategory(category: string): void {
+  setCategory(category: string | null): void {
     this.selectedCategory = category;
   }
 
   getFilteredProducts(): Product[] {
-    return this.products.filter(p => p.category === this.selectedCategory);
+    return this.selectedCategory === null 
+      ? this.products 
+      : this.products.filter(p => p.category === this.selectedCategory);
   }
   
   formatPrice(price: number): string {

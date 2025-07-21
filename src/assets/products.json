@@ -1,0 +1,317 @@
+[
+    {
+        "id": 1,
+        "name": "Hamburguesa Clásica",
+        "price": 8900,
+        "category": "HAMBURGUESAS",
+        "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=300&auto=format",
+        "description": "Carne de res, lechuga, tomate, queso cheddar, pepinillos y salsa especial",
+        "specialTag": "TOP"
+    },
+    {
+        "id": 2,
+        "name": "Hamburguesa BBQ",
+        "price": 9500,
+        "category": "HAMBURGUESAS",
+        "image": "https://images.unsplash.com/photo-1551615593-ef5fe247e8f7?q=80&w=300&auto=format",
+        "description": "Carne de res, tocino, aros de cebolla, queso y salsa BBQ"
+    },
+    {
+        "id": 3,
+        "name": "Hamburguesa Doble",
+        "price": 10900,
+        "category": "HAMBURGUESAS",
+        "image": "https://images.unsplash.com/photo-1607013251379-e6eecfffe234?q=80&w=300&auto=format",
+        "description": "Doble carne, doble queso, lechuga, tomate y salsa especial"
+    },
+    {
+        "id": 4,
+        "name": "Hamburguesa Vegetariana",
+        "price": 8500,
+        "category": "HAMBURGUESAS",
+        "image": "https://images.unsplash.com/photo-1550950158-d0d960dff51b?q=80&w=300&auto=format",
+        "description": "Hamburguesa de garbanzos, lechuga, tomate y guacamole",
+        "specialTag": "VEGGIE"
+    },
+    {
+        "id": 5,
+        "name": "Pizza Pepperoni",
+        "price": 13900,
+        "category": "PIZZAS",
+        "image": "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?q=80&w=300&auto=format",
+        "description": "Pepperoni, queso mozzarella y salsa de tomate",
+        "originalPrice": 15900,
+        "discount": 15
+    },
+    {
+        "id": 6,
+        "name": "Pizza Vegetariana",
+        "price": 12900,
+        "category": "PIZZAS",
+        "image": "https://images.unsplash.com/photo-1604917877934-07d8d248d396?q=80&w=300&auto=format",
+        "description": "Pimientos, champiñones, aceitunas, cebolla y queso"
+    },
+    {
+        "id": 7,
+        "name": "Pizza Suprema",
+        "price": 14900,
+        "category": "PIZZAS",
+        "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=300&auto=format",
+        "description": "Pepperoni, salchicha, pimientos, cebolla, champiñones y extra queso",
+        "specialTag": "NUEVO"
+    },
+    {
+        "id": 8,
+        "name": "Pizza Hawaiana",
+        "price": 13500,
+        "category": "PIZZAS",
+        "image": "https://images.unsplash.com/photo-1595708684082-a173bb3a06c5?q=80&w=300&auto=format",
+        "description": "Jamón, piña, queso mozzarella y salsa de tomate"
+    },
+    {
+        "id": 9,
+        "name": "Coca-Cola 500ml",
+        "price": 2500,
+        "category": "BEBIDAS",
+        "image": "https://images.unsplash.com/photo-1554866585-cd94860890b7?q=80&w=300&auto=format",
+        "description": "Bebida gaseosa"
+    },
+    {
+        "id": 10,
+        "name": "Agua Mineral 500ml",
+        "price": 1800,
+        "category": "BEBIDAS",
+        "image": "https://images.unsplash.com/photo-1564419320461-6870880221ad?q=80&w=300&auto=format",
+        "description": "Agua mineral sin gas"
+    },
+    {
+        "id": 11,
+        "name": "Jugo Natural",
+        "price": 3200,
+        "category": "BEBIDAS",
+        "image": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=300&auto=format",
+        "description": "Jugo de naranja recién exprimido",
+        "specialTag": "SALUDABLE"
+    },
+    {
+        "id": 12,
+        "name": "Cerveza Artesanal",
+        "price": 4500,
+        "category": "BEBIDAS",
+        "image": "https://images.unsplash.com/photo-1532634922-8fe0b757fb13?q=80&w=300&auto=format",
+        "description": "Cerveza rubia artesanal 330ml"
+    },
+    {
+        "id": 13,
+        "name": "Tiramisú",
+        "price": 5500,
+        "category": "POSTRES",
+        "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?q=80&w=300&auto=format",
+        "description": "Postre italiano de café y crema mascarpone",
+        "originalPrice": 6500,
+        "discount": 15
+    },
+    {
+        "id": 14,
+        "name": "Cheesecake",
+        "price": 4900,
+        "category": "POSTRES",
+        "image": "https://images.unsplash.com/photo-1524351199678-941a58a3df50?q=80&w=300&auto=format",
+        "description": "Tarta de queso con base de galleta y mermelada de frutos rojos"
+    },
+    {
+        "id": 15,
+        "name": "Helado",
+        "price": 3500,
+        "category": "POSTRES",
+        "image": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?q=80&w=300&auto=format",
+        "description": "Helado de vainilla con salsa de chocolate"
+    },
+    {
+        "id": 16,
+        "name": "Papas Fritas",
+        "price": 3900,
+        "category": "COMPLEMENTOS",
+        "image": "https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?q=80&w=300&auto=format",
+        "description": "Porción de papas fritas crujientes"
+    },
+    {
+        "id": 17,
+        "name": "Aros de Cebolla",
+        "price": 4200,
+        "category": "COMPLEMENTOS",
+        "image": "https://images.unsplash.com/photo-1639024471283-03518883512d?q=80&w=300&auto=format",
+        "description": "Aros de cebolla fritos con salsa BBQ",
+        "specialTag": "NUEVO"
+    },
+    {
+        "id": 18,
+        "name": "Nachos con Queso",
+        "price": 5900,
+        "category": "COMPLEMENTOS",
+        "image": "https://images.unsplash.com/photo-1582169296194-e4d644c48063?q=80&w=300&auto=format",
+        "description": "Nachos con salsa de queso cheddar, guacamole y pico de gallo"
+    },
+    {
+        "id": 19,
+        "name": "Hamburguesa Mexicana",
+        "price": 9700,
+        "category": "HAMBURGUESAS",
+        "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=300&auto=format",
+        "description": "Carne de res, jalapeños, guacamole, lechuga, tomate y queso cheddar"
+    },
+    {
+        "id": 20,
+        "name": "Hamburguesa Italiana",
+        "price": 9900,
+        "category": "HAMBURGUESAS",
+        "image": "https://images.unsplash.com/photo-1551782450-a2132b4ba21d?q=80&w=300&auto=format",
+        "description": "Carne de res, mozzarella, albahaca, tomate y pesto",
+        "specialTag": "NUEVO"
+    },
+    {
+        "id": 21,
+        "name": "Hamburguesa de Pollo Crispy",
+        "price": 8800,
+        "category": "HAMBURGUESAS",
+        "image": "https://images.unsplash.com/photo-1513185041617-8ab03f83d6c5?q=80&w=300&auto=format",
+        "description": "Pollo crispy, lechuga, tomate, mayonesa y pan brioche"
+    },
+    {
+        "id": 22,
+        "name": "Hamburguesa a lo Pobre",
+        "price": 9900,
+        "category": "HAMBURGUESAS",
+        "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=300&auto=format",
+        "description": "Carne de res, cebolla caramelizada, huevo frito y papas hilo"
+    },
+    {
+        "id": 23,
+        "name": "Pizza 4 Quesos",
+        "price": 13900,
+        "category": "PIZZAS",
+        "image": "https://images.unsplash.com/photo-1628840042765-356cda07504e?q=80&w=300&auto=format",
+        "description": "Mozzarella, parmesano, gorgonzola y queso de cabra"
+    },
+    {
+        "id": 24,
+        "name": "Pizza Napolitana",
+        "price": 12500,
+        "category": "PIZZAS",
+        "image": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?q=80&w=300&auto=format",
+        "description": "Tomate, mozzarella, albahaca fresca y aceite de oliva"
+    },
+    {
+        "id": 25,
+        "name": "Pizza BBQ Pollo",
+        "price": 13800,
+        "category": "PIZZAS",
+        "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=300&auto=format",
+        "description": "Pollo desmenuzado, salsa BBQ, cebolla morada y queso cheddar"
+    },
+    {
+        "id": 26,
+        "name": "Pizza Fugazzeta",
+        "price": 13200,
+        "category": "PIZZAS",
+        "image": "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?q=80&w=300&auto=format",
+        "description": "Cebolla, queso mozzarella y orégano"
+    },
+    {
+        "id": 27,
+        "name": "Limonada Natural",
+        "price": 3100,
+        "category": "BEBIDAS",
+        "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=300&auto=format",
+        "description": "Limonada casera con menta y hielo"
+    },
+    {
+        "id": 28,
+        "name": "Té Helado",
+        "price": 2600,
+        "category": "BEBIDAS",
+        "image": "https://images.unsplash.com/photo-1499638673689-79a0b5115d87?q=80&w=300&auto=format",
+        "description": "Té helado de durazno natural"
+    },
+    {
+        "id": 29,
+        "name": "Bebida Zero 500ml",
+        "price": 2500,
+        "category": "BEBIDAS",
+        "image": "https://images.unsplash.com/photo-1581006852262-e4307cf6283a?q=80&w=300&auto=format",
+        "description": "Bebida gaseosa sin azúcar"
+    },
+    {
+        "id": 30,
+        "name": "Jugo de Frutilla",
+        "price": 3300,
+        "category": "BEBIDAS",
+        "image": "https://images.unsplash.com/photo-1501746877-14782df58970?q=80&w=300&auto=format",
+        "description": "Jugo natural de frutilla recién exprimido"
+    },
+    {
+        "id": 31,
+        "name": "Brownie con Helado",
+        "price": 5900,
+        "category": "POSTRES",
+        "image": "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=300&auto=format",
+        "description": "Brownie de chocolate con una bola de helado de vainilla"
+    },
+    {
+        "id": 32,
+        "name": "Panqueques con Manjar",
+        "price": 4700,
+        "category": "POSTRES",
+        "image": "https://images.unsplash.com/photo-1565299543923-37dd37887442?q=80&w=300&auto=format",
+        "description": "Panqueques caseros rellenos de manjar con azúcar flor"
+    },
+    {
+        "id": 33,
+        "name": "Copa Helada",
+        "price": 5200,
+        "category": "POSTRES",
+        "image": "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?q=80&w=300&auto=format",
+        "description": "Copa con mix de helados, galleta, salsa de chocolate y crema"
+    },
+    {
+        "id": 34,
+        "name": "Tarta de Limón",
+        "price": 5100,
+        "category": "POSTRES",
+        "image": "https://images.unsplash.com/photo-1582716401301-b2407dc7563d?q=80&w=300&auto=format",
+        "description": "Tarta de limón con merengue flameado",
+        "specialTag": "NUEVO"
+    },
+    {
+        "id": 35,
+        "name": "Camote Frito",
+        "price": 4200,
+        "category": "COMPLEMENTOS",
+        "image": "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?q=80&w=300&auto=format",
+        "description": "Bastones de camote frito con sal de ajo"
+    },
+    {
+        "id": 36,
+        "name": "Palitos de Mozzarella",
+        "price": 4800,
+        "category": "COMPLEMENTOS",
+        "image": "https://images.unsplash.com/photo-1544982503-9f984c14501a?q=80&w=300&auto=format",
+        "description": "Palitos de mozzarella empanizados con salsa marinara"
+    },
+    {
+        "id": 37,
+        "name": "Bastones de Pan de Ajo",
+        "price": 3500,
+        "category": "COMPLEMENTOS",
+        "image": "https://images.unsplash.com/photo-1619096252214-ef06c45683e3?q=80&w=300&auto=format",
+        "description": "Pan con ajo y queso fundido"
+    },
+    {
+        "id": 38,
+        "name": "Salsa Extra",
+        "price": 1200,
+        "category": "COMPLEMENTOS",
+        "image": "https://images.unsplash.com/photo-1607330289024-1535c6b4e1c1?q=80&w=300&auto=format",
+        "description": "Salsa especial de la casa en porción adicional"
+    }
+]
