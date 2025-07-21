@@ -2,7 +2,9 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product, CartItem } from '../models/products.model';
 import { ProductService } from '../services/product.service';
+import { CartService } from '../services/cart.service';
 import { ModalComponent } from '../components/modal/modal.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -36,7 +38,7 @@ export class HomeComponent implements OnInit {
   
   products: Product[] = [];
 
-  constructor(private productService: ProductService) {
+  constructor(private productService: ProductService, private cartService: CartService, private router: Router) {
     this.checkOrientation();
   }
 
@@ -95,8 +97,11 @@ export class HomeComponent implements OnInit {
   }
   
   updateCartTotals(): void {
-    this.cartItemCount = this.cartItems.reduce((total, item) => total + item.quantity, 0);
-    this.cartTotal = this.cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+    this.cartItemCount = this.cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    this.cartTotal = this.cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    
+    // Actualizar el servicio de carrito para compartir datos entre componentes
+    this.cartService.updateCart(this.cartItems);
   }
   
   getItemQuantityInCart(productId: number): number {
@@ -136,5 +141,17 @@ export class HomeComponent implements OnInit {
     
     // Actualizar el total y el contador del carrito
     this.updateCartTotals();
+  }
+  
+  // Método para navegar a la página de checkout
+  goToCheckout(): void {
+    // Cerramos el carrito antes de navegar
+    this.showCart = false;
+    
+    // Actualizamos el servicio de carrito con los items actuales
+    this.cartService.updateCart(this.cartItems);
+    
+    // Navegamos a la página de checkout
+    this.router.navigate(['/checkout']);
   }
 }
