@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ElementRef, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { ProductService } from '../../services/product.service';
@@ -22,11 +22,48 @@ export class CartFloatingComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private cartService: CartService,
-    private productService: ProductService
+    private productService: ProductService,
+    private elementRef: ElementRef
   ) {}
 
   ngOnInit(): void {
     this.subscribeToCart();
+  }
+
+  // Propiedad para evitar cerrar el carrito inmediatamente al abrirlo
+  private isOpeningCart: boolean = false;
+
+  // Manejador para mostrar/ocultar carrito
+  toggleCart(): void {
+    if (!this.showCart) {
+      // Está abriendo el carrito
+      this.isOpeningCart = true;
+      setTimeout(() => {
+        this.isOpeningCart = false;
+      }, 100);
+    }
+    this.showCart = !this.showCart;
+  }
+  
+  // Cerrar carrito al hacer clic fuera de él
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    // No cerrar si el carrito no está visible o si se está abriendo
+    if (!this.showCart || this.isOpeningCart) return;
+    
+    // Comprobar si el clic fue dentro del carrito o en el botón de carrito
+    const cartDetail = this.elementRef.nativeElement.querySelector('.cart-detail');
+    const cartButton = this.elementRef.nativeElement.querySelector('.cart-floating-button');
+    
+    if (!cartDetail || !cartButton) return;
+    
+    const clickedInCart = cartDetail.contains(event.target as Node);
+    const clickedInButton = cartButton.contains(event.target as Node);
+    
+    // Si el clic fue fuera del carrito y del botón, cerrar el carrito
+    if (!clickedInCart && !clickedInButton) {
+      this.showCart = false;
+    }
   }
 
   // Limpieza al destruir el componente
@@ -57,8 +94,21 @@ export class CartFloatingComponent implements OnInit, OnDestroy {
     );
   }
 
-  decreaseQuantity(productId: number): void {
+  decreaseQuantity(productId: number, event?: MouseEvent): void {
+    // Detener la propagación del evento para evitar que se cierre el carrito
+    if (event) {
+      event.stopPropagation();
+    }
     this.cartService.decreaseQuantity(productId);
+  }
+  
+  // Método para aumentar la cantidad de un producto en el carrito
+  increaseQuantity(product: any, event?: MouseEvent): void {
+    // Detener la propagación del evento para evitar que se cierre el carrito
+    if (event) {
+      event.stopPropagation();
+    }
+    this.cartService.addToCart(product);
   }
   
   formatPrice(price: number): string {

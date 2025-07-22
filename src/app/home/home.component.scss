@@ -21,7 +21,7 @@ $discount-red: #c44545;
   position: sticky;
   top: 0;
   z-index: 100;
-  height: 50px;
+  height: 100px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   
   .back-button {
@@ -42,37 +42,16 @@ $discount-red: #c44545;
     }
     
     svg {
-      width: 22px;
-      height: 22px;
+      width: 40px;
+      height: 40px;
     }
   }
   
   .current-category {
-    font-size: 1.2rem;
+    font-size: 2.5rem;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-  }
-}
-
-// Host container
-:host {
-  display: block;
-  height: 100vh;
-  width: 100vw;
-  position: relative;
-  overflow: hidden;
-  background-color: #FAFBFC;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  
-  /* Optimización para pantalla táctil */
-  -webkit-overflow-scrolling: touch;
-  touch-action: manipulation;
-  
-  * {
-    /* Evitar selección de texto al hacer tap */
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
-    -webkit-touch-callout: none;
   }
 }
 
@@ -508,48 +487,117 @@ $discount-red: #c44545;
   }
 }
 
-.add-to-cart-btn {
-  margin: 0;
-  padding: 12px 0;
+// Estilos para los controles del carrito
+.cart-controls {
   width: 100%;
-  background-color: $primary-blue;
-  color: $white;
-  border: none;
-  border-top: 1px solid $medium-gray;
-  font-size: 20px;
-  font-weight: bold;
-  border-radius: 0 0 8px 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  .btn-icon {
-    font-size: 22px;
-    line-height: 1;
-  }
-
-  .item-count {
-    margin-left: 6px;
-    background-color: $accent-blue;
+  border-top: 1px solid $medium-gray;
+  
+  // Botón de agregar (cuando no hay productos)
+  .add-to-cart-btn {
+    margin: 0;
+    padding: 12px 0;
+    width: 100%;
+    height: 50px;
+    background-color: $primary-blue;
     color: $white;
-    border-radius: 50%;
-    width: 22px;
-    height: 22px;
-    font-size: 13px;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 0 0 8px 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
-  }
+    gap: 8px;
 
-  &:hover {
-    background-color: darken($primary-blue, 5%);
-  }
+    .btn-text {
+      font-weight: 600;
+    }
+    
+    .btn-icon {
+      font-size: 22px;
+      line-height: 1;
+    }
 
-  &:active {
-    transform: scale(0.98);
+    .item-count {
+      margin-left: 6px;
+      background-color: $accent-blue;
+      color: $white;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    &:hover {
+      background-color: darken($primary-blue, 5%);
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+  
+  // Controles de cantidad (cuando hay productos)
+  .quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 50px;
+    background-color: $primary-blue;
+    border-radius: 0 0 8px 8px;
+    
+    .quantity-btn {
+      background: none;
+      border: none;
+      color: white;
+      width: 60px;
+      height: 50px;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s ease;
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      
+      &:active {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+      
+      &.decrease {
+        border-radius: 0 0 0 8px;
+        background-color: #d91a1a;
+      }
+      
+      &.increase {
+        border-radius: 0 0 8px 0;
+        background-color: #4dae26;
+      }
+    }
+    
+    .quantity-display {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 25px;
+      font-weight: bold;
+    }
   }
 }
 // Promo banner

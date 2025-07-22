@@ -96,6 +96,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.cartService.addToCart(product);
   }
   
+  decreaseQuantity(product: Product): void {
+    this.cartService.decreaseQuantity(product.id);
+  }
+  
   // Obtener la cantidad de un producto en el carrito (para el modal)
   getItemQuantityInCart(productId: number): number {
     return this.cartService.getItemQuantity(productId);

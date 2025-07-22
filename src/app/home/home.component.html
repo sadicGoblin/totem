@@ -44,16 +44,30 @@
           </div>
         </div>
         
-        <!-- Add to cart button as rectangle at bottom -->
-        <button class="add-to-cart-btn" (click)="addToCart(product)">
-          <span class="btn-icon">+</span>
-          <span
-            class="item-count"
-            *ngIf="getItemQuantityInCart(product.id) > 0"
-          >
-            {{ getItemQuantityInCart(product.id) }}
-          </span>
-        </button>
+        <!-- Add to cart buttons with quantity control -->
+        <div class="cart-controls">
+          <!-- Si no hay productos en el carrito, mostrar botón simple de añadir -->
+          <button 
+            class="add-to-cart-btn" 
+            (click)="addToCart(product)" 
+            *ngIf="getItemQuantityInCart(product.id) === 0">
+            <span class="btn-text">Agregar</span>
+            <span class="btn-icon">+</span>
+          </button>
+          
+          <!-- Si ya hay productos, mostrar controles de cantidad -->
+          <div class="quantity-controls" *ngIf="getItemQuantityInCart(product.id) > 0">
+            <button class="quantity-btn decrease" (click)="decreaseQuantity(product)">
+              <span>-</span>
+            </button>
+            <div class="quantity-display">
+              {{ getItemQuantityInCart(product.id) }}
+            </div>
+            <button class="quantity-btn increase" (click)="addToCart(product)">
+              <span>+</span>
+            </button>
+          </div>
+        </div>
       </div>
       
       <!-- Elemento fantasma para reservar espacio y evitar que el carrito flotante oculte productos -->
