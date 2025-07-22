@@ -313,5 +313,15 @@
         "category": "COMPLEMENTOS",
         "image": "https://images.unsplash.com/photo-1607330289024-1535c6b4e1c1?q=80&w=300&auto=format",
         "description": "Salsa especial de la casa en porción adicional"
+    },
+    {
+        "id": 5,
+        "name": "Pizza Pepperoni",
+        "price": 13900,
+        "category": "PIZZAS",
+        "image": "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?q=80&w=300&auto=format",
+        "description": "Pepperoni, queso mozzarella y salsa de tomate",
+        "originalPrice": 15900,
+        "discount": 15
     }
 ]

@@ -1,28 +1,29 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product, CartItem } from '../models/products.model';
 import { ProductService } from '../services/product.service';
 import { CartService } from '../services/cart.service';
 import { ModalComponent } from '../components/modal/modal.component';
-import { Router } from '@angular/router';
+import { CartFloatingComponent } from '../shared/cart-floating/cart-floating.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, ModalComponent],
+  imports: [CommonModule, ModalComponent, CartFloatingComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   host: {
     '[class.landscape-mode]': 'isLandscapeMode'
   }
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   isLandscapeMode: boolean = false;
   selectedCategory: string | null = 'HAMBURGUESAS';
-  cartItems: CartItem[] = [];
-  cartTotal: number = 0;
-  cartItemCount: number = 0;
-  showCart: boolean = false;
+  hideNavButtons: boolean = false; // Para ocultar los botones de navegación
+  
+  // Subscripciones
+  private subscriptions: any[] = [];
   
   // Modal properties
   selectedProduct: Product | null = null;
@@ -38,14 +39,38 @@ export class HomeComponent implements OnInit {
   
   products: Product[] = [];
 
-  constructor(private productService: ProductService, private cartService: CartService, private router: Router) {
+  constructor(
+    private productService: ProductService, 
+    private cartService: CartService, 
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
     this.checkOrientation();
   }
 
   ngOnInit(): void {
+    // Cargar productos
     this.productService.getProducts().subscribe(products => {
       this.products = products;
+      
+      // Verificar si hay un parámetro de categoría en la URL
+      this.route.queryParams.subscribe(params => {
+        if (params['category']) {
+          const category = params['category'].toUpperCase();
+          // Verificar si la categoría existe en nuestras categorías
+          if (category === 'ALL') {
+            this.selectedCategory = null;
+          } else if (this.categories.includes(category) || category === 'TODO') {
+            this.selectedCategory = category;
+          }
+          
+          // Indicar que venimos de la página de categorías para ocultar los botones de navegación
+          this.hideNavButtons = true;
+        }
+      });
     });
+    
+    // Ya no necesitamos suscribirnos al carrito, lo maneja CartFloatingComponent
   }
 
   @HostListener('window:resize')
@@ -68,48 +93,18 @@ export class HomeComponent implements OnInit {
   }
   
   addToCart(product: Product): void {
-    const existingItem = this.cartItems.find(item => item.productId === product.id);
-    
-    if (existingItem) {
-      existingItem.quantity += 1;
-    } else {
-      this.cartItems.push({
-        productId: product.id,
-        product: product,
-        quantity: 1
-      });
-    }
-    
-    this.updateCartTotals();
+    this.cartService.addToCart(product);
   }
   
-  decreaseQuantity(product: Product): void {
-    const index = this.cartItems.findIndex(item => item.productId === product.id);
-    
-    if (index !== -1) {
-      if (this.cartItems[index].quantity > 1) {
-        this.cartItems[index].quantity -= 1;
-      } else {
-        this.cartItems.splice(index, 1);
-      }
-      this.updateCartTotals();
-    }
-  }
-  
-  updateCartTotals(): void {
-    this.cartItemCount = this.cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    this.cartTotal = this.cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-    
-    // Actualizar el servicio de carrito para compartir datos entre componentes
-    this.cartService.updateCart(this.cartItems);
-  }
-  
+  // Obtener la cantidad de un producto en el carrito (para el modal)
   getItemQuantityInCart(productId: number): number {
-    const item = this.cartItems.find(item => item.productId === productId);
-    return item ? item.quantity : 0;
+    return this.cartService.getItemQuantity(productId);
   }
   
-  // Modal methods
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+  
   openProductModal(product: Product): void {
     this.selectedProduct = product;
     this.showModal = true;
@@ -124,34 +119,40 @@ export class HomeComponent implements OnInit {
   handleAddToCartFromModal(data: {product: Product, quantity: number}): void {
     const { product, quantity } = data;
     
-    // Buscar el producto en el carrito
-    const existingItem = this.cartItems.find(item => item.productId === product.id);
+    // Obtener items actuales del carrito
+    const currentItems = this.cartService.getCurrentCartItems();
     
-    if (existingItem) {
+    // Buscar el producto en el carrito
+    const existingItemIndex = currentItems.findIndex(item => item.product.id === product.id);
+    
+    let updatedItems: CartItem[];
+    
+    if (existingItemIndex !== -1) {
       // Si el producto ya está en el carrito, actualizar la cantidad
-      existingItem.quantity = quantity;
+      updatedItems = [...currentItems];
+      updatedItems[existingItemIndex].quantity = quantity;
     } else {
       // Si el producto no está en el carrito, agregarlo
-      this.cartItems.push({
+      updatedItems = [...currentItems, {
         productId: product.id,
         product: product,
         quantity: quantity
-      });
+      }];
     }
     
-    // Actualizar el total y el contador del carrito
-    this.updateCartTotals();
+    // Actualizar el carrito a través del servicio
+    this.cartService.updateCart(updatedItems);
   }
   
   // Método para navegar a la página de checkout
   goToCheckout(): void {
-    // Cerramos el carrito antes de navegar
-    this.showCart = false;
-    
-    // Actualizamos el servicio de carrito con los items actuales
-    this.cartService.updateCart(this.cartItems);
-    
-    // Navegamos a la página de checkout
+    // Navegamos directamente a la página de checkout
     this.router.navigate(['/checkout']);
+  }
+  
+  // Método para volver a la página de categorías
+  goBackToCategories(): void {
+    // Navegamos a la página de categorías
+    this.router.navigate(['/category']);
   }
 }

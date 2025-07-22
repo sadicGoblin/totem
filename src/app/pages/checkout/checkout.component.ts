@@ -26,7 +26,7 @@ export class CheckoutComponent implements OnInit {
       
       // Si el carrito está vacío, redirigimos a home
       if (this.cartItems.length === 0) {
-        this.router.navigate(['/home']);
+        this.router.navigate(['/']);
       }
     });
 
@@ -89,7 +89,7 @@ export class CheckoutComponent implements OnInit {
   }
 
   // Volver a la página principal
-  goToHome(): void {
-    this.router.navigate(['/home']);
+  goToCategory(): void {
+    this.router.navigate(['/category']);
   }
 }

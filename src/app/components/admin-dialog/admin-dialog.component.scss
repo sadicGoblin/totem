@@ -9,10 +9,10 @@ $shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 // Área invisible que sirve como botón oculto para activar el diálogo
 .admin-trigger {
   position: fixed;
-  top: 0;
-  right: 0;
-  width: 20px;
-  height: 20px;
+  bottom: 0; // Cambiado de top a bottom
+  left: 0;   // Cambiado de right a left
+  width: 30px; // Un poco más grande para facilitar tocar en dispositivos táctiles
+  height: 30px;
   cursor: default;
   z-index: 9999;
   
@@ -86,6 +86,7 @@ $shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
   .button-group {
     display: flex;
     justify-content: space-between;
+    margin-top: 40px;
     
     button {
       padding: 10px 20px;

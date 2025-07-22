@@ -11,6 +11,49 @@ $dark-gray: #1f2731;
 $white: #ffffff;
 $discount-red: #c44545;
 
+// Barra de navegación superior
+.top-nav-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: $primary-blue;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 50px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  .back-button {
+    background: none;
+    border: none;
+    color: white;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    margin-right: 15px;
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+  
+  .current-category {
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
 
 // Host container
 :host {
@@ -36,11 +79,11 @@ $discount-red: #c44545;
 // Botón flotante del carrito
 .cart-floating-button {
   position: fixed;
-  bottom: 80px;
-  right: 20px;
+  bottom: 40px;
+  right: 40px;
   background-color: $primary-blue;
   color: white;
-  border-radius: 30px;
+  border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   z-index: 100;
   padding: 15px 25px;
@@ -48,7 +91,8 @@ $discount-red: #c44545;
   transition: transform 0.2s, background-color 0.3s;
   display: flex;
   align-items: center;
-  min-width: 180px;
+  min-width: 280px;
+  height: 60px;
   
   &:active {
     transform: scale(0.95);
@@ -61,7 +105,7 @@ $discount-red: #c44545;
     position: relative;
     
     .cart-text {
-      font-size: 16px;
+      font-size: 26px;
       font-weight: 600;
       margin-bottom: 2px;
       display: flex;
@@ -77,12 +121,12 @@ $discount-red: #c44545;
     .cart-count {
       position: absolute;
       top: 0px;
-      right: -35px;
+      right: -45px;
       background-color: $accent-blue;
       color: white;
       border-radius: 50%;
-      width: 24px;
-      height: 24px;
+      width: 35px;
+      height: 35px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -116,7 +160,7 @@ $discount-red: #c44545;
   }
   
   .cart-header {
-    padding: 20px;
+    padding: 15px;
     background-color: $primary-blue;
     color: white;
     display: flex;
@@ -322,9 +366,21 @@ $discount-red: #c44545;
 // Products grid
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); // Cambiado a 3 columnas fijas
-  gap: 25px; // Mayor espacio entre elementos
-  margin-bottom: 60px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  padding-bottom: 120px; // Añadir espacio adicional para evitar que el carrito oculte productos
+  
+  // Elemento fantasma para reservar espacio para el carrito
+  .cart-spacer {
+    // Mantener un espacio pero sin mostrar contenido
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    pointer-events: none; // Evitar que capte eventos del mouse
+    min-height: 100px;
+    visibility: hidden; // Oculto pero ocupa espacio
+  }
   
   // Ajuste para pantallas pequeñas
   @media (max-width: 768px) {

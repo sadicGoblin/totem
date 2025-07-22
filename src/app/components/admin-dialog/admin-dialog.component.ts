@@ -14,24 +14,33 @@ export class AdminDialogComponent {
   password: string = '';
   errorMessage: string = '';
   showDialog: boolean = false;
+  clickCounter: number = 0;
+  requiredClicks: number = 5; // Requiere 5 clics para activar el diálogo
 
   constructor(private electronService: ElectronService) {}
 
   toggleDialog(): void {
-    this.showDialog = !this.showDialog;
+    // Si el diálogo ya está abierto, simplemente cerrarlo
     if (this.showDialog) {
+      this.showDialog = false;
+      this.clickCounter = 0;
+      return;
+    }
+    
+    // Si el diálogo está cerrado, incrementar contador y verificar si alcanzó el límite
+    this.clickCounter++;
+    
+    // Sólo mostrar el diálogo si se alcanzó el número requerido de clics
+    if (this.clickCounter >= this.requiredClicks) {
+      this.showDialog = true;
       this.password = '';
       this.errorMessage = '';
+      this.clickCounter = 0; // Reiniciar contador después de mostrar
     }
   }
 
-  async submitPassword(): Promise<void> {
-    if (!this.password) {
-      this.errorMessage = 'Ingrese la contraseña';
-      return;
-    }
-
-    const success = await this.electronService.exitKioskMode(this.password);
+  async exitKioskMode(): Promise<void> {
+    const success = await this.electronService.exitKioskMode();
     
     if (success) {
       this.showDialog = false;

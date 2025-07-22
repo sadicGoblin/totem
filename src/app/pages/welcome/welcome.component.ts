@@ -13,6 +13,6 @@ export class WelcomeComponent {
   constructor(private router: Router) {}
 
   navigateToCatalog() {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/category']);
   }
 }

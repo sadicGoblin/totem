@@ -1,0 +1,44 @@
+<!-- Botón flotante de carrito -->
+<div class="cart-floating-button" (click)="showCart = !showCart">
+    <div class="cart-button-content">
+      <div class="cart-text">Carrito</div>
+      <div *ngIf="cartItemCount > 0" class="cart-count">{{ cartItemCount }}</div>
+      <div class="cart-amount">{{ formatPrice(cartTotal) }}</div>
+    </div>
+  </div>
+  
+  <!-- Vista detalle del carrito -->
+  <div class="cart-detail" [class.show-cart]="showCart">
+    <div class="cart-header">
+      <div class="cart-title">Tu pedido</div>
+      <button class="close-cart" (click)="showCart = false">×</button>
+    </div>
+    <div class="cart-items" *ngIf="cartItems.length > 0">
+      <div class="cart-item" *ngFor="let item of cartItems">
+        <div class="item-image">
+          <img [src]="item.product.image" [alt]="item.product.name">
+        </div>
+        <div class="item-info">
+          <div class="item-name">{{ item.product.name }}</div>
+          <div class="item-price">{{ formatPrice(item.product.price) }}</div>
+        </div>
+        <div class="item-quantity">
+          <button class="quantity-btn" (click)="decreaseQuantity(item.product.id)">-</button>
+          <span class="quantity">{{ item.quantity }}</span>
+          <button class="quantity-btn" disabled>+</button>
+        </div>
+        <div class="item-total">{{ formatPrice(item.product.price * item.quantity) }}</div>
+      </div>
+    </div>
+    <div class="cart-empty" *ngIf="cartItems.length === 0">
+      <div class="empty-message">Tu carrito está vacío</div>
+      <button class="continue-btn" (click)="showCart = false">Seguir comprando</button>
+    </div>
+    <div class="cart-footer" *ngIf="cartItems.length > 0">
+      <div class="cart-total-row">
+        <span>Total:</span>
+        <span class="total-amount">{{ formatPrice(cartTotal) }}</span>
+      </div>
+      <button class="checkout-btn" (click)="goToCheckout()">Completar Pedido</button>
+    </div>
+  </div>

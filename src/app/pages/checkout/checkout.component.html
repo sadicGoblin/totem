@@ -31,7 +31,7 @@
         <p>Imprimiendo comprobante...</p>
       </div>
       
-      <button class="back-btn" (click)="goToHome()">
+      <button class="back-btn" (click)="goToCategory()">
         Volver al inicio
       </button>
     </div>
@@ -40,7 +40,7 @@
   <!-- Pantalla de checkout -->
   <div class="checkout-content" *ngIf="!orderComplete && !processingPayment">
     <div class="checkout-header">
-      <button class="back-btn" (click)="goToHome()">
+      <button class="back-btn" (click)="goToCategory()">
         <span>&larr;</span> Volver
       </button>
       <h1>Tu pedido</h1>

@@ -1,0 +1,158 @@
+// Variables - Esquema de colores corporativo - Usando la paleta existente
+$primary-blue: #2e3e51;
+$secondary-blue: #3c5066;
+$accent-blue: #5ca6c1;
+$light-blue: #dce3ea;
+$light-gray: #eef0f3;
+$medium-gray: #c3c8cd;
+$dark-gray: #1f2731;
+$white: #ffffff;
+
+// Estilos generales del contenedor
+.category-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: $light-gray; // Fondo claro y neutro
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+// Header con imagen de fondo
+.category-header {
+  height: 80px;
+  background-color: $primary-blue;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  
+  h1 {
+    color: $white;
+    font-size: 2.4rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    
+    // Línea decorativa debajo del título
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background-color: $accent-blue;
+    }
+  }
+}
+
+// Sección de selección de categorías
+.category-selection {
+  padding: 40px 20px;
+  background-color: $light-gray;
+  flex: 1;
+  
+  h2 {
+    color: $primary-blue;
+    font-size: 1.8rem;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    position: relative;
+    
+    // Línea decorativa debajo del título
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 2px;
+      background-color: $accent-blue;
+    }
+  }
+}
+
+// Grid de tarjetas de categorías
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 0;
+  
+  // Responsive: 2 columnas en tabletas
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  // Responsive: 1 columna en móviles
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Estilos de las tarjetas de categoría
+.category-card {
+  background-color: $white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(92, 166, 193, 0.3);
+  }
+  
+  .card-image {
+    height: 200px;
+    background-color: $white;
+    overflow: hidden;
+    position: relative;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+  }
+  
+  &:hover .card-image img {
+    transform: scale(1.05);
+  }
+  
+  .card-title {
+    padding: 15px;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: $primary-blue;
+    text-align: center;
+    background-color: $light-blue;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    
+    // Línea decorativa debajo del título
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 2px;
+      background-color: $accent-blue;
+    }
+  }
+}
