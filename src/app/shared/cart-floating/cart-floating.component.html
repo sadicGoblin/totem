@@ -10,7 +10,7 @@
   <!-- Vista detalle del carrito -->
   <div class="cart-detail" [class.show-cart]="showCart" (click)="$event.stopPropagation()">
     <div class="cart-header">
-      <div class="cart-title">Tu pedido</div>
+      <div class="cart-title">DETALLES DEL PEDIDO</div>
       <button class="close-cart" (click)="showCart = false; $event.stopPropagation()">×</button>
     </div>
     <div class="cart-items" *ngIf="cartItems.length > 0">
@@ -39,6 +39,6 @@
         <span>Total:</span>
         <span class="total-amount">{{ formatPrice(cartTotal) }}</span>
       </div>
-      <button class="checkout-btn" (click)="goToCheckout(); $event.stopPropagation()">Completar Pedido</button>
+      <button class="checkout-btn" (click)="goToCheckout(); $event.stopPropagation()">COMPLETAR PEDIDO</button>
     </div>
   </div>

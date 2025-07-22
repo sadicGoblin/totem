@@ -1,7 +1,7 @@
 // Variables - Esquema de colores corporativo - Usando la paleta existente
 $primary-blue: #2e3e51;
 $secondary-blue: #3c5066;
-$accent-blue: #54dc28;
+$accent-green: #54dc28;
 $light-blue: #dce3ea;
 $light-gray: #eef0f3;
 $medium-gray: #c3c8cd;
@@ -57,7 +57,7 @@ $new-background: #586576;
       position: absolute;
       top: 0px;
       right: -45px;
-      background-color: $accent-blue;
+      background-color: $accent-green;
       color: white;
       border-radius: 50%;
       width: 35px;
@@ -66,7 +66,7 @@ $new-background: #586576;
       justify-content: center;
       align-items: center;
       font-weight: bold;
-      font-size: 14px;
+      font-size: 20px;
     }
 
     .cart-amount {
@@ -80,8 +80,8 @@ $new-background: #586576;
 .cart-detail {
   position: fixed;
   top: 0;
-  right: -480px;
-  width: 480px;
+  right: -600px;
+  width: 600px;
   height: 100%;
   background-color: white;
   box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
@@ -104,8 +104,10 @@ $new-background: #586576;
     align-items: center;
 
     .cart-title {
-      font-size: 35px;
+      font-size: 40px;
       font-weight: 600;
+      margin-left: 20px;
+      text-transform: uppercase;
     }
 
     .close-cart {
@@ -165,7 +167,7 @@ $new-background: #586576;
 
         .item-price {
           color: #666;
-          font-size: 16px;
+          font-size: 20px;
         }
       }
 
@@ -175,12 +177,12 @@ $new-background: #586576;
         margin: 0 10px;
 
         .quantity-btn {
-          width: 36px;
-          height: 36px;
+          width: 45px;
+          height: 45px;
           border-radius: 50%;
-          border: 1px solid #ddd;
+          border: 2px solid $accent-green;
           background-color: white;
-          font-size: 20px;
+          font-size: 35px;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -194,9 +196,9 @@ $new-background: #586576;
         .quantity {
           margin: 0 10px;
           font-weight: 600;
-          min-width: 24px;
+          min-width: 25px;
           text-align: center;
-          font-size: 18px;
+          font-size: 25px;
         }
       }
 
@@ -204,7 +206,7 @@ $new-background: #586576;
         font-weight: 600;
         min-width: 80px;
         text-align: right;
-        font-size: 18px;
+        font-size: 25px;
       }
     }
   }
@@ -240,7 +242,7 @@ $new-background: #586576;
 
   .cart-footer {
     padding: 20px;
-    height: 120px;
+    height: 150px;
     background-color: #f5f5f5;
     border-top: 1px solid #eee;
 
@@ -248,7 +250,7 @@ $new-background: #586576;
       display: flex;
       justify-content: space-between;
       margin-bottom: 15px;
-      font-size: 25px;
+      font-size: 40px;
       font-weight: 600;
     }
 
@@ -258,10 +260,11 @@ $new-background: #586576;
       border: none;
       padding: 15px;
       border-radius: 30px;
-      font-size: 25px;
+      font-size: 40px;
       font-weight: 600;
       width: 100%;
       cursor: pointer;
+      border: 4px solid #54dc28;
 
       &:active {
         transform: scale(0.98);
