@@ -79,75 +79,14 @@ export class PaymentComponent {
     console.log('Preparando impresión con Parzibyte HTTP ESC/POS...');
     
     this.cartService.getCartItems().subscribe(items => {
-      // Crear operaciones para imprimir ticket
       const operaciones: any[] = [
         { nombre: "Iniciar" },
-        // Encabezado del ticket
-        { nombre: "EstablecerAlineacion", argumentos: [1] }, // Centro: 1
-        { nombre: "EstablecerEnfatizado", argumentos: [true] },
-        { nombre: "EstablecerTamaño", argumentos: [1, 1] }, // Tamaño normal
-        { nombre: "EscribirTexto", argumentos: ["RINNO KIOSKO\n"] },
-        { nombre: "EstablecerTamaño", argumentos: [0, 0] }, // Tamaño normal
-        { nombre: "EstablecerEnfatizado", argumentos: [false] },
-        { nombre: "EscribirTexto", argumentos: ["================================\n"] },
-        { nombre: "EscribirTexto", argumentos: [`Fecha: ${new Date().toLocaleString('es-CL')}\n`] },
+        { nombre: "EstablecerAlineacion", argumentos: [1] },
         { nombre: "EscribirTexto", argumentos: [`Pedido #${this.orderNumberPreview}\n`] },
-        { nombre: "EscribirTexto", argumentos: ["--------------------------------\n"] },
-        
-        // Alineación a la izquierda para productos
-        { nombre: "EstablecerAlineacion", argumentos: [0] }, // Izquierda: 0
+        { nombre: "EscribirTexto", argumentos: [`Total: ${this.formatPrice(this.cartTotal)}\n`] },
+        { nombre: "Feed", argumentos: [2] },
+        { nombre: "Corte" }
       ];
-      
-      // Agregar los productos
-      if (items && items.length > 0) {
-        // Encabezados
-        operaciones.push(
-          { nombre: "EstablecerEnfatizado", argumentos: [true] },
-          { nombre: "EscribirTexto", argumentos: ["Cant.  Producto             Precio\n"] },
-          { nombre: "EstablecerEnfatizado", argumentos: [false] },
-          { nombre: "EscribirTexto", argumentos: ["--------------------------------\n"] }
-        );
-        
-        // Productos individuales
-        items.forEach(item => {
-          const cantidad = item.quantity.toString().padEnd(5);
-          const nombre = item.product.name.substring(0, 20).padEnd(20);
-          const precio = this.formatPrice(item.product.price * item.quantity).padStart(9);
-          
-          operaciones.push(
-            { nombre: "EscribirTexto", argumentos: [`${cantidad}${nombre}${precio}\n`] }
-          );
-          
-          // Si tiene opciones seleccionadas, mostrarlas (comprobamos si existe la propiedad)
-          const itemAny = item as any; // Usamos casting para acceder a propiedades que podrían no estar definidas en el tipo
-          if (itemAny.selectedOptions && Array.isArray(itemAny.selectedOptions) && itemAny.selectedOptions.length > 0) {
-            itemAny.selectedOptions.forEach((opt: any) => {
-              operaciones.push(
-                { nombre: "EscribirTexto", argumentos: [`      - ${opt.name}\n`] }
-              );
-            });
-          }
-        });
-      } else {
-        operaciones.push(
-          { nombre: "EscribirTexto", argumentos: ["No hay productos en el carrito\n"] }
-        );
-      }
-      
-      // Footer del ticket
-      operaciones.push(
-        { nombre: "EscribirTexto", argumentos: ["--------------------------------\n"] },
-        { nombre: "EstablecerAlineacion", argumentos: [2] }, // Derecha: 2
-        { nombre: "EscribirTexto", argumentos: [`Subtotal: ${this.formatPrice(this.cartTotal)}\n`] },
-        { nombre: "EstablecerEnfatizado", argumentos: [true] },
-        { nombre: "EscribirTexto", argumentos: [`TOTAL: ${this.formatPrice(this.cartTotal)}\n`] },
-        { nombre: "EstablecerEnfatizado", argumentos: [false] },
-        { nombre: "EstablecerAlineacion", argumentos: [1] }, // Centro: 1
-        { nombre: "Feed", argumentos: [1] },
-        { nombre: "EscribirTexto", argumentos: ["Gracias por su compra!\n"] },
-        { nombre: "Feed", argumentos: [3] }, // Avanzar papel
-        { nombre: "Corte", argumentos: [] } // Cortar papel
-      );
   
       // Enviar las operaciones al servidor de impresión
       fetch('http://localhost:8000/imprimir', {
@@ -158,17 +97,9 @@ export class PaymentComponent {
       .then(res => res.json())
       .then(result => {
         console.log('Resultado impresión:', result);
-        this.voucherPrinted = true;
-        
-        // Mostrar alerta solo si hay error
-        if (!result.ok) {
-          console.error('Error de impresión:', result.error || 'Error desconocido');
-          alert('Error al imprimir. Por favor, revisa que la impresora esté conectada.');
-        }
       })
       .catch(err => {
         console.error('Error enviando a la impresora:', err);
-        alert('No se pudo conectar con el servidor de impresión. Asegúrate que esté ejecutándose en este equipo.');
       });
     });
   }

@@ -76,40 +76,6 @@
   </div>
 </div>
 
-  <!-- Promo banner for specials -->
-  <div class="promo-banner" *ngIf="selectedCategory === 'HAMBURGUESAS'">
-    <div class="banner-content">
-      <div class="banner-icon">
-        <span class="icon-food"></span>
-        <h3>Combo Especial</h3>
-      </div>
-      <div class="banner-description">
-        <p>Hamburguesa + Papas + Bebida</p>
-        <p class="banner-price">{{ formatPrice(12900) }}</p>
-      </div>
-    </div>
-    <img src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?q=80&w=400&h=200&auto=format" alt="Combo Especial" />
-  </div>
-
-<!-- 
-<div class="nav-buttons" [class.horizontal]="isLandscapeMode" *ngIf="!hideNavButtons">
-  <button
-    class="nav-button"
-    [class.active]="selectedCategory === null || selectedCategory === 'TODO'"
-    (click)="setCategory(null)"
-  >
-    TODO
-  </button>
-  <button
-    class="nav-button"
-    *ngFor="let category of categories"
-    [class.active]="selectedCategory === category"
-    (click)="setCategory(category)"
-  >
-    {{ category }}
-  </button>
-</div> -->
-
 <!-- Modal para detalles del producto -->
 <app-modal
   [product]="selectedProduct"

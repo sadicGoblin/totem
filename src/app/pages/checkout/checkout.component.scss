@@ -345,6 +345,17 @@ $primary-blue: #1a2533;
   &:hover {
     background-color: darken($accent-color, 10%);
   }
+
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #999;
+    
+    &:hover {
+      background-color: #999;
+    }
+  }
 }
 
 // Estilos para la pantalla de procesamiento de pago

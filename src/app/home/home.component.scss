@@ -600,68 +600,6 @@ $discount-red: #c44545;
     }
   }
 }
-// Promo banner
-.promo-banner {
-  background: linear-gradient(135deg, $primary-blue, $secondary-blue);
-  border-radius: 12px;
-  padding: 16px;
-  color: $white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  overflow: hidden;
-  margin: 20px 0;
-  position: relative;
-  box-shadow: 0 4px 15px rgba(9, 30, 66, 0.2);
-  
-  img {
-    max-height: 150px;
-    max-width: 40%;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-  
-  .banner-content {
-    display: flex;
-    flex-direction: column;
-    
-    .banner-icon {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-      
-      span {
-        font-size: 24px;
-        margin-right: 10px;
-      }
-      
-      h3 {
-        font-size: 22px;
-        font-weight: bold;
-        margin: 0;
-      }
-    }
-    
-    .banner-description {
-      p {
-        margin: 5px 0;
-        font-size: 16px;
-        
-        &.banner-price {
-          font-size: 20px;
-          font-weight: bold;
-          margin-top: 8px;
-        }
-      }
-    }
-  }
-  
-  img {
-    max-height: 120px;
-    border-radius: 8px;
-  }
-}
-
 // Navigation buttons
 .nav-buttons {
   display: flex;

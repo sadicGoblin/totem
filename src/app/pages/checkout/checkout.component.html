@@ -95,7 +95,7 @@
           <span class="total-amount">{{ formatPrice(cartTotal) }}</span>
         </div>
         
-        <button class="complete-order-btn" (click)="goToPaymentPage()">
+        <button class="complete-order-btn" [disabled]="cartItems.length === 0" (click)="goToPaymentPage()">
           PAGAR AHORA
         </button>
       </div>
