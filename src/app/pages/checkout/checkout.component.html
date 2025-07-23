@@ -41,9 +41,9 @@
   <div class="checkout-content" *ngIf="!orderComplete && !processingPayment">
     <div class="checkout-header">
       <button class="back-btn" (click)="goToCategory()">
-        <span>&larr;</span> Volver
+        <span>&larr;</span> OLVIDÉ ALGO
       </button>
-      <h1>Tu pedido</h1>
+      <h1>Revisa aquí tu pedido</h1>
       <div class="spacer"></div>
     </div>
 
@@ -78,18 +78,14 @@
 
   <div class="order-summary-container" *ngIf="!orderComplete">
     <div class="order-summary">
-      <div class="summary-title">
-        <h2>Resumen del pedido</h2>
-      </div>
-      
       <div class="order-footer">
         <div class="total-row">
-          <span class="total-label">Total:</span>
+          <span class="total-label">Total a pagar:</span>
           <span class="total-amount">{{ formatPrice(cartTotal) }}</span>
         </div>
         
         <button class="complete-order-btn" (click)="startPayment()">
-          Pagar ahora
+          PAGAR AHORA
         </button>
       </div>
     </div>

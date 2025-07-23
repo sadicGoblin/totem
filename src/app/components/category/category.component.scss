@@ -142,17 +142,5 @@ $white: #ffffff;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border-top: 1px solid rgba(0,0,0,0.05);
-    
-    // Línea decorativa debajo del título
-    &:after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 60px;
-      height: 2px;
-      background-color: $accent-blue;
-    }
   }
 }

@@ -138,9 +138,37 @@ $new-background: #586576;
 
     .cart-item {
       display: flex;
-      padding: 18px 12px;
+      padding: 15px 0px;
       border-bottom: 1px solid #eee;
       align-items: center;
+      position: relative;
+
+      // Estilo para el botón de eliminar producto
+      .delete-item-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: #d91a1a;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-right: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        padding: 0;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: darken(#d91a1a, 10%);
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
+      }
 
       .item-image {
         width: 70px;

@@ -111,6 +111,15 @@ export class CartFloatingComponent implements OnInit, OnDestroy {
     this.cartService.addToCart(product);
   }
   
+  // Método para eliminar un producto del carrito completamente
+  removeFromCart(productId: number, event?: MouseEvent): void {
+    // Detener la propagación del evento para evitar que se cierre el carrito
+    if (event) {
+      event.stopPropagation();
+    }
+    this.cartService.removeFromCart(productId);
+  }
+  
   formatPrice(price: number): string {
     return '$ ' + price.toLocaleString('es-CL');
   }

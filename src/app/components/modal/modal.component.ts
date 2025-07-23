@@ -39,13 +39,6 @@ export class ModalComponent {
     }
   }
   
-  addToCartClicked(): void {
-    if (this.product && this.localQuantity > 0) {
-      this.addToCart.emit({product: this.product, quantity: this.localQuantity});
-      this.closeModal();
-    }
-  }
-  
   formatPrice(price: number): string {
     return '$' + price.toLocaleString('es-CL');
   }

@@ -5,13 +5,14 @@ $accent-color: #ffbd00;
 $text-color: #ffffff;
 $border-radius: 8px;
 $shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+$accent-green: #54dc28;
 
 // Estilos generales
 .checkout-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: $primary-bg;
+  background-color: $text-color;
   color: $text-color;
   padding: 0;
   margin: 0;
@@ -20,6 +21,7 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 
 // Estilos del header
 .checkout-header {
+  height: 80px;
   display: flex;
   align-items: center;
   padding: 16px 24px;
@@ -27,10 +29,11 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   box-shadow: $shadow;
 
   h1 {
+    text-transform: uppercase;
     flex: 1;
     text-align: center;
     margin: 0;
-    font-size: 24px;
+    font-size: 2.4rem;
     font-weight: 600;
   }
 }
@@ -38,11 +41,12 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 .back-btn {
   display: flex;
   align-items: center;
-  background-color: transparent;
-  border: none;
+  background-color: green;
+  border-radius: 5px;
   color: $text-color;
-  padding: 8px 12px;
-  font-size: 16px;
+  padding: 10px 16px;
+  font-size: 20px;
+  border: none;
   cursor: pointer;
   transition: color 0.2s ease;
 
@@ -51,8 +55,9 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
 
   span {
-    margin-right: 8px;
-    font-size: 18px;
+    margin-right: 15px;
+    font-size: 30px;
+    margin-top: -5px;
   }
 }
 // Estilos del contenido
@@ -112,12 +117,13 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     flex: 1;
 
     .item-name {
+      font-size: 20px;
       font-weight: 600;
       margin-bottom: 4px;
     }
 
     .item-price {
-      font-size: 14px;
+      font-size: 20px;
       color: rgba(255, 255, 255, 0.8);
     }
   }
@@ -128,10 +134,11 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     margin: 0 16px;
 
     .quantity-btn {
-      width: 32px;
-      height: 32px;
+      width: 45px;
+      height: 45px;
       border-radius: 50%;
       border: none;
+      border: 2px solid $accent-green;
       background-color: rgba(255, 255, 255, 0.1);
       color: $text-color;
       display: flex;
@@ -161,7 +168,7 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 
   .item-total {
     font-weight: 600;
-    font-size: 16px;
+    font-size: 25px;
     text-align: right;
     min-width: 80px;
   }
@@ -174,9 +181,10 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   left: 0;
   right: 0;
   width: 100%;
-  background-color: $primary-bg;
+  background-color: #1a2533; // Color azul oscuro como en la imagen
   box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
   z-index: 100;
+  padding: 20px 0;
 }
 
 // Estilos del resumen del pedido
@@ -185,8 +193,8 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   flex-direction: column;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 16px 20px;
-  background-color: $secondary-bg;
+  padding: 5px 20px;
+  background-color: transparent;
 
   @media (min-width: 768px) {
     flex-direction: row;
@@ -228,43 +236,44 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
 }
 
+.order-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .total-row {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
   font-weight: 600;
-  margin-bottom: 16px;
-
-  @media (min-width: 768px) {
-    margin-bottom: 0;
-  }
-
+  margin-bottom: 0;
+  
   .total-label {
-    margin-right: 10px;
+    margin-right: 15px;
+    font-size: 30px;
   }
-
+  
   .total-amount {
-    font-size: 20px;
-    color: $accent-color;
+    font-size: 32px;
+    color: #ffcc00; // Color amarillo como en la imagen
   }
 }
 
 .complete-order-btn {
-  width: 100%;
-  background-color: $accent-color;
-  color: $primary-bg;
+  background-color: #ffcc00; // Color amarillo como en la imagen
+  color: #000000;
+  padding: 15px 24px;
+  border-radius: 4px;
   border: none;
-  border-radius: $border-radius;
   font-weight: 600;
-  font-size: 16px;
-  padding: 16px;
+  font-size: 26px;
   cursor: pointer;
   transition: background-color 0.2s ease;
-
-  @media (min-width: 768px) {
-    width: auto;
-    min-width: 180px;
-    white-space: nowrap;
-  }
+  width: auto;
+  min-width: 380px;
+  height: 80px;
+  white-space: nowrap;
 
   &:hover {
     background-color: darken($accent-color, 10%);
