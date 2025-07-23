@@ -76,42 +76,103 @@ export class PaymentComponent {
   
   // Método para imprimir el voucher en la impresora térmica
   printVoucher(): void {
-    // Aquí iría la lógica para conectar con la impresora térmica
-    console.log('Imprimiendo voucher para pago en caja...');
+    console.log('Preparando impresión con Parzibyte HTTP ESC/POS...');
     
-    // Datos que se enviarían a la impresora
-    const voucherData = {
-      orderNumber: this.orderNumberPreview,
-      date: new Date().toLocaleString('es-CL'),
-      total: this.cartTotal,
-      items: [] // Aquí se añadirían los productos desde el carrito
-    };
-    
-    // Aquí debería ir el código para conectar con la impresora térmica en Windows
-    // Por ejemplo, usando una API REST, WebSocket o alguna librería específica
-    
-    /*
-    NOTA: Hay varias formas de implementar esto dependiendo del hardware y software disponible:
-    
-    1. Si hay un servicio o aplicación en el Windows que expone un API:
-       - Se podría hacer una llamada HTTP a ese servicio
-       - Ejemplo: this.http.post('http://localhost:8080/print', voucherData);
-    
-    2. Si hay un WebSocket disponible:
-       - Se podría enviar los datos a través de un WebSocket
-       - Ejemplo: this.printSocket.send(JSON.stringify(voucherData));
-       
-    3. Si hay un plugin o componente nativo:
-       - Se podría usar una integración con Electron para acceder a hardware
-       - Ejemplo: require('electron').ipcRenderer.send('print-voucher', voucherData);
-    */
-    
-    // Por ahora, simulamos que la impresión fue exitosa después de 2 segundos
-    setTimeout(() => {
-      this.voucherPrinted = true;
-      console.log('Voucher impreso exitosamente');
-    }, 2000);
+    this.cartService.getCartItems().subscribe(items => {
+      // Crear operaciones para imprimir ticket
+      const operaciones: any[] = [
+        { nombre: "Iniciar" },
+        // Encabezado del ticket
+        { nombre: "EstablecerAlineacion", argumentos: [1] }, // Centro: 1
+        { nombre: "EstablecerEnfatizado", argumentos: [true] },
+        { nombre: "EstablecerTamaño", argumentos: [1, 1] }, // Tamaño normal
+        { nombre: "EscribirTexto", argumentos: ["RINNO KIOSKO\n"] },
+        { nombre: "EstablecerTamaño", argumentos: [0, 0] }, // Tamaño normal
+        { nombre: "EstablecerEnfatizado", argumentos: [false] },
+        { nombre: "EscribirTexto", argumentos: ["================================\n"] },
+        { nombre: "EscribirTexto", argumentos: [`Fecha: ${new Date().toLocaleString('es-CL')}\n`] },
+        { nombre: "EscribirTexto", argumentos: [`Pedido #${this.orderNumberPreview}\n`] },
+        { nombre: "EscribirTexto", argumentos: ["--------------------------------\n"] },
+        
+        // Alineación a la izquierda para productos
+        { nombre: "EstablecerAlineacion", argumentos: [0] }, // Izquierda: 0
+      ];
+      
+      // Agregar los productos
+      if (items && items.length > 0) {
+        // Encabezados
+        operaciones.push(
+          { nombre: "EstablecerEnfatizado", argumentos: [true] },
+          { nombre: "EscribirTexto", argumentos: ["Cant.  Producto             Precio\n"] },
+          { nombre: "EstablecerEnfatizado", argumentos: [false] },
+          { nombre: "EscribirTexto", argumentos: ["--------------------------------\n"] }
+        );
+        
+        // Productos individuales
+        items.forEach(item => {
+          const cantidad = item.quantity.toString().padEnd(5);
+          const nombre = item.product.name.substring(0, 20).padEnd(20);
+          const precio = this.formatPrice(item.product.price * item.quantity).padStart(9);
+          
+          operaciones.push(
+            { nombre: "EscribirTexto", argumentos: [`${cantidad}${nombre}${precio}\n`] }
+          );
+          
+          // Si tiene opciones seleccionadas, mostrarlas (comprobamos si existe la propiedad)
+          const itemAny = item as any; // Usamos casting para acceder a propiedades que podrían no estar definidas en el tipo
+          if (itemAny.selectedOptions && Array.isArray(itemAny.selectedOptions) && itemAny.selectedOptions.length > 0) {
+            itemAny.selectedOptions.forEach((opt: any) => {
+              operaciones.push(
+                { nombre: "EscribirTexto", argumentos: [`      - ${opt.name}\n`] }
+              );
+            });
+          }
+        });
+      } else {
+        operaciones.push(
+          { nombre: "EscribirTexto", argumentos: ["No hay productos en el carrito\n"] }
+        );
+      }
+      
+      // Footer del ticket
+      operaciones.push(
+        { nombre: "EscribirTexto", argumentos: ["--------------------------------\n"] },
+        { nombre: "EstablecerAlineacion", argumentos: [2] }, // Derecha: 2
+        { nombre: "EscribirTexto", argumentos: [`Subtotal: ${this.formatPrice(this.cartTotal)}\n`] },
+        { nombre: "EstablecerEnfatizado", argumentos: [true] },
+        { nombre: "EscribirTexto", argumentos: [`TOTAL: ${this.formatPrice(this.cartTotal)}\n`] },
+        { nombre: "EstablecerEnfatizado", argumentos: [false] },
+        { nombre: "EstablecerAlineacion", argumentos: [1] }, // Centro: 1
+        { nombre: "Feed", argumentos: [1] },
+        { nombre: "EscribirTexto", argumentos: ["Gracias por su compra!\n"] },
+        { nombre: "Feed", argumentos: [3] }, // Avanzar papel
+        { nombre: "Corte", argumentos: [] } // Cortar papel
+      );
+  
+      // Enviar las operaciones al servidor de impresión
+      fetch('http://localhost:8000/imprimir', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(operaciones)
+      })
+      .then(res => res.json())
+      .then(result => {
+        console.log('Resultado impresión:', result);
+        this.voucherPrinted = true;
+        
+        // Mostrar alerta solo si hay error
+        if (!result.ok) {
+          console.error('Error de impresión:', result.error || 'Error desconocido');
+          alert('Error al imprimir. Por favor, revisa que la impresora esté conectada.');
+        }
+      })
+      .catch(err => {
+        console.error('Error enviando a la impresora:', err);
+        alert('No se pudo conectar con el servidor de impresión. Asegúrate que esté ejecutándose en este equipo.');
+      });
+    });
   }
+    
   
   // Confirmación de que el cliente ha visto el voucher impreso
   confirmVoucherPrinted(): void {
