@@ -52,6 +52,10 @@
       <div class="cart-items-container">
         <div class="cart-items">
           <div class="cart-item" *ngFor="let item of cartItems">
+            <!-- Botón para eliminar producto completo -->
+            <button class="delete-item-btn" (click)="removeFromCart(item.product.id, $event)" title="Eliminar producto">
+              <span>&times;</span>
+            </button>
             <div class="item-image">
               <img [src]="item.product.image" [alt]="item.product.name">
             </div>

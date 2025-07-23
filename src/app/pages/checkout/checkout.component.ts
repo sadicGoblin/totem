@@ -54,6 +54,15 @@ export class CheckoutComponent implements OnInit {
     }
   }
 
+  // Método para eliminar completamente un producto del carrito
+  removeFromCart(productId: number, event?: MouseEvent): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.cartItems = this.cartItems.filter(item => item.product.id !== productId);
+    this.updateCart();
+  }
+
   // Actualizar el carrito en el servicio
   updateCart(): void {
     this.cartService.updateCart([...this.cartItems]);
