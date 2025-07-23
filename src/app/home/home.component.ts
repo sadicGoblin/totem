@@ -123,29 +123,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   handleAddToCartFromModal(data: {product: Product, quantity: number}): void {
     const { product, quantity } = data;
     
-    // Obtener items actuales del carrito
-    const currentItems = this.cartService.getCurrentCartItems();
-    
-    // Buscar el producto en el carrito
-    const existingItemIndex = currentItems.findIndex(item => item.product.id === product.id);
-    
-    let updatedItems: CartItem[];
-    
-    if (existingItemIndex !== -1) {
-      // Si el producto ya está en el carrito, actualizar la cantidad
-      updatedItems = [...currentItems];
-      updatedItems[existingItemIndex].quantity = quantity;
-    } else {
-      // Si el producto no está en el carrito, agregarlo
-      updatedItems = [...currentItems, {
-        productId: product.id,
-        product: product,
-        quantity: quantity
-      }];
+    // Si la cantidad es positiva, añadir al carrito
+    if (quantity > 0) {
+      this.cartService.addToCart(product);
+    } 
+    // Si la cantidad es negativa, decrementar del carrito
+    else if (quantity < 0) {
+      this.cartService.decreaseQuantity(product.id);
     }
-    
-    // Actualizar el carrito a través del servicio
-    this.cartService.updateCart(updatedItems);
   }
   
   // Método para navegar a la página de checkout

@@ -50,7 +50,8 @@
     <div class="checkout-body">
       <!-- Lista de productos en el carrito -->
       <div class="cart-items-container">
-        <div class="cart-items">
+        <!-- Mostrar lista de productos cuando hay items en el carrito -->
+        <div class="cart-items" *ngIf="cartItems.length > 0">
           <div class="cart-item" *ngFor="let item of cartItems">
             <!-- Botón para eliminar producto completo -->
             <button class="delete-item-btn" (click)="removeFromCart(item.product.id, $event)" title="Eliminar producto">
@@ -75,6 +76,12 @@
             <div class="item-total">{{ formatPrice(item.product.price * item.quantity) }}</div>
           </div>
         </div>
+        
+        <!-- Mensaje cuando el carrito está vacío -->
+        <div class="cart-empty" *ngIf="cartItems.length === 0">
+          <div class="empty-message">Tu carrito está vacío</div>
+          <button class="continue-btn" (click)="goToCategory()">Volver a comprar</button>
+        </div>
       </div>
 
     </div>
@@ -88,7 +95,7 @@
           <span class="total-amount">{{ formatPrice(cartTotal) }}</span>
         </div>
         
-        <button class="complete-order-btn" (click)="startPayment()">
+        <button class="complete-order-btn" (click)="goToPaymentPage()">
           PAGAR AHORA
         </button>
       </div>

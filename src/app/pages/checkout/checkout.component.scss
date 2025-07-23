@@ -6,6 +6,7 @@ $text-color: #ffffff;
 $border-radius: 8px;
 $shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 $accent-green: #54dc28;
+$primary-blue: #1a2533;
 
 // Estilos generales
 .checkout-container {
@@ -74,9 +75,46 @@ $accent-green: #54dc28;
 
 // Estilos de los items del carrito
 .cart-items-container {
-  flex: 2;
-  margin-bottom: 24px;
-
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  
+  // Estilos para el mensaje de carrito vacío
+  .cart-empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    height: 100%;
+    
+    .empty-message {
+      font-size: 36px;
+      color: $primary-blue;
+      margin-bottom: 30px;
+    }
+    
+    .continue-btn {
+      background-color: $primary-blue;
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 30px;
+      font-size: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background-color: lighten($primary-blue, 5%);
+      }
+      
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+  }
+  
   @media (min-width: 1024px) {
     margin-bottom: 0;
   }

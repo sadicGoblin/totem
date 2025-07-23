@@ -31,11 +31,19 @@ export class ModalComponent {
   
   increase(): void {
     this.localQuantity++;
+    // Emitir evento para añadir al carrito
+    if (this.product) {
+      this.addToCart.emit({product: this.product, quantity: 1});
+    }
   }
   
   decrease(): void {
     if (this.localQuantity > 0) {
       this.localQuantity--;
+      // Emitir evento para remover del carrito
+      if (this.product) {
+        this.addToCart.emit({product: this.product, quantity: -1});
+      }
     }
   }
   

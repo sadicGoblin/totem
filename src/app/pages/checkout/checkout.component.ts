@@ -25,9 +25,9 @@ export class CheckoutComponent implements OnInit {
       this.cartItems = items;
       
       // Si el carrito está vacío, redirigimos a home
-      if (this.cartItems.length === 0) {
-        this.router.navigate(['/']);
-      }
+      // if (this.cartItems.length === 0) {
+      //   this.router.navigate(['/']);
+      // }
     });
 
     this.cartService.getCartTotal().subscribe(total => {
@@ -51,6 +51,9 @@ export class CheckoutComponent implements OnInit {
     if (item.quantity > 1) {
       item.quantity--;
       this.updateCart();
+    } else {
+      // Si sólo queda 1 unidad, eliminar el producto completamente
+      this.removeFromCart(item.product.id);
     }
   }
 
@@ -100,5 +103,10 @@ export class CheckoutComponent implements OnInit {
   // Volver a la página principal
   goToCategory(): void {
     this.router.navigate(['/category']);
+  }
+  
+  // Navegar a la página de métodos de pago
+  goToPaymentPage(): void {
+    this.router.navigate(['/payment']);
   }
 }
