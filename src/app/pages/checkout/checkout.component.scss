@@ -79,6 +79,34 @@ $primary-blue: #1a2533;
   overflow-y: auto;
   min-height: 0;
   
+  // Estilos para el botón de vaciar carrito
+  .clear-cart-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+  }
+  
+  .clear-cart-btn {
+    background-color: #d91a1a;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s ease;
+    
+    i {
+      margin-right: 8px;
+    }
+    
+    &:hover {
+      background-color: darken(#d91a1a, 10%);
+    }
+  }
+  
   // Estilos para el mensaje de carrito vacío
   .cart-empty {
     display: flex;

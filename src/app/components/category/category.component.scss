@@ -84,10 +84,10 @@ $white: #ffffff;
 .category-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 25px;
-  max-width: 1200px;
+  gap: 35px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 20px 0;
+  padding: 30px 0;
   
   // Responsive: 2 columnas en tabletas
   @media (max-width: 900px) {
@@ -103,19 +103,19 @@ $white: #ffffff;
 // Estilos de las tarjetas de categoría
 .category-card {
   background-color: $white;
-  border-radius: 12px;
+  border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
   cursor: pointer;
   transition: all 0.3s ease;
   
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(92, 166, 193, 0.3);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(92, 166, 193, 0.4);
   }
   
   .card-image {
-    height: 200px;
+    height: 260px;
     background-color: $white;
     overflow: hidden;
     position: relative;
@@ -133,14 +133,14 @@ $white: #ffffff;
   }
   
   .card-title {
-    padding: 15px;
-    font-size: 1.3rem;
-    font-weight: 500;
+    padding: 20px;
+    font-size: 1.6rem;
+    font-weight: 600;
     color: $primary-blue;
     text-align: center;
     background-color: $light-blue;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
     border-top: 1px solid rgba(0,0,0,0.05);
   }
 }

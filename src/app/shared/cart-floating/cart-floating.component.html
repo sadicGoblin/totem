@@ -1,4 +1,15 @@
 <!-- Botón flotante de carrito -->
+<!-- Modal de confirmación para vaciar carrito -->
+<app-confirm-modal
+  [(visible)]="showConfirmModal"
+  title="Vaciar carrito"
+  [message]="confirmMessage"
+  confirmText="Vaciar"
+  cancelText="Cancelar"
+  confirmType="danger"
+  (onConfirm)="confirmClearCart()"
+></app-confirm-modal>
+
 <div class="cart-floating-button" (click)="toggleCart()">
     <div class="cart-button-content">
       <div class="cart-text">Carrito</div>
@@ -12,6 +23,13 @@
     <div class="cart-header">
       <div class="cart-title">DETALLES DEL PEDIDO</div>
       <button class="close-cart" (click)="showCart = false; $event.stopPropagation()">×</button>
+    </div>
+    
+    <!-- Botón para vaciar carrito -->
+    <div class="clear-cart-action" *ngIf="cartItems.length > 0">
+      <button class="clear-cart-btn" (click)="clearCart($event)" title="Vaciar carrito">
+        <i class="fas fa-trash"></i> Vaciar todo
+      </button>
     </div>
     <div class="cart-items" *ngIf="cartItems.length > 0">
       <div class="cart-item" *ngFor="let item of cartItems">

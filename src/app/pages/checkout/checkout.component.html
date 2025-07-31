@@ -1,4 +1,15 @@
 <div class="checkout-container">
+
+<!-- Modal de confirmación para vaciar carrito -->
+<app-confirm-modal
+  [(visible)]="showConfirmModal"
+  title="Vaciar carrito"
+  [message]="confirmMessage"
+  confirmText="Vaciar"
+  cancelText="Cancelar"
+  confirmType="danger"
+  (onConfirm)="confirmClearCart()"
+></app-confirm-modal>
   <!-- Pantalla de procesamiento de pago -->
   <div class="payment-processing" *ngIf="processingPayment">
     <div class="payment-content">
@@ -50,6 +61,12 @@
     <div class="checkout-body">
       <!-- Lista de productos en el carrito -->
       <div class="cart-items-container">
+        <!-- Botón para vaciar carrito completo -->
+        <div class="clear-cart-container" *ngIf="cartItems.length > 0">
+          <button class="clear-cart-btn" (click)="clearCart()" title="Vaciar carrito">
+            <i class="fas fa-trash"></i> Vaciar carrito
+          </button>
+        </div>
         <!-- Mostrar lista de productos cuando hay items en el carrito -->
         <div class="cart-items" *ngIf="cartItems.length > 0">
           <div class="cart-item" *ngFor="let item of cartItems">

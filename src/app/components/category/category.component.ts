@@ -28,15 +28,21 @@ export class CategoryComponent implements OnInit {
     // Suscribirse a los cambios del carrito
   }
   
+  // selectCategory(category: string): void {
+  //   // Navegamos al home con el parámetro de categoría
+  //   if (category.toLowerCase() === 'all' || category.toLowerCase() === 'todo') {
+  //     // Si es 'all' o 'todo', no enviamos filtro de categoría
+  //     this.router.navigate(['/home']);
+  //   } else {
+  //     // Enviamos el nombre de la categoría como está
+  //     this.router.navigate(['/home'], { queryParams: { category } });
+  //   }
+  // }
+
   selectCategory(category: string): void {
-    // Navegamos al home con el parámetro de categoría
-    if (category.toLowerCase() === 'all' || category.toLowerCase() === 'todo') {
-      // Si es 'all' o 'todo', no enviamos filtro de categoría
-      this.router.navigate(['/home']);
-    } else {
-      // Enviamos el nombre de la categoría como está
-      this.router.navigate(['/home'], { queryParams: { category } });
-    }
+    const formattedCategory = category.trim().toLowerCase();
+    this.router.navigate(['/home'], { queryParams: { category: formattedCategory } });
   }
+  
 
 }

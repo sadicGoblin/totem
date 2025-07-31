@@ -4,11 +4,12 @@ import { CartService } from '../../services/cart.service';
 import { ProductService } from '../../services/product.service';
 import { CartItem } from '../../models/products.model';
 import { CommonModule } from '@angular/common';
+import { ConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-cart-floating',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ConfirmModalComponent],
   templateUrl: './cart-floating.component.html',
   styleUrl: './cart-floating.component.scss',
 })
@@ -18,6 +19,10 @@ export class CartFloatingComponent implements OnInit, OnDestroy {
   cartItemCount: number = 0;
   showCart: boolean = false;
   private subscriptions: any[] = [];
+  
+  // Para el modal de confirmación
+  showConfirmModal: boolean = false;
+  confirmMessage: string = '¿Estás seguro de que deseas vaciar todo el carrito?';
 
   constructor(
     private router: Router,
@@ -122,6 +127,23 @@ export class CartFloatingComponent implements OnInit, OnDestroy {
   
   formatPrice(price: number): string {
     return '$ ' + price.toLocaleString('es-CL');
+  }
+  
+  // Método para mostrar el modal de confirmación para vaciar carrito
+  clearCart(event: MouseEvent): void {
+    // Detener la propagación del evento para evitar que se cierre el carrito
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    // Mostrar modal de confirmación
+    this.showConfirmModal = true;
+  }
+  
+  // Método que se ejecuta cuando se confirma vaciar el carrito
+  confirmClearCart(): void {
+    this.cartService.clearCart();
+    // Los observables del servicio actualizarán automáticamente los items del carrito
   }
 
   goToCheckout(): void {

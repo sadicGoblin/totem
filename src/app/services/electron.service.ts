@@ -51,8 +51,12 @@ export class ElectronService {
   exitKioskMode(): Promise<boolean> {
     return new Promise((resolve) => {
       if (!this.isElectron) {
-        console.warn('No estamos en Electron');
-        resolve(false);
+        console.warn('Modo de desarrollo: simulando salida del modo kiosko');
+        // En modo desarrollo, simulamos que la operación fue exitosa
+        setTimeout(() => {
+          console.log('Simulación: Salida del modo kiosko exitosa');
+          resolve(true);
+        }, 500);
         return;
       }
 

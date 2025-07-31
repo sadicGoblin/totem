@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { CartItem } from '../../models/products.model';
+import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ConfirmModalComponent],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.scss'
 })
@@ -17,6 +18,10 @@ export class CheckoutComponent implements OnInit {
   orderComplete: boolean = false;
   processingPayment: boolean = false;
   orderNumber: string = '';
+  
+  // Para el modal de confirmación
+  showConfirmModal: boolean = false;
+  confirmMessage: string = '¿Estás seguro de que deseas vaciar todo el carrito?';
 
   constructor(private cartService: CartService, private router: Router) {}
 
@@ -103,6 +108,17 @@ export class CheckoutComponent implements OnInit {
   // Volver a la página principal
   goToCategory(): void {
     this.router.navigate(['/category']);
+  }
+  
+  // Mostrar modal para vaciar el carrito completamente
+  clearCart(): void {
+    this.showConfirmModal = true;
+  }
+  
+  // Método que se ejecuta cuando se confirma vaciar el carrito
+  confirmClearCart(): void {
+    this.cartService.clearCart();
+    // El observable del servicio actualizará automáticamente this.cartItems
   }
   
   // Navegar a la página de métodos de pago

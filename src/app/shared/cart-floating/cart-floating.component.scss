@@ -129,6 +129,36 @@ $new-background: #586576;
       }
     }
   }
+  
+  // Estilos para el botón de vaciar carrito
+  .clear-cart-action {
+    display: flex;
+    justify-content: center;
+    padding: 15px;
+    background-color: white;
+  }
+  
+  .clear-cart-btn {
+    background-color: #d91a1a;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 16px 28px;
+    font-size: 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s ease;
+    text-transform: uppercase;
+    
+    i {
+      margin-right: 8px;
+    }
+    
+    &:hover {
+      background-color: darken(#d91a1a, 10%);
+    }
+  }
 
   .cart-items {
     flex: 1;

@@ -14,34 +14,36 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   host: {
-    '[class.landscape-mode]': 'isLandscapeMode'
-  }
+    '[class.landscape-mode]': 'isLandscapeMode',
+  },
 })
 export class HomeComponent implements OnInit, OnDestroy {
   isLandscapeMode: boolean = false;
   selectedCategory: string | null = 'HAMBURGUESAS';
   hideNavButtons: boolean = false; // Para ocultar los botones de navegación
-  
+
   // Subscripciones
   private subscriptions: any[] = [];
-  
+
   // Modal properties
   selectedProduct: Product | null = null;
   showModal: boolean = false;
-  
+
   categories = [
     'HAMBURGUESAS',
     'PIZZAS',
     'BEBIDAS',
     'POSTRES',
-    'COMPLEMENTOS'
+    'COMPLEMENTOS',
+    'ZAPATILLAS',
+    'CELULARES',
   ];
-  
+
   products: Product[] = [];
 
   constructor(
-    private productService: ProductService, 
-    private cartService: CartService, 
+    private productService: ProductService,
+    private cartService: CartService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -50,26 +52,40 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // Cargar productos
-    this.productService.getProducts().subscribe(products => {
+    this.productService.getProducts().subscribe((products) => {
       this.products = products;
-      
+
       // Verificar si hay un parámetro de categoría en la URL
-      this.route.queryParams.subscribe(params => {
+      // this.route.queryParams.subscribe(params => {
+      //   if (params['category']) {
+      //     const category = params['category'].toUpperCase();
+      //     // Verificar si la categoría existe en nuestras categorías
+      //     if (category === 'ALL') {
+      //       this.selectedCategory = null;
+      //     } else if (this.categories.includes(category) || category === 'TODO') {
+      //       this.selectedCategory = category;
+      //     }
+
+      //     // Indicar que venimos de la página de categorías para ocultar los botones de navegación
+      //     this.hideNavButtons = true;
+      //   }
+      // });
+
+      this.route.queryParams.subscribe((params) => {
         if (params['category']) {
           const category = params['category'].toUpperCase();
-          // Verificar si la categoría existe en nuestras categorías
-          if (category === 'ALL') {
-            this.selectedCategory = null;
-          } else if (this.categories.includes(category) || category === 'TODO') {
+
+          // Validar solo contra categorías disponibles
+          if (this.categories.includes(category)) {
             this.selectedCategory = category;
           }
-          
-          // Indicar que venimos de la página de categorías para ocultar los botones de navegación
+
+          // Ocultar botones si venimos desde selección de categoría
           this.hideNavButtons = true;
         }
       });
     });
-    
+
     // Ya no necesitamos suscribirnos al carrito, lo maneja CartFloatingComponent
   }
 
@@ -82,63 +98,72 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.selectedCategory = category;
   }
 
+  // getFilteredProducts(): Product[] {
+  //   return this.selectedCategory === null
+  //     ? this.products
+  //     : this.products.filter(p => p.category === this.selectedCategory);
+  // }
+
   getFilteredProducts(): Product[] {
-    return this.selectedCategory === null 
-      ? this.products 
-      : this.products.filter(p => p.category === this.selectedCategory);
+    return this.selectedCategory === null
+      ? this.products
+      : this.products.filter(
+          (p) =>
+            p.category.toUpperCase() === this.selectedCategory?.toUpperCase()
+        );
   }
-  
+
   formatPrice(price: number): string {
     return '$' + price.toLocaleString('es-CL');
   }
-  
+
   addToCart(product: Product): void {
     this.cartService.addToCart(product);
   }
-  
+
   decreaseQuantity(product: Product): void {
     this.cartService.decreaseQuantity(product.id);
   }
-  
+
   // Obtener la cantidad de un producto en el carrito (para el modal)
   getItemQuantityInCart(productId: number): number {
     return this.cartService.getItemQuantity(productId);
   }
-  
+
   ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
-  
+
   openProductModal(product: Product): void {
     this.selectedProduct = product;
     this.showModal = true;
   }
-  
+
   closeModal(): void {
     this.showModal = false;
     this.selectedProduct = null;
   }
-  
+
   // Método para manejar la adición de productos desde el modal con cantidades específicas
-  handleAddToCartFromModal(data: {product: Product, quantity: number}): void {
+  handleAddToCartFromModal(data: { product: Product; quantity: number }): void {
     const { product, quantity } = data;
-    
+
     // Si la cantidad es positiva, añadir al carrito
     if (quantity > 0) {
       this.cartService.addToCart(product);
-    } 
+    }
     // Si la cantidad es negativa, decrementar del carrito
     else if (quantity < 0) {
       this.cartService.decreaseQuantity(product.id);
     }
   }
-  
+
   // Método para navegar a la página de checkout
   goToCheckout(): void {
     // Navegamos directamente a la página de checkout
     this.router.navigate(['/checkout']);
   }
-  
+
   // Método para volver a la página de categorías
   goBackToCategories(): void {
     // Navegamos a la página de categorías

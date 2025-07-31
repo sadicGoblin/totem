@@ -4,27 +4,42 @@
 <!-- Modal de autenticación para administradores -->
 <div *ngIf="showDialog" class="admin-modal-overlay" (click)="toggleDialog()">
   <div class="admin-modal" (click)="stopPropagation($event)">
-    <h2>¿Qué desea hacer?</h2>
+    <h2 *ngIf="!showPassword">¿Qué desea hacer?</h2>
+    <h2 *ngIf="showPassword">Ingrese la contraseña</h2>
     
-    <!-- <div class="form-group">
-      <label for="password">Contraseña:</label>
-      <input 
-        type="password" 
-        id="password" 
-        [(ngModel)]="password" 
-        placeholder="Ingrese la contraseña"
-        (keyup.enter)="submitPassword()"
-        autofocus
-      >
-      
+    <div class="password-display" *ngIf="showPassword">
+      <div class="password-value">{{ password }}</div>
       <div class="error-message" *ngIf="errorMessage">
         {{ errorMessage }}
       </div>
-    </div> -->
+    </div>
+    
+    <div class="numeric-keyboard" *ngIf="showPassword">
+      <div class="keyboard-row">
+        <button class="number-key" (click)="addDigit(1)">1</button>
+        <button class="number-key" (click)="addDigit(2)">2</button>
+        <button class="number-key" (click)="addDigit(3)">3</button>
+      </div>
+      <div class="keyboard-row">
+        <button class="number-key" (click)="addDigit(4)">4</button>
+        <button class="number-key" (click)="addDigit(5)">5</button>
+        <button class="number-key" (click)="addDigit(6)">6</button>
+      </div>
+      <div class="keyboard-row">
+        <button class="number-key" (click)="addDigit(7)">7</button>
+        <button class="number-key" (click)="addDigit(8)">8</button>
+        <button class="number-key" (click)="addDigit(9)">9</button>
+      </div>
+      <div class="keyboard-row">
+        <button class="number-key" (click)="clearPassword()">C</button>
+        <button class="number-key" (click)="addDigit(0)">0</button>
+        <button class="number-key confirm-key" (click)="exitKioskMode()">✓</button>
+      </div>
+    </div>
     
     <div class="button-group">
       <button class="cancel-btn" (click)="toggleDialog()">Cancelar</button>
-      <button class="submit-btn" (click)="exitKioskMode()">Salir del Catálogo</button>
+      <button class="submit-btn" *ngIf="!showPassword" (click)="promptPassword()">Salir del Catálogo</button>
     </div>
   </div>
 </div>
