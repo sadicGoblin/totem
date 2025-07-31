@@ -384,7 +384,7 @@
         "name": "Smartphone Galaxy A54",
         "price": 259900,
         "category": "CELULARES",
-        "image": "https://images.unsplash.com/photo-1598327105666-c828279f3da2?q=80&w=300&auto=format",
+        "image": "https://images.unsplash.com/photo-1616410011236-7a42121dd981?q=80&w=300&auto=format",
         "description": "Pantalla AMOLED 6.4”, 128GB de almacenamiento, cámara triple de 50MP"
     },
     {
@@ -428,7 +428,7 @@
         "name": "iPhone SE 2022",
         "price": 369900,
         "category": "CELULARES",
-        "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02ff9?q=80&w=300&auto=format",
+        "image": "https://images.unsplash.com/photo-1604671368394-2240d0b1bb6c?q=80&w=300&auto=format",
         "description": "Chip A15 Bionic, Touch ID, 128GB",
         "specialTag": "NUEVO"
     }

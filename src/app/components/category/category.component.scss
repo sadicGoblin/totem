@@ -83,7 +83,7 @@ $white: #ffffff;
 // Grid de tarjetas de categorías
 .category-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 35px;
   max-width: 1400px;
   margin: 0 auto;
