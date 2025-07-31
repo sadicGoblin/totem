@@ -72,7 +72,8 @@ export class ElectronService {
 
   enterKioskMode(): void {
     if (!this.isElectron) {
-      console.warn('No estamos en Electron');
+      console.warn('Modo de desarrollo: simulando entrada al modo kiosko');
+      console.log('Simulación: Entrada al modo kiosko exitosa');
       return;
     }
 
