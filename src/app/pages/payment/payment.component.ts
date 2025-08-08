@@ -97,25 +97,38 @@ export class PaymentComponent {
           if (response.resultado === 'ok') {
             console.log('Ticket impreso exitosamente');
             this.voucherPrinted = true;
+            
+            // Después de imprimir exitosamente, esperar 3 segundos y regresar al catálogo
+            setTimeout(() => {
+              this.completeOrderAndReturn();
+            }, 3000);
           } else {
             console.error('Error al imprimir ticket:', response.mensaje);
-            // Mostrar mensaje de error al usuario si es necesario
+            // En caso de error, también regresar después de un tiempo
+            setTimeout(() => {
+              this.completeOrderAndReturn();
+            }, 2000);
           }
         },
         error: (error) => {
           console.error('Error de conexión con el servicio de impresión:', error);
-          // En caso de error, aún permitimos continuar el proceso
-          // pero podríamos mostrar un mensaje al usuario
+          // En caso de error, también regresar después de un tiempo
+          setTimeout(() => {
+            this.completeOrderAndReturn();
+          }, 2000);
         }
       });
     });
   }
     
   
-  // Confirmación de que el cliente ha visto el voucher impreso
-  confirmVoucherPrinted(): void {
-    // Completamos el pedido como con cualquier otro método de pago
-    this.completeOrder();
+  // Método simplificado para completar pedido y regresar al catálogo
+  completeOrderAndReturn(): void {
+    // Limpiar el carrito inmediatamente
+    this.cartService.clearCart();
+    
+    // Regresar al catálogo principal
+    this.router.navigate(['/']);
   }
   
   // Completar el pedido después del pago

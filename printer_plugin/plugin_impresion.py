@@ -1,11 +1,9 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 from datetime import datetime
 import win32print
 import win32api
 
 app = Flask(__name__)
-CORS(app)  # Permitir CORS para que Angular pueda hacer peticiones
 
 def enviar_a_impresora(nombre_impresora, datos):
     try:
