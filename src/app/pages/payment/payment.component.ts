@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
+import { PrinterService, ProductoTicket } from '../../services/printer.service';
 
 @Component({
   selector: 'app-payment',
@@ -18,7 +19,11 @@ export class PaymentComponent {
   selectedMethod: 'cash' | 'mercadopago' | 'amipass' | 'card' | null = null;
   voucherPrinted = false;
   
-  constructor(private router: Router, private cartService: CartService) {
+  constructor(
+    private router: Router, 
+    private cartService: CartService,
+    private printerService: PrinterService
+  ) {
     // Obtener el total del carrito
     this.cartService.getCartTotal().subscribe(total => {
       this.cartTotal = total;
@@ -76,30 +81,32 @@ export class PaymentComponent {
   
   // Método para imprimir el voucher en la impresora térmica
   printVoucher(): void {
-    console.log('Preparando impresión con Parzibyte HTTP ESC/POS...');
+    console.log('Preparando impresión del ticket de "Pagar en Caja"...');
     
     this.cartService.getCartItems().subscribe(items => {
-      const operaciones: any[] = [
-        { nombre: "Iniciar" },
-        { nombre: "EstablecerAlineacion", argumentos: [1] },
-        { nombre: "EscribirTexto", argumentos: [`Pedido #${this.orderNumberPreview}\n`] },
-        { nombre: "EscribirTexto", argumentos: [`Total: ${this.formatPrice(this.cartTotal)}\n`] },
-        { nombre: "Feed", argumentos: [2] },
-        { nombre: "Corte" }
-      ];
-  
-      // Enviar las operaciones al servidor de impresión
-      fetch('http://localhost:8000/imprimir', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(operaciones)
-      })
-      .then(res => res.json())
-      .then(result => {
-        console.log('Resultado impresión:', result);
-      })
-      .catch(err => {
-        console.error('Error enviando a la impresora:', err);
+      // Convertir los items del carrito al formato esperado por el plugin
+      const productos: ProductoTicket[] = items.map(item => ({
+        nombre: item.product.name,
+        cantidad: item.quantity,
+        precio: item.product.price
+      }));
+
+      // Enviar al plugin de impresión
+      this.printerService.imprimirTicket(productos).subscribe({
+        next: (response) => {
+          if (response.resultado === 'ok') {
+            console.log('Ticket impreso exitosamente');
+            this.voucherPrinted = true;
+          } else {
+            console.error('Error al imprimir ticket:', response.mensaje);
+            // Mostrar mensaje de error al usuario si es necesario
+          }
+        },
+        error: (error) => {
+          console.error('Error de conexión con el servicio de impresión:', error);
+          // En caso de error, aún permitimos continuar el proceso
+          // pero podríamos mostrar un mensaje al usuario
+        }
       });
     });
   }
