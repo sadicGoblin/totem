@@ -93,8 +93,8 @@ export class PaymentComponent {
       precio: item.product.price
     }));
 
-    // Enviar al plugin de impresión
-    this.printerService.imprimirTicket(productos).subscribe({
+    // Enviar al plugin de impresión con el número de pedido
+    this.printerService.imprimirTicket(productos, undefined, this.orderNumberPreview).subscribe({
       next: (response) => {
         if (response.resultado === 'ok') {
           console.log('Ticket impreso exitosamente');

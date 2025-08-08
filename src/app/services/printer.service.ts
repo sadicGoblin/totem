@@ -12,6 +12,7 @@ export interface DatosTicket {
   productos: ProductoTicket[];
   total?: number;
   nombreImpresora?: string;
+  numeroPedido?: string;
 }
 
 export interface RespuestaImpresion {
@@ -31,12 +32,14 @@ export class PrinterService {
    * Envía los datos del pedido al plugin de impresión
    * @param productos Lista de productos del carrito
    * @param nombreImpresora Nombre de la impresora (opcional, usa la por defecto si no se especifica)
+   * @param numeroPedido Número del pedido (opcional)
    * @returns Observable con la respuesta del servidor de impresión
    */
-  imprimirTicket(productos: ProductoTicket[], nombreImpresora?: string): Observable<RespuestaImpresion> {
+  imprimirTicket(productos: ProductoTicket[], nombreImpresora?: string, numeroPedido?: string): Observable<RespuestaImpresion> {
     const datosTicket: DatosTicket = {
       productos: productos,
-      nombreImpresora: nombreImpresora
+      nombreImpresora: nombreImpresora,
+      numeroPedido: numeroPedido
     };
 
     return this.http.post<RespuestaImpresion>(`${this.PRINTER_URL}/imprimir`, datosTicket);

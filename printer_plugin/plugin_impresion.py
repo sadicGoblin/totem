@@ -58,7 +58,8 @@ def generar_ticket(pedido):
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
     ticket += centrar(f"Fecha: {now}").encode("cp437") + NL
     ticket += b'\x1b\x45\x01'  # ESC E 1
-    ticket += centrar("Pedido #12345").encode("cp437") + NL
+    numero_pedido = pedido.get("numeroPedido", "12345")
+    ticket += centrar(f"Pedido #{numero_pedido}").encode("cp437") + NL
     ticket += b'\x1b\x45\x00'
     ticket += ("-" * WIDTH).encode("cp437") + NL
 
