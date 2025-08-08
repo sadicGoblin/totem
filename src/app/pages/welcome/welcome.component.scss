@@ -1,0 +1,182 @@
+// Importamos las variables para usar los colores corporativos
+$primary-blue: #2e3e51;
+$secondary-blue: #3c5066;
+$accent-blue: #5ca6c1;
+$light-blue: #dce3ea;
+$light-gray: #eef0f3;
+$medium-gray: #c3c8cd;
+$dark-gray: #1f2731;
+$white: #ffffff;
+
+.welcome-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+// Video de fondo
+.background-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; // Hace que el video cubra toda la pantalla manteniendo proporciones
+  z-index: 0;
+}
+
+// Overlay para mejorar legibilidad sobre el video
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4); // Overlay negro semitransparente
+  z-index: 1;
+}
+
+.touch-image {
+  width: 100px;
+  height: 100px;
+  margin-top: 30px;
+}
+
+.welcome-content {
+  text-align: center;
+  padding: 50px;
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+  width: 80%;
+  animation: fadeIn 0.8s ease-in-out;
+  position: relative;
+  z-index: 2; // Asegura que esté por encima del video y el overlay
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px); // Añade un efecto de desenfoque para mejor legibilidad
+  -webkit-backdrop-filter: blur(5px); // Compatibilidad con Safari
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.logo {
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 30px;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+h1 {
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: $primary-blue;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+h2 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: $accent-blue; /* Color acento */
+}
+
+p {
+  font-size: 1.6rem;
+  margin-bottom: 30px;
+  color: $secondary-blue;
+  line-height: 1.6;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.start-button {
+  background-color: $primary-blue; /* Color primario corporativo */
+  color: $white;
+  border: none;
+  border-radius: 50px;
+  padding: 22px 55px;
+  margin-top: 20px;
+  font-size: 2.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 30px auto 0;
+  box-shadow: 0 8px 25px rgba(92, 166, 193, 0.4);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 1px;
+
+  /* Efecto de brillo en el botón */
+  &:before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg);
+    animation: shimmer 3s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
+  }
+  
+  .icon {
+    margin-right: 15px;
+    font-size: 1.8rem;
+  }
+
+  &:hover {
+    background-color: $secondary-blue;
+    transform: scale(1.05);
+    box-shadow: 0 10px 30px rgba(92, 166, 193, 0.6);
+  }
+
+  &:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease-out;
+  }
+}
+
+/* Estilos para pantalla vertical */
+.vertical-screen {
+  .welcome-content {
+    width: 95%;
+    max-width: 90%;
+    padding: 30px;
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  .start-button {
+    padding: 25px 40px;
+  }
+}

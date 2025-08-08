@@ -1,46 +1,15 @@
-<!-- Botón flotante de carrito -->
-<div class="cart-floating-button" (click)="showCart = !showCart">
-  <div class="cart-button-content">
-    <div class="cart-text">Carrito</div>
-    <div *ngIf="cartItemCount > 0" class="cart-count">{{ cartItemCount }}</div>
-    <div class="cart-amount">{{ formatPrice(cartTotal) }}</div>
-  </div>
-</div>
+<!-- Componente compartido del carrito flotante -->
+<app-cart-floating></app-cart-floating>
 
-<!-- Vista detalle del carrito -->
-<div class="cart-detail" [class.show-cart]="showCart">
-  <div class="cart-header">
-    <div class="cart-title">Tu pedido</div>
-    <button class="close-cart" (click)="showCart = false">×</button>
-  </div>
-  <div class="cart-items" *ngIf="cartItems.length > 0">
-    <div class="cart-item" *ngFor="let item of cartItems">
-      <div class="item-image">
-        <img [src]="item.product.image" [alt]="item.product.name">
-      </div>
-      <div class="item-info">
-        <div class="item-name">{{ item.product.name }}</div>
-        <div class="item-price">{{ formatPrice(item.product.price) }}</div>
-      </div>
-      <div class="item-quantity">
-        <button class="quantity-btn" (click)="decreaseQuantity(item.product)">-</button>
-        <span class="quantity">{{ item.quantity }}</span>
-        <button class="quantity-btn" (click)="addToCart(item.product)">+</button>
-      </div>
-      <div class="item-total">{{ formatPrice(item.product.price * item.quantity) }}</div>
-    </div>
-  </div>
-  <div class="cart-empty" *ngIf="cartItems.length === 0">
-    <div class="empty-message">Tu carrito está vacío</div>
-    <button class="continue-btn" (click)="showCart = false">Seguir comprando</button>
-  </div>
-  <div class="cart-footer" *ngIf="cartItems.length > 0">
-    <div class="cart-total-row">
-      <span>Total:</span>
-      <span class="total-amount">{{ formatPrice(cartTotal) }}</span>
-    </div>
-    <button class="checkout-btn">Completar pedido</button>
-  </div>
+<!-- Barra de navegación superior (solo visible cuando venimos de categorías) -->
+<div class="top-nav-bar" *ngIf="hideNavButtons">
+  <button class="back-button" (click)="goBackToCategories()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 12H5"></path>
+      <path d="M12 19l-7-7 7-7"></path>
+    </svg>
+  </button>
+  <div class="current-category">{{ selectedCategory || 'TODOS LOS PRODUCTOS' }}</div>
 </div>
 
 <div class="main-container">
@@ -58,8 +27,8 @@
           <span class="tag-icon">Oferta</span>
         </div>
 
-        <!-- Product image -->
-        <div class="product-image">
+        <!-- Product image (clickeable) -->
+        <div class="product-image" (click)="openProductModal(product)">
           <img [src]="product.image" [alt]="product.name" />
         </div>
 
@@ -75,51 +44,43 @@
           </div>
         </div>
         
-        <!-- Add to cart button as rectangle at bottom -->
-        <button class="add-to-cart-btn" (click)="addToCart(product)">
-          <span class="btn-icon">+</span>
-          <span
-            class="item-count"
-            *ngIf="getItemQuantityInCart(product.id) > 0"
-          >
-            {{ getItemQuantityInCart(product.id) }}
-          </span>
-        </button>
+        <!-- Add to cart buttons with quantity control -->
+        <div class="cart-controls">
+          <!-- Si no hay productos en el carrito, mostrar botón simple de añadir -->
+          <button 
+            class="add-to-cart-btn" 
+            (click)="addToCart(product)" 
+            *ngIf="getItemQuantityInCart(product.id) === 0">
+            <span class="btn-text">Agregar</span>
+            <span class="btn-icon">+</span>
+          </button>
+          
+          <!-- Si ya hay productos, mostrar controles de cantidad -->
+          <div class="quantity-controls" *ngIf="getItemQuantityInCart(product.id) > 0">
+            <button class="quantity-btn decrease" (click)="decreaseQuantity(product)">
+              <span>-</span>
+            </button>
+            <div class="quantity-display">
+              {{ getItemQuantityInCart(product.id) }}
+            </div>
+            <button class="quantity-btn increase" (click)="addToCart(product)">
+              <span>+</span>
+            </button>
+          </div>
+        </div>
       </div>
+      
+      <!-- Elemento fantasma para reservar espacio y evitar que el carrito flotante oculte productos -->
+      <div class="product-card cart-spacer"></div>
     </div>
   </div>
 </div>
 
-  <!-- Promo banner for specials -->
-  <div class="promo-banner" *ngIf="selectedCategory === 'HAMBURGUESAS'">
-    <div class="banner-content">
-      <div class="banner-icon">
-        <span class="icon-food"></span>
-        <h3>Combo Especial</h3>
-      </div>
-      <div class="banner-description">
-        <p>Hamburguesa + Papas + Bebida</p>
-        <p class="banner-price">{{ formatPrice(12900) }}</p>
-      </div>
-    </div>
-    <img src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?q=80&w=400&h=200&auto=format" alt="Combo Especial" />
-  </div>
-
-<!-- Navigation buttons (bottom in portrait) -->
-<div class="nav-buttons" [class.horizontal]="isLandscapeMode">
-  <button
-    class="nav-button"
-    [class.active]="selectedCategory === null || selectedCategory === 'TODO'"
-    (click)="setCategory(null)"
-  >
-    TODO
-  </button>
-  <button
-    class="nav-button"
-    *ngFor="let category of categories"
-    [class.active]="selectedCategory === category"
-    (click)="setCategory(category)"
-  >
-    {{ category }}
-  </button>
-</div>
+<!-- Modal para detalles del producto -->
+<app-modal
+  [product]="selectedProduct"
+  [isOpen]="showModal"
+  [initialQuantity]="selectedProduct ? getItemQuantityInCart(selectedProduct.id) : 0"
+  (close)="closeModal()"
+  (addToCart)="handleAddToCartFromModal($event)"
+></app-modal>

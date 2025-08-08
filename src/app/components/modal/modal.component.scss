@@ -1,0 +1,248 @@
+// Variables de color (coinciden con las del home component)
+$primary-blue: #0052cc;
+$secondary-blue: #0747a6;
+$accent-blue: #2684ff;
+$medium-gray: #dfe1e6;
+$dark-gray: #505f79;
+$light-gray: #f4f5f7;
+$white: #ffffff;
+$discount-red: #c44545;
+$accent-green: #54dc28;
+
+// Modal backdrop (fondo oscuro)
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(9, 30, 66, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+// Contenedor del modal
+.modal-container {
+  background-color: $white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(9, 30, 66, 0.3);
+  animation: scaleIn 0.2s ease-out;
+}
+
+// Botón para cerrar
+.close-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10%;
+  background-color: $primary-blue;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: background-color 0.2s;
+  
+  span {
+    font-size: 24px;
+    line-height: 1;
+    color: $white;
+  }
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Contenido del modal
+.modal-content {
+  display: flex;
+  flex-direction: row;
+  
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+}
+
+// Sección de imagen
+.product-image {
+  flex: 1;
+  min-height: 300px;
+  max-height: 450px;
+  overflow: hidden;
+  position: relative;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+  
+  .discount-tag {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: $discount-red;
+    color: $white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  
+  .special-tag {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: $accent-blue;
+    color: $white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+}
+
+// Sección de detalles
+.product-details {
+  flex: 1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  
+  .product-name {
+    font-size: 24px;
+    font-weight: 600;
+    color: $secondary-blue;
+    margin: 0 0 16px;
+  }
+  
+  .product-description {
+    font-size: 16px;
+    line-height: 1.5;
+    color: $dark-gray;
+    margin-bottom: 20px;
+  }
+  
+  .product-price {
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    
+    .current-price {
+      font-size: 24px;
+      font-weight: bold;
+      color: $secondary-blue;
+      
+      &.discounted {
+        color: $discount-red;
+      }
+    }
+    
+    .original-price {
+      font-size: 18px;
+      text-decoration: line-through;
+      color: $dark-gray;
+      margin-left: 10px;
+      opacity: 0.7;
+    }
+  }
+  
+  .quantity-controls {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    
+    .quantity-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 4px;
+      border: 2px solid $accent-green;
+      background-color: $white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 25px;
+      
+      &:hover {
+        background-color: $light-gray;
+      }
+      
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+    
+    .quantity {
+      margin: 0 16px;
+      font-size: 25px;
+      font-weight: 600;
+      min-width: 30px;
+      text-align: center;
+    }
+  }
+  
+  .add-to-cart-btn {
+    padding: 14px;
+    background-color: #5bd830;
+    color: $white;
+    border: none;
+    border-radius: 4px;
+    font-size: 22px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    margin-top: auto;
+    
+    &:hover {
+      background-color: darken($primary-blue, 5%);
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+// Animaciones
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+// Optimización táctil
+* {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-touch-callout: none;
+}
+
+.quantity-btn, .add-to-cart-btn, .close-button {
+  min-height: 44px; // Área táctil suficiente
+  touch-action: manipulation;
+}

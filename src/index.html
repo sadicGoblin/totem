@@ -3,9 +3,22 @@
 <head>
   <meta charset="utf-8">
   <title>Totem</title>
-  <base href="/">
+  <!-- Script para ajustar la ruta base dinámicamente según el entorno -->
+  <script>
+    // Ajustar la ruta base según si estamos en Electron o no
+    (function() {
+      const isElectron = navigator.userAgent.toLowerCase().indexOf(' electron/') > -1;
+      if (isElectron) {
+        // En Electron, usar ruta relativa
+        document.write('<base href="./">');
+      } else {
+        // En navegador web, usar ruta absoluta
+        document.write('<base href="/">');
+      }
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/x-icon" href="../src/assets/images/favicon.ico">
 </head>
 <body>
   <app-root></app-root>

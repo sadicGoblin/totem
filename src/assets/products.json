@@ -313,5 +313,123 @@
         "category": "COMPLEMENTOS",
         "image": "https://images.unsplash.com/photo-1607330289024-1535c6b4e1c1?q=80&w=300&auto=format",
         "description": "Salsa especial de la casa en porción adicional"
+    },
+    {
+        "id": 5,
+        "name": "Pizza Pepperoni",
+        "price": 13900,
+        "category": "PIZZAS",
+        "image": "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?q=80&w=300&auto=format",
+        "description": "Pepperoni, queso mozzarella y salsa de tomate",
+        "originalPrice": 15900,
+        "discount": 15
+    },
+    {
+        "id": 100,
+        "name": "Zapatillas Urbanas Hombre",
+        "price": 39900,
+        "category": "ZAPATILLAS",
+        "image": "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?q=80&w=300&auto=format",
+        "description": "Zapatillas casuales de lona con suela de goma y diseño urbano",
+        "specialTag": "NUEVO"
+    },
+    {
+        "id": 101,
+        "name": "Zapatillas Running Mujer",
+        "price": 49900,
+        "category": "ZAPATILLAS",
+        "image": "https://images.unsplash.com/photo-1560769629-975ec94e6a86?q=80&w=300&auto=format",
+        "description": "Zapatillas deportivas con amortiguación y tela respirable",
+        "originalPrice": 54900,
+        "discount": 10
+    },
+    {
+        "id": 102,
+        "name": "Zapatillas Trail Mujer",
+        "price": 59900,
+        "category": "ZAPATILLAS",
+        "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=300&auto=format",
+        "description": "Zapatillas resistentes al agua para senderismo y aventura",
+        "specialTag": "NUEVO"
+    },
+    {
+        "id": 103,
+        "name": "Zapatillas Skate Mujer",
+        "price": 42900,
+        "category": "ZAPATILLAS",
+        "image": "https://images.unsplash.com/photo-1608667508764-33cf0726b13a?q=80&w=300&auto=format",
+        "description": "Suela plana y diseño clásico para patinaje urbano",
+        "discount": 15,
+        "originalPrice": 49900
+    },
+    {
+        "id": 104,
+        "name": "Zapatillas Clásicas Blancas",
+        "price": 34900,
+        "category": "ZAPATILLAS",
+        "image": "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?q=80&w=300&auto=format",
+        "description": "Modelo icónico con diseño minimalista, ideal para uso diario"
+    },
+    {
+        "id": 105,
+        "name": "Zapatillas Running Pro",
+        "price": 79900,
+        "category": "ZAPATILLAS",
+        "image": "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?q=80&w=300&auto=format",
+        "description": "Tecnología de amortiguación avanzada y soporte en el talón",
+        "specialTag": "RECOMENDADO"
+    },
+    {
+        "id": 200,
+        "name": "Smartphone Galaxy A54",
+        "price": 259900,
+        "category": "CELULARES",
+        "image": "https://images.unsplash.com/photo-1616410011236-7a42121dd981?q=80&w=300&auto=format",
+        "description": "Pantalla AMOLED 6.4”, 128GB de almacenamiento, cámara triple de 50MP"
+    },
+    {
+        "id": 201,
+        "name": "iPhone 13 Mini",
+        "price": 599900,
+        "category": "CELULARES",
+        "image": "https://images.unsplash.com/photo-1591337676887-a217a6970a8a?q=80&w=300&auto=format",
+        "description": "Pantalla Super Retina XDR 5.4”, chip A15 Bionic, 128GB",
+        "specialTag": "TOP"
+    },
+    {
+        "id": 202,
+        "name": "Xiaomi Redmi Note 12",
+        "price": 179900,
+        "category": "CELULARES",
+        "image": "https://images.unsplash.com/photo-1546054454-aa26e2b734c7?q=80&w=300&auto=format",
+        "description": "Pantalla AMOLED 6.67”, Snapdragon 685, 128GB",
+        "specialTag": "OFERTA"
+    },
+    {
+        "id": 203,
+        "name": "Motorola Edge 30",
+        "price": 279900,
+        "category": "CELULARES",
+        "image": "https://images.unsplash.com/photo-1585060544812-6b45742d762f?q=80&w=300&auto=format",
+        "description": "Pantalla OLED, cámara de 50MP, 5G y 256GB de almacenamiento"
+    },
+    {
+        "id": 204,
+        "name": "Samsung Galaxy S21 FE",
+        "price": 399900,
+        "category": "CELULARES",
+        "image": "https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?q=80&w=300&auto=format",
+        "description": "Pantalla 120Hz, Snapdragon 888, cámara triple",
+        "originalPrice": 449900,
+        "discount": 11
+    },
+    {
+        "id": 205,
+        "name": "iPhone SE 2022",
+        "price": 369900,
+        "category": "CELULARES",
+        "image": "https://images.unsplash.com/photo-1604671368394-2240d0b1bb6c?q=80&w=300&auto=format",
+        "description": "Chip A15 Bionic, Touch ID, 128GB",
+        "specialTag": "NUEVO"
     }
 ]

@@ -1,0 +1,98 @@
+<!-- Componente compartido del carrito flotante -->
+<app-cart-floating></app-cart-floating>
+
+<div class="category-container">
+  <div class="category-header">
+    <h1>Selecciona una categoría</h1>
+  </div>
+
+  <div class="category-selection">
+    <!-- <h2>Selecciona una categoría</h2> -->
+
+    <div class="category-grid">
+      <!-- Tarjeta de BEBIDAS -->
+      <div class="category-card" (click)="selectCategory('bebidas')">
+        <div class="card-image">
+          <img
+            src="assets/images/categories/bebidas.jpg"
+            alt="Bebidas"
+            onerror="this.src='assets/images/categories/default.jpg'"
+          />
+        </div>
+        <div class="card-title">BEBIDAS</div>
+      </div>
+
+      <!-- Tarjeta de PIZZAS -->
+      <div class="category-card" (click)="selectCategory('pizzas')">
+        <div class="card-image">
+          <img
+            src="assets/images/categories/pizzas.jpg"
+            alt="Pizzas"
+            onerror="this.src='assets/images/categories/default.jpg'"
+          />
+        </div>
+        <div class="card-title">PIZZAS</div>
+      </div>
+
+      <!-- Tarjeta de POSTRES -->
+      <div class="category-card" (click)="selectCategory('postres')">
+        <div class="card-image">
+          <img
+            src="assets/images/categories/postres.jpg"
+            alt="Postres"
+            onerror="this.src='assets/images/categories/default.jpg'"
+          />
+        </div>
+        <div class="card-title">POSTRES</div>
+      </div>
+
+      <!-- Tarjeta de COMPLEMENTOS -->
+      <div class="category-card" (click)="selectCategory('complementos')">
+        <div class="card-image">
+          <img
+            src="assets/images/categories/complementos.jpg"
+            alt="Complementos"
+            onerror="this.src='assets/images/categories/default.jpg'"
+          />
+        </div>
+        <div class="card-title">COMPLEMENTOS</div>
+      </div>
+
+      <!-- Tarjeta de HAMBURGUESAS -->
+      <div class="category-card" (click)="selectCategory('hamburguesas')">
+        <div class="card-image">
+          <img
+            src="assets/images/categories/hamburguesas.jpg"
+            alt="Hamburguesas"
+            onerror="this.src='assets/images/categories/default.jpg'"
+          />
+        </div>
+        <div class="card-title">HAMBURGUESAS</div>
+      </div>
+
+      <!-- Tarjeta de ZAPATILLAS -->
+      <div class="category-card" (click)="selectCategory('zapatillas')">
+        <div class="card-image">
+          <img
+            src="assets/images/categories/zapatillas.jpg"
+            alt="Zapatillas"
+            onerror="this.src='assets/images/categories/default.jpg'"
+          />
+        </div>
+        <div class="card-title">ZAPATILLAS</div>
+      </div>
+
+      <!-- Tarjeta de CELULARES -->
+      <div class="category-card" (click)="selectCategory('celulares')">
+        <div class="card-image">
+          <img
+            src="assets/images/categories/celulares.jpg"
+            alt="Celulares"
+            onerror="this.src='assets/images/categories/default.jpg'"
+          />
+        </div>
+        <div class="card-title">CELULARES</div>
+      </div>
+    </div>
+  </div>
+</div>

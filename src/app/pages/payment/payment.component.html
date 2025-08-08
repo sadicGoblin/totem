@@ -1,0 +1,82 @@
+<div class="payment-bar">
+  <button class="back-btn" (click)="goBack()">
+    <span>&larr;</span> OLVIDÉ ALGO
+  </button>
+  <h1>¿Cómo quieres pagar?</h1>
+  <div class="spacer"></div>
+</div>
+
+<div class="payment-container"> 
+  <div class="payment-methods">
+    <div class="payment-method-card" (click)="selectPaymentMethod('cash')">
+      <div class="method-icon cash-icon"></div>
+      <div class="method-name">Pagar en Caja</div>
+    </div>
+
+    <div class="payment-method-card" (click)="selectPaymentMethod('mercadopago')">
+      <div class="method-icon mercadopago-icon"></div>
+      <div class="method-name">Mercado Pago</div>
+    </div>
+
+    <div class="payment-method-card" (click)="selectPaymentMethod('amipass')">
+      <div class="method-icon amipass-icon"></div>
+      <div class="method-name">Código QR<br>Amipass</div>
+    </div>
+
+    <div class="payment-method-card" (click)="selectPaymentMethod('card')">
+      <div class="method-icon card-icon"></div>
+      <div class="method-name">Tarjeta de<br>Crédito o Débito</div>
+    </div>
+  </div>
+
+  <!-- Pantalla de procesamiento de pago general (para mercadopago/amipass) -->
+  <div class="processing-payment" *ngIf="processingPayment && selectedMethod !== 'card' && selectedMethod !== 'cash'">
+    <div class="spinner"></div>
+    <h2>Procesando pago...</h2>
+    <p>Por favor espera mientras procesamos tu pago</p>
+  </div>
+  
+  <!-- Pantalla específica para pago en efectivo (imprimiendo voucher) -->
+  <div class="voucher-printing" *ngIf="selectedMethod === 'cash'">
+    <div class="voucher-content">
+      <div class="voucher-icon">
+        <i class="fas fa-receipt"></i>
+      </div>
+      <h2>Tu pedido está listo</h2>
+      <p class="printing-message">Imprimiendo voucher...</p>
+      <div class="printer-animation">
+        <div class="printer">
+          <div class="printer-top"></div>
+          <div class="printer-bottom"></div>
+          <div class="paper"></div>
+        </div>
+      </div>
+      <p>Por favor, llévalo a caja para completar tu pago</p>
+      <div class="order-details">
+        <p class="order-number">Número de pedido: <strong>#{{ orderNumberPreview }}</strong></p>
+        <p class="order-total">Total a pagar: <strong>{{ formatPrice(cartTotal) }}</strong></p>
+      </div>
+      <button class="confirm-btn" (click)="confirmVoucherPrinted()">
+        ENTENDIDO
+      </button>
+    </div>
+  </div>
+  
+  <!-- Pantalla específica para pago con tarjeta (máquina automática) -->
+  <div class="payment-processing" *ngIf="selectedMethod === 'card'">
+    <div class="payment-content">
+      <div class="payment-icon">
+        <i class="fas fa-credit-card"></i>
+      </div>
+      <h2>Paga tu pedido</h2>
+      <p>Por favor, utiliza la máquina de pago automática</p>
+      <div class="loader">
+        <div class="loader-bar"></div>
+      </div>
+      <p class="payment-message">Procesando pago...</p>
+      <button class="cancel-payment-btn" (click)="cancelCardPayment()">
+        CANCELAR
+      </button>
+    </div>
+  </div>
+</div>
