@@ -83,41 +83,42 @@ export class PaymentComponent {
   printVoucher(): void {
     console.log('Preparando impresión del ticket de "Pagar en Caja"...');
     
-    this.cartService.getCartItems().subscribe(items => {
-      // Convertir los items del carrito al formato esperado por el plugin
-      const productos: ProductoTicket[] = items.map(item => ({
-        nombre: item.product.name,
-        cantidad: item.quantity,
-        precio: item.product.price
-      }));
+    // Obtener los items del carrito una sola vez, sin suscripción
+    const items = this.cartService.getCurrentCartItems();
+    
+    // Convertir los items del carrito al formato esperado por el plugin
+    const productos: ProductoTicket[] = items.map(item => ({
+      nombre: item.product.name,
+      cantidad: item.quantity,
+      precio: item.product.price
+    }));
 
-      // Enviar al plugin de impresión
-      this.printerService.imprimirTicket(productos).subscribe({
-        next: (response) => {
-          if (response.resultado === 'ok') {
-            console.log('Ticket impreso exitosamente');
-            this.voucherPrinted = true;
-            
-            // Después de imprimir exitosamente, esperar 3 segundos y regresar al catálogo
-            setTimeout(() => {
-              this.completeOrderAndReturn();
-            }, 3000);
-          } else {
-            console.error('Error al imprimir ticket:', response.mensaje);
-            // En caso de error, también regresar después de un tiempo
-            setTimeout(() => {
-              this.completeOrderAndReturn();
-            }, 2000);
-          }
-        },
-        error: (error) => {
-          console.error('Error de conexión con el servicio de impresión:', error);
+    // Enviar al plugin de impresión
+    this.printerService.imprimirTicket(productos).subscribe({
+      next: (response) => {
+        if (response.resultado === 'ok') {
+          console.log('Ticket impreso exitosamente');
+          this.voucherPrinted = true;
+          
+          // Después de imprimir exitosamente, esperar 3 segundos y regresar al catálogo
+          setTimeout(() => {
+            this.completeOrderAndReturn();
+          }, 3000);
+        } else {
+          console.error('Error al imprimir ticket:', response.mensaje);
           // En caso de error, también regresar después de un tiempo
           setTimeout(() => {
             this.completeOrderAndReturn();
           }, 2000);
         }
-      });
+      },
+      error: (error) => {
+        console.error('Error de conexión con el servicio de impresión:', error);
+        // En caso de error, también regresar después de un tiempo
+        setTimeout(() => {
+          this.completeOrderAndReturn();
+        }, 2000);
+      }
     });
   }
     
