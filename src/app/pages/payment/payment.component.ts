@@ -103,13 +103,13 @@ export class PaymentComponent {
           // Después de imprimir exitosamente, esperar 3 segundos y regresar al catálogo
           setTimeout(() => {
             this.completeOrderAndReturn();
-          }, 3000);
+          }, 6000);
         } else {
           console.error('Error al imprimir ticket:', response.mensaje);
           // En caso de error, también regresar después de un tiempo
           setTimeout(() => {
             this.completeOrderAndReturn();
-          }, 2000);
+          }, 6000);
         }
       },
       error: (error) => {
