@@ -19,7 +19,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   isLandscapeMode: boolean = false;
-  selectedCategory: string | null = 'HAMBURGUESAS';
+  selectedCategory: string | null = 'TELEFONIA';
+  selectedSubcategory: string | null = 'PLANES'; // Por defecto PLANES para TELEFONIA
   hideNavButtons: boolean = false; // Para ocultar los botones de navegación
 
   // Subscripciones
@@ -30,14 +31,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   showModal: boolean = false;
 
   categories = [
-    'HAMBURGUESAS',
-    'PIZZAS',
-    'BEBIDAS',
-    'POSTRES',
-    'COMPLEMENTOS',
-    'ZAPATILLAS',
-    'CELULARES',
+    'TELEFONIA',
+    'HOGAR',
+    'ACCESORIOS',
   ];
+
+  // Subcategorías por categoría principal
+  subcategories: { [key: string]: string[] } = {
+    'TELEFONIA': ['PLANES', 'EQUIPOS'],
+    'HOGAR': ['INTERNET', 'PACKS', 'EQUIPOS'],
+    'ACCESORIOS': ['PROTECCION', 'CARGA', 'AUDIO']
+  };
 
   products: Product[] = [];
 
@@ -78,6 +82,8 @@ export class HomeComponent implements OnInit, OnDestroy {
           // Validar solo contra categorías disponibles
           if (this.categories.includes(category)) {
             this.selectedCategory = category;
+            // Establecer subcategoría por defecto
+            this.setDefaultSubcategory(category);
           }
 
           // Ocultar botones si venimos desde selección de categoría
@@ -96,6 +102,30 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   setCategory(category: string | null): void {
     this.selectedCategory = category;
+    if (category) {
+      this.setDefaultSubcategory(category);
+    }
+  }
+
+  setDefaultSubcategory(category: string): void {
+    if (category === 'TELEFONIA') {
+      this.selectedSubcategory = 'PLANES';
+    } else {
+      this.selectedSubcategory = null;
+    }
+  }
+
+  setSubcategory(subcategory: string): void {
+    this.selectedSubcategory = subcategory;
+  }
+
+  getAvailableSubcategories(): string[] {
+    if (!this.selectedCategory) return [];
+    return this.subcategories[this.selectedCategory] || [];
+  }
+
+  shouldShowSubcategories(): boolean {
+    return this.selectedCategory === 'TELEFONIA';
   }
 
   // getFilteredProducts(): Product[] {
@@ -105,12 +135,22 @@ export class HomeComponent implements OnInit, OnDestroy {
   // }
 
   getFilteredProducts(): Product[] {
-    return this.selectedCategory === null
-      ? this.products
-      : this.products.filter(
-          (p) =>
-            p.category.toUpperCase() === this.selectedCategory?.toUpperCase()
-        );
+    if (this.selectedCategory === null) {
+      return this.products;
+    }
+
+    let filtered = this.products.filter(
+      (p) => p.category.toUpperCase() === this.selectedCategory?.toUpperCase()
+    );
+
+    // Si hay subcategoría seleccionada, filtrar también por subcategoría
+    if (this.selectedSubcategory && this.shouldShowSubcategories()) {
+      filtered = filtered.filter(
+        (p: any) => p.subcategory?.toUpperCase() === this.selectedSubcategory?.toUpperCase()
+      );
+    }
+
+    return filtered;
   }
 
   formatPrice(price: number): string {

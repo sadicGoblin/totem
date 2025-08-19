@@ -12,6 +12,24 @@
   <div class="current-category">{{ selectedCategory || 'TODOS LOS PRODUCTOS' }}</div>
 </div>
 
+<!-- Barra de subcategorías (solo para TELEFONIA) -->
+<div class="subcategory-bar" *ngIf="shouldShowSubcategories()">
+  <div class="subcategory-buttons">
+    <button 
+      class="subcategory-btn" 
+      [class.active]="selectedSubcategory === 'PLANES'"
+      (click)="setSubcategory('PLANES')">
+      PLANES
+    </button>
+    <button 
+      class="subcategory-btn" 
+      [class.active]="selectedSubcategory === 'EQUIPOS'"
+      (click)="setSubcategory('EQUIPOS')">
+      EQUIPOS
+    </button>
+  </div>
+</div>
+
 <div class="main-container">
   <!-- Main content area with products grid -->
   <div class="content-area">

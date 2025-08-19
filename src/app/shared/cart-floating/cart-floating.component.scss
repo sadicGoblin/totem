@@ -1,13 +1,13 @@
-// Variables - Esquema de colores corporativo - Usando la paleta existente
-$primary-blue: #2e3e51;
-$secondary-blue: #3c5066;
-$accent-green: #54dc28;
-$light-blue: #dce3ea;
-$light-gray: #eef0f3;
-$medium-gray: #c3c8cd;
-$dark-gray: #1f2731;
+// Variables - Esquema de colores corporativo Entel
+$primary-blue: #062fff; // Azul principal Entel
+$secondary-orange: #f73e00; // Naranja secundario Entel
+$accent-orange: #f73e00;
+$light-blue: #e8f0ff;
+$light-gray: #f8f9fa;
+$medium-gray: #6c757d;
+$dark-gray: #343a40;
 $white: #ffffff;
-$new-background: #586576;
+$shadow-blue: rgba(6, 47, 255, 0.15);
 
 // Estilos del carrito flotante
 .cart-floating-button {
@@ -15,19 +15,24 @@ $new-background: #586576;
   position: fixed;
   bottom: 40px;
   right: 40px;
-  background-color: $primary-blue;
+  background: linear-gradient(135deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
   color: white;
   border-radius: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 20px $shadow-blue;
   z-index: 100;
   padding: 15px 25px;
   cursor: pointer;
-  transition: transform 0.2s, background-color 0.3s;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   min-width: 275px;
   height: 60px;
-  border: 3px solid #54dc28;
+  border: 3px solid $secondary-orange;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(6, 47, 255, 0.3);
+  }
 
   &:active {
     transform: scale(0.95);
@@ -57,7 +62,7 @@ $new-background: #586576;
       position: absolute;
       top: 0px;
       right: -45px;
-      background-color: $accent-green;
+      background: linear-gradient(135deg, $secondary-orange 0%, lighten($secondary-orange, 10%) 100%);
       color: white;
       border-radius: 50%;
       width: 35px;
@@ -67,6 +72,7 @@ $new-background: #586576;
       align-items: center;
       font-weight: bold;
       font-size: 20px;
+      box-shadow: 0 2px 8px rgba(247, 62, 0, 0.3);
     }
 
     .cart-amount {
@@ -97,11 +103,22 @@ $new-background: #586576;
   .cart-header {
     height: 90px;
     padding: 15px;
-    background-color: $new-background;
+    background: linear-gradient(315deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
     color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, $secondary-orange, lighten($secondary-orange, 15%));
+    }
 
     .cart-title {
       font-size: 40px;
@@ -139,24 +156,26 @@ $new-background: #586576;
   }
   
   .clear-cart-btn {
-    background-color: #d91a1a;
+    background: linear-gradient(135deg, $secondary-orange 0%, darken($secondary-orange, 10%) 100%);
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     padding: 16px 28px;
     font-size: 22px;
     cursor: pointer;
     display: flex;
     align-items: center;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
     text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(247, 62, 0, 0.3);
     
     i {
       margin-right: 8px;
     }
     
     &:hover {
-      background-color: darken(#d91a1a, 10%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(247, 62, 0, 0.4);
     }
   }
 
@@ -181,7 +200,7 @@ $new-background: #586576;
         width: 30px;
         height: 30px;
         border-radius: 50%;
-        background-color: #d91a1a;
+        background: linear-gradient(135deg, $secondary-orange 0%, darken($secondary-orange, 10%) 100%);
         color: white;
         border: none;
         cursor: pointer;
@@ -189,10 +208,12 @@ $new-background: #586576;
         font-size: 18px;
         font-weight: bold;
         padding: 0;
-        transition: background-color 0.2s ease;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 6px rgba(247, 62, 0, 0.3);
 
         &:hover {
-          background-color: darken(#d91a1a, 10%);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 10px rgba(247, 62, 0, 0.4);
         }
 
         &:active {
@@ -238,16 +259,24 @@ $new-background: #586576;
           width: 45px;
           height: 45px;
           border-radius: 50%;
-          border: 2px solid $accent-green;
+          border: 2px solid $primary-blue;
           background-color: white;
+          color: $primary-blue;
           font-size: 35px;
+          font-weight: bold;
           display: flex;
           justify-content: center;
           align-items: center;
           cursor: pointer;
+          transition: all 0.2s ease;
+
+          &:hover {
+            background-color: $primary-blue;
+            color: white;
+          }
 
           &:active {
-            background-color: #f5f5f5;
+            transform: scale(0.95);
           }
         }
 
@@ -284,13 +313,20 @@ $new-background: #586576;
     }
 
     .continue-btn {
-      background-color: $primary-blue;
+      background: linear-gradient(135deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
       color: white;
       border: none;
       padding: 12px 20px;
       border-radius: 30px;
       font-size: 30px;
       cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px $shadow-blue;
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(6, 47, 255, 0.3);
+      }
 
       &:active {
         transform: scale(0.98);
@@ -313,7 +349,7 @@ $new-background: #586576;
     }
 
     .checkout-btn {
-      background-color: $primary-blue;
+      background: linear-gradient(135deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
       color: white;
       border: none;
       padding: 15px;
@@ -322,7 +358,14 @@ $new-background: #586576;
       font-weight: 600;
       width: 100%;
       cursor: pointer;
-      border: 4px solid #54dc28;
+      border: 4px solid $secondary-orange;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px $shadow-blue;
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(6, 47, 255, 0.3);
+      }
 
       &:active {
         transform: scale(0.98);

@@ -1,21 +1,8 @@
 <div class="welcome-container" (click)="navigateToCatalog()">
   <!-- Video de fondo -->
   <video autoplay muted loop playsinline class="background-video">
-    <source src="assets/videos/welcome.mp4" type="video/mp4">
+    <source src="assets/videos/home_video.mp4" type="video/mp4" />
     <!-- Mensaje de fallback si el navegador no soporta video -->
     Tu navegador no soporta videos HTML5.
   </video>
-  
-  <!-- Overlay para oscurecer ligeramente el video y mejorar la legibilidad -->
-  <div class="video-overlay"></div>
-  
-  <!-- Contenido principal -->
-  <div class="welcome-content">
-    <h1>¡Bienvenido!</h1>   
-    <button class="start-button">
-      <span class="icon"><i class="fas fa-shopping-cart"></i></span>
-      PIDE AQUÍ
-    </button>
-    <img class="touch-image" src="assets/images/touch.png" alt="Logo" onerror="this.src='assets/images/touch.png'; this.onerror=null;">
-  </div>
 </div>

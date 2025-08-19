@@ -3,95 +3,57 @@
 
 <div class="category-container">
   <div class="category-header">
-    <h1>Selecciona una categoría</h1>
+    <h1>¿Qué estás buscando hoy?</h1>
+    <p>Explora nuestros productos y servicios</p>
   </div>
 
   <div class="category-selection">
     <!-- <h2>Selecciona una categoría</h2> -->
 
     <div class="category-grid">
-      <!-- Tarjeta de BEBIDAS -->
-      <div class="category-card" (click)="selectCategory('bebidas')">
+      <!-- Tarjeta de TELEFONÍA -->
+      <div class="category-card" (click)="selectCategory('TELEFONIA')">
         <div class="card-image">
           <img
-            src="assets/images/categories/bebidas.jpg"
-            alt="Bebidas"
-            onerror="this.src='assets/images/categories/default.jpg'"
+            src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop&auto=format"
+            alt="Telefonía"
+            onerror="this.src='https://via.placeholder.com/400x300/062fff/ffffff?text=TELEFONIA'"
           />
         </div>
-        <div class="card-title">BEBIDAS</div>
+        <div class="card-content">
+          <div class="card-title">TELEFONÍA</div>
+          <div class="card-description">Smartphones, planes y servicios móviles</div>
+        </div>
       </div>
 
-      <!-- Tarjeta de PIZZAS -->
-      <div class="category-card" (click)="selectCategory('pizzas')">
+      <!-- Tarjeta de HOGAR -->
+      <div class="category-card" (click)="selectCategory('HOGAR')">
         <div class="card-image">
           <img
-            src="assets/images/categories/pizzas.jpg"
-            alt="Pizzas"
-            onerror="this.src='assets/images/categories/default.jpg'"
+            src="https://entel.cdn.modyo.com/uploads/3f7e8595-15c0-4057-a189-a371a759a3c8/original/bg-armatupack-card-general.webp"
+            alt="Hogar"
+            onerror="this.src='https://via.placeholder.com/400x300/062fff/ffffff?text=HOGAR'"
           />
         </div>
-        <div class="card-title">PIZZAS</div>
+        <div class="card-content">
+          <div class="card-title">HOGAR</div>
+          <div class="card-description">Internet, TV y servicios para el hogar</div>
+        </div>
       </div>
 
-      <!-- Tarjeta de POSTRES -->
-      <div class="category-card" (click)="selectCategory('postres')">
+      <!-- Tarjeta de ACCESORIOS -->
+      <div class="category-card" (click)="selectCategory('ACCESORIOS')">
         <div class="card-image">
           <img
-            src="assets/images/categories/postres.jpg"
-            alt="Postres"
-            onerror="this.src='assets/images/categories/default.jpg'"
+            src="https://images.unsplash.com/photo-1609081219090-a6d81d3085bf?w=400&h=300&fit=crop&auto=format"
+            alt="Accesorios"
+            onerror="this.src='https://via.placeholder.com/400x300/062fff/ffffff?text=ACCESORIOS'"
           />
         </div>
-        <div class="card-title">POSTRES</div>
-      </div>
-
-      <!-- Tarjeta de COMPLEMENTOS -->
-      <div class="category-card" (click)="selectCategory('complementos')">
-        <div class="card-image">
-          <img
-            src="assets/images/categories/complementos.jpg"
-            alt="Complementos"
-            onerror="this.src='assets/images/categories/default.jpg'"
-          />
+        <div class="card-content">
+          <div class="card-title">ACCESORIOS</div>
+          <div class="card-description">Fundas, cargadores y complementos</div>
         </div>
-        <div class="card-title">COMPLEMENTOS</div>
-      </div>
-
-      <!-- Tarjeta de HAMBURGUESAS -->
-      <div class="category-card" (click)="selectCategory('hamburguesas')">
-        <div class="card-image">
-          <img
-            src="assets/images/categories/hamburguesas.jpg"
-            alt="Hamburguesas"
-            onerror="this.src='assets/images/categories/default.jpg'"
-          />
-        </div>
-        <div class="card-title">HAMBURGUESAS</div>
-      </div>
-
-      <!-- Tarjeta de ZAPATILLAS -->
-      <div class="category-card" (click)="selectCategory('zapatillas')">
-        <div class="card-image">
-          <img
-            src="assets/images/categories/zapatillas.jpg"
-            alt="Zapatillas"
-            onerror="this.src='assets/images/categories/default.jpg'"
-          />
-        </div>
-        <div class="card-title">ZAPATILLAS</div>
-      </div>
-
-      <!-- Tarjeta de CELULARES -->
-      <div class="category-card" (click)="selectCategory('celulares')">
-        <div class="card-image">
-          <img
-            src="assets/images/categories/celulares.jpg"
-            alt="Celulares"
-            onerror="this.src='assets/images/categories/default.jpg'"
-          />
-        </div>
-        <div class="card-title">CELULARES</div>
       </div>
     </div>
   </div>

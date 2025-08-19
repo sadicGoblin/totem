@@ -1,5 +1,5 @@
 // Variables de color (coinciden con las del home component)
-$primary-blue: #0052cc;
+$primary-blue: #062fff; 
 $secondary-blue: #0747a6;
 $accent-blue: #2684ff;
 $medium-gray: #dfe1e6;
@@ -110,7 +110,7 @@ $accent-green: #54dc28;
     position: absolute;
     top: 10px;
     left: 10px;
-    background-color: $accent-blue;
+    background-color: $primary-blue;
     color: $white;
     padding: 5px 10px;
     border-radius: 4px;
@@ -132,7 +132,7 @@ $accent-green: #54dc28;
   .product-name {
     font-size: 24px;
     font-weight: 600;
-    color: $secondary-blue;
+    color: $primary-blue;
     margin: 0 0 16px;
   }
   
@@ -151,7 +151,7 @@ $accent-green: #54dc28;
     .current-price {
       font-size: 24px;
       font-weight: bold;
-      color: $secondary-blue;
+      color: $primary-blue;
       
       &.discounted {
         color: $discount-red;
@@ -202,10 +202,15 @@ $accent-green: #54dc28;
       text-align: center;
     }
   }
+
+  .quantity-text {
+    font-size: 16px;
+    color: $primary-blue;
+  }
   
   .add-to-cart-btn {
     padding: 14px;
-    background-color: #5bd830;
+    background-color: $primary-blue;
     color: $white;
     border: none;
     border-radius: 4px;

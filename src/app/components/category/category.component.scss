@@ -1,12 +1,12 @@
-// Variables - Esquema de colores corporativo - Usando la paleta existente
-$primary-blue: #2e3e51;
-$secondary-blue: #3c5066;
-$accent-blue: #5ca6c1;
-$light-blue: #dce3ea;
-$light-gray: #eef0f3;
-$medium-gray: #c3c8cd;
-$dark-gray: #1f2731;
+// Variables - Esquema de colores corporativo Entel
+$primary-blue: #062fff; // Azul principal Entel
+$secondary-orange: #f73e00; // Naranja secundario Entel
+$light-blue: #e8f0ff; // Azul claro derivado
+$light-gray: #f8f9fa;
+$medium-gray: #6c757d;
+$dark-gray: #343a40;
 $white: #ffffff;
+$shadow-blue: rgba(6, 47, 255, 0.15);
 
 // Estilos generales del contenedor
 .category-container {
@@ -18,43 +18,49 @@ $white: #ffffff;
   flex-direction: column;
 }
 
-// Header con imagen de fondo
+// Header con gradiente Entel
 .category-header {
-  height: 80px;
-  background-color: $primary-blue;
-  background-size: cover;
-  background-position: center;
+  min-height: 120px;
+  background: linear-gradient(135deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 30px 20px;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, $secondary-orange, lighten($secondary-orange, 15%));
+  }
   
   h1 {
     color: $white;
-    font-size: 2.4rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    position: relative;
-    
-    // Línea decorativa debajo del título
-    &:after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 60px;
-      height: 3px;
-      background-color: $accent-blue;
-    }
+    font-size: 2.8rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  
+  p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    font-weight: 300;
+    text-align: center;
+    margin: 0;
   }
 }
 
 // Sección de selección de categorías
 .category-selection {
-  padding: 40px 20px;
-  background-color: $light-gray;
+  padding: 50px 20px;
+  background: linear-gradient(135deg, $light-gray 0%, $white 100%);
   flex: 1;
   
   h2 {
@@ -75,7 +81,7 @@ $white: #ffffff;
       transform: translateX(-50%);
       width: 60px;
       height: 2px;
-      background-color: $accent-blue;
+      background-color: $secondary-orange;
     }
   }
 }
@@ -83,40 +89,44 @@ $white: #ffffff;
 // Grid de tarjetas de categorías
 .category-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 35px;
-  max-width: 1400px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 30px 0;
+  padding: 40px 0;
   
   // Responsive: 2 columnas en tabletas
   @media (max-width: 900px) {
     grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
   }
   
   // Responsive: 1 columna en móviles
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
+    gap: 25px;
   }
 }
 
 // Estilos de las tarjetas de categoría
 .category-card {
   background-color: $white;
-  border-radius: 15px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 30px $shadow-blue;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
+  border: 2px solid transparent;
   
   &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(92, 166, 193, 0.4);
+    transform: translateY(-12px);
+    box-shadow: 0 20px 40px rgba(6, 47, 255, 0.25);
+    border-color: $primary-blue;
   }
   
   .card-image {
-    height: 260px;
-    background-color: $white;
+    height: 220px;
+    background-color: $light-gray;
     overflow: hidden;
     position: relative;
     
@@ -124,23 +134,47 @@ $white: #ffffff;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.3s ease;
+      transition: transform 0.4s ease;
     }
   }
   
   &:hover .card-image img {
-    transform: scale(1.05);
+    transform: scale(1.08);
   }
   
-  .card-title {
-    padding: 20px;
-    font-size: 1.6rem;
-    font-weight: 600;
-    color: $primary-blue;
-    text-align: center;
-    background-color: $light-blue;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    border-top: 1px solid rgba(0,0,0,0.05);
+  .card-content {
+    padding: 24px 20px;
+    background: linear-gradient(135deg, $white 0%, $light-blue 100%);
+    
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: $primary-blue;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      position: relative;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 30px;
+        height: 2px;
+        background-color: $secondary-orange;
+      }
+    }
+    
+    .card-description {
+      color: $medium-gray;
+      font-size: 0.95rem;
+      text-align: center;
+      margin-top: 12px;
+      font-weight: 400;
+      line-height: 1.4;
+    }
   }
 }
