@@ -23,11 +23,32 @@ $shadow-blue: rgba(6, 47, 255, 0.15);
   min-height: 120px;
   background: linear-gradient(135deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   padding: 30px 20px;
   position: relative;
+  
+  .header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+  }
+  
+  .entel-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    img {
+      height: 80px;
+      width: auto;
+      object-fit: contain;
+      filter: brightness(0) invert(1); // Make logo white
+    }
+  }
   
   &::after {
     content: '';

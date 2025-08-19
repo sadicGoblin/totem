@@ -16,6 +16,7 @@ $discount-red: #c44545;
 .top-nav-bar {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 10px 15px;
   background-color: $primary-blue;
   color: white;
@@ -24,6 +25,19 @@ $discount-red: #c44545;
   z-index: 100;
   height: 100px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  .entel-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    img {
+      height: 60px;
+      width: auto;
+      object-fit: contain;
+      filter: brightness(0) invert(1); // Make logo white
+    }
+  }
   
   .back-button {
     background: none;

@@ -28,6 +28,7 @@ $light-blue: #e8f0ff;
   height: 100px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 20px 24px;
   background: linear-gradient(135deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
   box-shadow: $shadow;
@@ -52,6 +53,19 @@ $light-blue: #e8f0ff;
     font-weight: 700;
     color: $white;
     text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  
+  .entel-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    img {
+      height: 60px;
+      width: auto;
+      object-fit: contain;
+      filter: brightness(0) invert(1); // Make logo white
+    }
   }
 }
 
