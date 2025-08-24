@@ -1,6 +1,7 @@
 [
     {
         "id": 1,
+        "sku": "TEL-EQ-001-IPH15",
         "name": "iPhone 15 Pro",
         "price": 899990,
         "category": "TELEFONIA",
@@ -11,6 +12,7 @@
     },
     {
         "id": 2,
+        "sku": "TEL-EQ-002-SAM24",
         "name": "Samsung Galaxy S24",
         "price": 749990,
         "category": "TELEFONIA",
@@ -21,6 +23,7 @@
     },
     {
         "id": 3,
+        "sku": "TEL-PL-003-ILIM",
         "name": "Plan Móvil Ilimitado",
         "price": 29990,
         "category": "TELEFONIA",
@@ -31,6 +34,7 @@
     },
     {
         "id": 4,
+        "sku": "TEL-EQ-004-XIA13",
         "name": "Xiaomi Redmi Note 13",
         "price": 249990,
         "category": "TELEFONIA",
@@ -42,6 +46,7 @@
     },
     {
         "id": 13,
+        "sku": "TEL-PL-013-BASI",
         "name": "Plan Básico Móvil",
         "price": 19990,
         "category": "TELEFONIA",
@@ -52,6 +57,7 @@
     },
     {
         "id": 14,
+        "sku": "TEL-PL-014-PREM",
         "name": "Plan Premium 5G",
         "price": 39990,
         "category": "TELEFONIA",
@@ -62,6 +68,7 @@
     },
     {
         "id": 15,
+        "sku": "TEL-PL-015-FAMI",
         "name": "Plan Familia",
         "price": 69990,
         "category": "TELEFONIA",
@@ -73,6 +80,7 @@
     },
     {
         "id": 5,
+        "sku": "HOG-IN-005-FIB6",
         "name": "Internet Fibra 600 Mbps",
         "price": 34990,
         "category": "HOGAR",
@@ -83,6 +91,7 @@
     },
     {
         "id": 6,
+        "sku": "HOG-PK-006-TVIN",
         "name": "TV + Internet Pack",
         "price": 49990,
         "category": "HOGAR",
@@ -94,6 +103,7 @@
     },
     {
         "id": 7,
+        "sku": "HOG-EQ-007-ROUT",
         "name": "Router WiFi 6",
         "price": 89990,
         "category": "HOGAR",
@@ -103,6 +113,7 @@
     },
     {
         "id": 8,
+        "sku": "HOG-EQ-008-DECO",
         "name": "Deco TV Box 4K",
         "price": 39990,
         "category": "HOGAR",
@@ -112,6 +123,7 @@
     },
     {
         "id": 9,
+        "sku": "ACC-PR-009-FUND",
         "name": "Funda iPhone Transparente",
         "price": 19990,
         "category": "ACCESORIOS",
@@ -121,6 +133,7 @@
     },
     {
         "id": 10,
+        "sku": "ACC-CR-010-INAL",
         "name": "Cargador Inalámbrico",
         "price": 34990,
         "category": "ACCESORIOS",
@@ -131,6 +144,7 @@
     },
     {
         "id": 11,
+        "sku": "ACC-AU-011-BLUE",
         "name": "Auriculares Bluetooth",
         "price": 79990,
         "category": "ACCESORIOS",
@@ -140,6 +154,7 @@
     },
     {
         "id": 12,
+        "sku": "ACC-CR-012-PWRB",
         "name": "PowerBank 20000mAh",
         "price": 44990,
         "category": "ACCESORIOS",

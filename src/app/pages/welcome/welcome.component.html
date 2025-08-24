@@ -1,8 +1,20 @@
 <div class="welcome-container" (click)="navigateToCatalog()">
-  <!-- Video de fondo -->
-  <video autoplay muted loop playsinline class="background-video">
+  <!-- Video de fondo - OCULTO PARA RAMA WEB -->
+  <!-- <video autoplay muted loop playsinline class="background-video">
     <source src="assets/videos/home_video.mp4" type="video/mp4" />
-    <!-- Mensaje de fallback si el navegador no soporta video -->
     Tu navegador no soporta videos HTML5.
-  </video>
+  </video> -->
+  
+  <!-- Contenido alternativo para webapp -->
+  <div class="web-welcome-content">
+    <div class="logo">
+      <img src="assets/images/logo.png" alt="Logo" *ngIf="logoExists">
+    </div>
+    <h1>Bienvenido al Catálogo</h1>
+    <p>Explora nuestros productos y crea tu carrito de compras</p>
+    <button class="start-button">
+      <i class="icon">🛒</i>
+      Comenzar a comprar
+    </button>
+  </div>
 </div>

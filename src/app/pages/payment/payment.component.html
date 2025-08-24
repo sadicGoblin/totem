@@ -18,9 +18,9 @@
       <div class="method-name">Mercado Pago</div>
     </div>
 
-    <div class="payment-method-card" (click)="selectPaymentMethod('amipass')">
-      <div class="method-icon amipass-icon"></div>
-      <div class="method-name">Código QR<br>Amipass</div>
+    <div class="payment-method-card" (click)="selectPaymentMethod('mobile')">
+      <div class="method-icon mobile-icon"></div>
+      <div class="method-name">Finalizar en<br>tu Celular</div>
     </div>
 
     <div class="payment-method-card" (click)="selectPaymentMethod('card')">
@@ -29,8 +29,8 @@
     </div>
   </div>
 
-  <!-- Pantalla de procesamiento de pago general (para mercadopago/amipass) -->
-  <div class="processing-payment" *ngIf="processingPayment && selectedMethod !== 'card' && selectedMethod !== 'cash'">
+  <!-- Pantalla de procesamiento de pago general (para mercadopago) -->
+  <div class="processing-payment" *ngIf="processingPayment && selectedMethod !== 'card' && selectedMethod !== 'cash' && selectedMethod !== 'mobile'">
     <div class="spinner"></div>
     <h2>Procesando pago...</h2>
     <p>Por favor espera mientras procesamos tu pago</p>
@@ -84,6 +84,53 @@
       <button class="cancel-payment-btn" (click)="cancelCardPayment()">
         CANCELAR
       </button>
+    </div>
+  </div>
+
+  <!-- Popup para pago móvil -->
+  <div class="mobile-popup-overlay" *ngIf="showMobilePopup">
+    <div class="mobile-popup">
+      <div class="popup-header">
+        <h2>Finalizar en tu Celular</h2>
+        <button class="close-btn" (click)="closeMobilePopup()">✕</button>
+      </div>
+      
+      <div class="popup-content">
+        <div class="cart-summary">
+          <h3>Resumen del Pedido</h3>
+          <div class="cart-items">
+            <div class="cart-item" *ngFor="let item of cartService.getCurrentCartItems()">
+              <span class="item-name">{{ item.product.name }}</span>
+              <span class="item-qty">{{ item.quantity }}x</span>
+              <span class="item-price">{{ formatPrice(item.product.price * item.quantity) }}</span>
+            </div>
+          </div>
+          <div class="cart-total">
+            <strong>Total: {{ formatPrice(cartTotal) }}</strong>
+          </div>
+        </div>
+
+        <div class="mobile-instructions">
+          <div class="qr-container">
+            <h4>Escanea con tu celular:</h4>
+            <div class="qr-code-wrapper">
+              <qrcode 
+                [qrdata]="mobilePaymentUrl" 
+                [width]="200" 
+                [errorCorrectionLevel]="'M'"
+                colorDark="#062fff"
+                colorLight="#ffffff">
+              </qrcode>
+            </div>
+            <p class="qr-help-text">El código agregará automáticamente los productos a tu carrito móvil</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="popup-actions">
+        <button class="cancel-btn" (click)="closeMobilePopup()">Cancelar</button>
+        <button class="done-btn" (click)="completeMobileOrder()">Listo, continuar</button>
+      </div>
     </div>
   </div>
 </div>

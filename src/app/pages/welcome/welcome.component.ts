@@ -10,6 +10,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./welcome.component.scss']
 })
 export class WelcomeComponent {
+  logoExists = true; // Propiedad para controlar la visibilidad del logo
+
   constructor(private router: Router) {}
 
   navigateToCatalog() {

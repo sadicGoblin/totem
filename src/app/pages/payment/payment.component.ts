@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { PrinterService, ProductoTicket } from '../../services/printer.service';
+import { QRCodeModule } from 'angularx-qrcode';
 
 @Component({
   selector: 'app-payment',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, QRCodeModule],
   templateUrl: './payment.component.html',
   styleUrl: './payment.component.scss'
 })
@@ -16,12 +17,14 @@ export class PaymentComponent {
   orderNumber = '';
   orderNumberPreview = '';
   cartTotal = 0;
-  selectedMethod: 'cash' | 'mercadopago' | 'amipass' | 'card' | null = null;
+  selectedMethod: 'cash' | 'mercadopago' | 'mobile' | 'card' | null = null;
   voucherPrinted = false;
+  showMobilePopup = false;
+  mobilePaymentUrl = '';
   
   constructor(
     private router: Router, 
-    private cartService: CartService,
+    public cartService: CartService,
     private printerService: PrinterService
   ) {
     // Obtener el total del carrito
@@ -41,7 +44,7 @@ export class PaymentComponent {
   }
   
   // Seleccionar método de pago
-  selectPaymentMethod(method: 'cash' | 'mercadopago' | 'amipass' | 'card'): void {
+  selectPaymentMethod(method: 'cash' | 'mercadopago' | 'mobile' | 'card'): void {
     this.selectedMethod = method;
     
     if(method === 'card') {
@@ -63,8 +66,11 @@ export class PaymentComponent {
       
       // No avanzamos automáticamente para que el cliente pueda ver la información
       // Esperará a que presionen el botón "ENTENDIDO"
+    } else if(method === 'mobile') {
+      // Para pago móvil, mostramos el popup con QR/link
+      this.showMobilePaymentPopup();
     } else {
-      // Para otros métodos (mercadopago, amipass), mostramos el spinner de procesamiento general
+      // Para otros métodos (mercadopago), mostramos el spinner de procesamiento general
       this.processingPayment = true;
       
       // Simulamos un proceso de pago que toma tiempo
@@ -123,6 +129,43 @@ export class PaymentComponent {
   }
     
   
+  // Mostrar popup de pago móvil
+  showMobilePaymentPopup(): void {
+    // Generar URL con SKUs del carrito actual
+    this.mobilePaymentUrl = this.generateCartUrl();
+    this.showMobilePopup = true;
+  }
+
+  // Generar URL con SKUs del carrito
+  generateCartUrl(): string {
+    const items = this.cartService.getCurrentCartItems();
+    const skus = items.map(item => item.product.sku).join(',');
+    const baseUrl = 'https://online-cart-b0981.web.app';
+    return `${baseUrl}?skus=${skus}`;
+  }
+
+  // Cerrar popup de pago móvil
+  closeMobilePopup(): void {
+    this.showMobilePopup = false;
+    this.selectedMethod = null;
+  }
+
+  // Copiar URL al portapapeles
+  copyUrl(): void {
+    navigator.clipboard.writeText(this.mobilePaymentUrl).then(() => {
+      console.log('URL copiada al portapapeles');
+      // Aquí podrías mostrar una notificación de éxito
+    }).catch(err => {
+      console.error('Error al copiar URL:', err);
+    });
+  }
+
+  // Completar pedido móvil
+  completeMobileOrder(): void {
+    this.showMobilePopup = false;
+    this.completeOrderAndReturn();
+  }
+
   // Método simplificado para completar pedido y regresar al catálogo
   completeOrderAndReturn(): void {
     // Limpiar el carrito inmediatamente
