@@ -15,51 +15,35 @@
   <div class="category-selection">
     <!-- <h2>Selecciona una categoría</h2> -->
 
-    <div class="category-grid">
-      <!-- Tarjeta de TELEFONÍA -->
-      <div class="category-card" (click)="selectCategory('TELEFONIA')">
-        <div class="card-image">
-          <img
-            src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop&auto=format"
-            alt="Telefonía"
-            onerror="this.src='https://via.placeholder.com/400x300/062fff/ffffff?text=TELEFONIA'"
-          />
-        </div>
-        <div class="card-content">
-          <div class="card-title">TELEFONÍA</div>
-          <div class="card-description">Smartphones, planes y servicios móviles</div>
-        </div>
-      </div>
+    <!-- Loading spinner -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="loading-spinner">Cargando categorías...</div>
+    </div>
 
-      <!-- Tarjeta de HOGAR -->
-      <div class="category-card" (click)="selectCategory('HOGAR')">
+    <!-- Categories grid -->
+    <div *ngIf="!isLoading" class="category-grid">
+      <div 
+        *ngFor="let category of categories" 
+        class="category-card" 
+        (click)="selectCategory(category.slug)"
+      >
         <div class="card-image">
           <img
-            src="https://entel.cdn.modyo.com/uploads/3f7e8595-15c0-4057-a189-a371a759a3c8/original/bg-armatupack-card-general.webp"
-            alt="Hogar"
-            onerror="this.src='https://via.placeholder.com/400x300/062fff/ffffff?text=HOGAR'"
+            [src]="category.image"
+            [alt]="category.name"
+            (error)="onImageError($event, category.name)"
           />
         </div>
         <div class="card-content">
-          <div class="card-title">HOGAR</div>
-          <div class="card-description">Internet, TV y servicios para el hogar</div>
+          <div class="card-title">{{ category.name }}</div>
+          <div class="card-description" [innerHTML]="category.description"></div>
         </div>
       </div>
+    </div>
 
-      <!-- Tarjeta de ACCESORIOS -->
-      <div class="category-card" (click)="selectCategory('ACCESORIOS')">
-        <div class="card-image">
-          <img
-            src="https://images.unsplash.com/photo-1609081219090-a6d81d3085bf?w=400&h=300&fit=crop&auto=format"
-            alt="Accesorios"
-            onerror="this.src='https://via.placeholder.com/400x300/062fff/ffffff?text=ACCESORIOS'"
-          />
-        </div>
-        <div class="card-content">
-          <div class="card-title">ACCESORIOS</div>
-          <div class="card-description">Fundas, cargadores y complementos</div>
-        </div>
-      </div>
+    <!-- Error message -->
+    <div *ngIf="!isLoading && categories.length === 0" class="no-categories">
+      <p>No se pudieron cargar las categorías. Por favor, intenta más tarde.</p>
     </div>
   </div>
 </div>

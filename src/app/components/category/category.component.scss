@@ -173,6 +173,53 @@ $shadow-blue: rgba(6, 47, 255, 0.15);
   }
 }
 
+// Estilos de loading
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  
+  .loading-spinner {
+    font-size: 1.2rem;
+    color: $primary-blue;
+    font-weight: 500;
+    
+    &::after {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid transparent;
+      border-top: 2px solid $primary-blue;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-left: 10px;
+    }
+  }
+}
+
+// Mensaje de error
+.no-categories {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  
+  p {
+    color: $medium-gray;
+    font-size: 1.1rem;
+    text-align: center;
+    margin: 0;
+  }
+}
+
+// Animación del spinner
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 // Estilos de las tarjetas de categoría
 .category-card {
   background-color: $white;
