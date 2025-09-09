@@ -1,61 +1,137 @@
-// Variables de colores
-$primary-blue: #2e3e51;
-$secondary-blue: #3c5066;
-$accent-blue: #5ca6c1;
-$light-blue: #dce3ea;
-$light-gray: #eef0f3;
-$medium-gray: #c3c8cd;
-$dark-gray: #1f2731;
+// Variables de colores - Paleta corporativa Entel
+$primary-blue: #062fff;
+$secondary-orange: #f73e00;
+$primary-bg: #f8f9fa;
+$secondary-bg: #ffffff;
+$text-color: #343a40;
 $white: #ffffff;
-$success-green: #4CAF50;
-$warning-orange: #FF9800;
-$danger-red: #f44336;
+$light-blue: #e8f0ff;
+$border-radius: 12px;
+$shadow: 0 6px 20px rgba(6, 47, 255, 0.15);
+$shadow-orange: 0 4px 15px rgba(247, 62, 0, 0.3);
+$success-green: #28a745;
+$warning-orange: #ffc107;
+$danger-red: #dc3545;
 
 .mobile-cart-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, $light-gray 0%, $white 100%);
-  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, $primary-bg 0%, $white 100%);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.cart-title, .cart-count {
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
 }
 
 .cart-header {
-  background: $primary-blue;
-  color: $white;
-  padding: 15px 20px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  background: linear-gradient(135deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 3px solid $light-blue;
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: $shadow;
+  
+  // Responsive: Cambiar layout en móviles
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+    text-align: center;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 12px;
+    gap: 12px;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, $secondary-orange, lighten($secondary-orange, 15%));
+  }
 
   .back-button {
-    background: none;
-    border: none;
+    background: rgba(255, 255, 255, 0.2);
     color: $white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: $border-radius;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-bottom: 10px;
-    
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+
+    @media (max-width: 768px) {
+      order: 1;
+      padding: 10px 16px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 480px) {
+      padding: 8px 14px;
+      font-size: 12px;
+    }
+
     &:hover {
-      opacity: 0.8;
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-1px);
     }
 
     .back-icon {
-      font-size: 20px;
+      font-size: 16px;
+      
+      @media (max-width: 480px) {
+        font-size: 14px;
+      }
     }
   }
 
   h1 {
     margin: 0;
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    
+    @media (max-width: 768px) {
+      order: 2;
+      font-size: 24px;
+    }
+    
+    @media (max-width: 480px) {
+      font-size: 20px;
+    }
   }
 
   .cart-count {
-    font-size: 14px;
+    font-size: 15px;
     opacity: 0.9;
-    margin-top: 5px;
+    margin-top: 8px;
+    font-weight: 500;
+    
+    @media (max-width: 768px) {
+      order: 3;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 480px) {
+      font-size: 13px;
+    }
   }
 }
 
@@ -68,40 +144,44 @@ $danger-red: #f44336;
 .empty-cart {
   text-align: center;
   padding: 60px 20px;
-  color: $secondary-blue;
+  color: $text-color;
 
   .empty-icon {
     font-size: 80px;
     margin-bottom: 20px;
+    opacity: 0.6;
   }
 
   h2 {
     font-size: 24px;
     margin: 0 0 15px;
     color: $primary-blue;
+    font-weight: 700;
   }
 
   p {
     font-size: 16px;
-    line-height: 1.5;
+    line-height: 1.6;
     margin-bottom: 30px;
-    color: $secondary-blue;
+    color: $text-color;
+    opacity: 0.8;
   }
 
   .shop-button {
-    background: $accent-blue;
+    background: linear-gradient(135deg, $primary-blue 0%, darken($primary-blue, 10%) 100%);
     color: $white;
     border: none;
-    padding: 15px 30px;
-    border-radius: 25px;
+    padding: 16px 32px;
+    border-radius: $border-radius;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    box-shadow: $shadow;
 
     &:hover {
-      background: darken($accent-blue, 10%);
       transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(6, 47, 255, 0.3);
     }
   }
 }
@@ -109,16 +189,19 @@ $danger-red: #f44336;
 .cart-items {
   .cart-item {
     background: $white;
-    border-radius: 15px;
+    border-radius: $border-radius;
     padding: 20px;
-    margin-bottom: 15px;
+    margin-bottom: 16px;
     display: flex;
-    gap: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    transition: transform 0.2s ease;
+    gap: 16px;
+    box-shadow: $shadow;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
 
     &:hover {
-      transform: translateY(-2px);
+      transform: translateY(-4px);
+      border-color: $light-blue;
+      box-shadow: 0 8px 30px rgba(6, 47, 255, 0.2);
     }
 
     .item-image {
@@ -139,8 +222,8 @@ $danger-red: #f44336;
       min-width: 0;
 
       .item-name {
-        font-size: 16px;
-        font-weight: 600;
+        font-size: 17px;
+        font-weight: 700;
         color: $primary-blue;
         margin: 0 0 8px;
         line-height: 1.3;
@@ -148,21 +231,23 @@ $danger-red: #f44336;
 
       .item-sku {
         font-size: 12px;
-        color: $medium-gray;
-        margin-bottom: 5px;
+        color: lighten($text-color, 30%);
+        margin-bottom: 6px;
+        font-weight: 500;
       }
 
       .item-price {
         font-size: 18px;
         font-weight: 700;
-        color: $accent-blue;
+        color: $secondary-orange;
         margin-bottom: 8px;
       }
 
       .item-description {
         font-size: 13px;
-        color: $secondary-blue;
+        color: $text-color;
         line-height: 1.4;
+        opacity: 0.8;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -181,44 +266,49 @@ $danger-red: #f44336;
       .quantity-controls {
         display: flex;
         align-items: center;
-        gap: 5px;
-        background: $light-gray;
-        border-radius: 20px;
-        padding: 5px;
+        gap: 8px;
+        background: $light-blue;
+        border-radius: 25px;
+        padding: 6px;
+        border: 2px solid lighten($light-blue, 5%);
 
         .quantity-btn {
-          width: 30px;
-          height: 30px;
+          width: 32px;
+          height: 32px;
           border: none;
           border-radius: 50%;
           background: $primary-blue;
           color: $white;
           font-size: 16px;
-          font-weight: 600;
+          font-weight: 700;
+          font-style: normal;
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: all 0.2s ease;
+          transition: all 0.3s ease;
+          box-shadow: 0 2px 8px rgba(6, 47, 255, 0.2);
 
           &:hover {
-            background: darken($primary-blue, 10%);
             transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(6, 47, 255, 0.3);
           }
 
           &.plus {
             background: $success-green;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
 
             &:hover {
-              background: darken($success-green, 10%);
+              box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
             }
           }
 
           &.minus {
-            background: $warning-orange;
+            background: $secondary-orange;
+            box-shadow: 0 2px 8px rgba(247, 62, 0, 0.2);
 
             &:hover {
-              background: darken($warning-orange, 10%);
+              box-shadow: 0 4px 12px rgba(247, 62, 0, 0.3);
             }
           }
         }
@@ -226,14 +316,17 @@ $danger-red: #f44336;
         .quantity {
           min-width: 35px;
           text-align: center;
-          font-weight: 600;
+          font-weight: 700;
           color: $primary-blue;
+          font-size: 16px;
         }
       }
 
       .item-total {
-        font-size: 16px;
+        font-size: 17px;
         font-weight: 700;
+        margin-right: 6px;
+        margin-top: 15px;
         color: $primary-blue;
       }
 
@@ -241,16 +334,24 @@ $danger-red: #f44336;
         background: none;
         border: none;
         cursor: pointer;
-        padding: 5px;
-        border-radius: 5px;
-        transition: background-color 0.2s ease;
+        padding: 8px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
 
         &:hover {
           background: rgba($danger-red, 0.1);
+          transform: scale(1.1);
         }
 
         .remove-icon {
           font-size: 18px;
+          font-style: normal;
+          filter: grayscale(1);
+          transition: filter 0.2s ease;
+        }
+
+        &:hover .remove-icon {
+          filter: grayscale(0);
         }
       }
     }
@@ -261,9 +362,9 @@ $danger-red: #f44336;
   position: sticky;
   bottom: 0;
   background: $white;
-  border-top: 1px solid $light-gray;
-  padding: 20px;
-  box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+  border-top: 3px solid $light-blue;
+  padding: 24px;
+  box-shadow: 0 -6px 20px rgba(6, 47, 255, 0.15);
 
   .cart-summary {
     max-width: 800px;
@@ -273,19 +374,21 @@ $danger-red: #f44336;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
-      padding: 15px;
-      background: $light-blue;
-      border-radius: 10px;
+      margin-bottom: 24px;
+      padding: 20px;
+      background: linear-gradient(135deg, $light-blue 0%, lighten($light-blue, 3%) 100%);
+      border-radius: $border-radius;
+      border: 2px solid lighten($light-blue, 5%);
+      box-shadow: $shadow;
 
       .total-label {
-        font-size: 18px;
-        font-weight: 600;
+        font-size: 20px;
+        font-weight: 700;
         color: $primary-blue;
       }
 
       .total-amount {
-        font-size: 24px;
+        font-size: 26px;
         font-weight: 700;
         color: $primary-blue;
       }
@@ -294,54 +397,87 @@ $danger-red: #f44336;
     .action-buttons {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
 
       button {
         flex: 1;
-        min-width: 120px;
-        padding: 12px 16px;
+        min-width: 130px;
+        padding: 14px 18px;
         border: none;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 600;
+        border-radius: $border-radius;
+        font-size: 15px;
+        font-weight: 700;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
+        gap: 10px;
         transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
 
         i {
-          font-size: 16px;
+          font-size: 18px;
+          font-style: normal;
         }
 
         &.share-button {
-          background: $accent-blue;
+          background: linear-gradient(135deg, $primary-blue 0%, darken($primary-blue, 10%) 100%);
           color: $white;
+          box-shadow: $shadow;
 
           &:hover {
-            background: darken($accent-blue, 10%);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(6, 47, 255, 0.3);
           }
         }
 
         &.clear-button {
-          background: $warning-orange;
+          background: linear-gradient(135deg, $secondary-orange 0%, darken($secondary-orange, 10%) 100%);
           color: $white;
+          box-shadow: $shadow-orange;
 
           &:hover {
-            background: darken($warning-orange, 10%);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(247, 62, 0, 0.4);
           }
         }
 
-        &.checkout-button {
-          background: $success-green;
-          color: $white;
+        &.payment-button {
+          flex: 1;
+          min-width: 120px;
+          
+          &.button-online {
+            background: linear-gradient(135deg, $primary-blue 0%, darken($primary-blue, 10%) 100%);
+            color: $white;
+            box-shadow: $shadow;
 
-          &:hover {
-            background: darken($success-green, 10%);
-            transform: translateY(-1px);
+            &:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 8px 25px rgba(6, 47, 255, 0.4);
+            }
+          }
+          
+          &.button-mercadopago {
+            background: linear-gradient(135deg, #00d2ff 0%, darken(#00d2ff, 10%) 100%);
+            color: $white;
+            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
+
+            &:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 8px 25px rgba(0, 210, 255, 0.4);
+            }
+          }
+          
+          &.button-cashier {
+            background: linear-gradient(135deg, $success-green 0%, darken($success-green, 10%) 100%);
+            color: $white;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+
+            &:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+            }
           }
         }
       }
@@ -350,27 +486,43 @@ $danger-red: #f44336;
 }
 
 .qr-info-banner {
-  background: linear-gradient(135deg, $accent-blue, lighten($accent-blue, 10%));
+  background: linear-gradient(135deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
   color: $white;
-  padding: 20px;
+  padding: 24px;
   margin: 20px;
-  border-radius: 15px;
+  border-radius: $border-radius;
   display: flex;
   align-items: center;
-  gap: 15px;
-  box-shadow: 0 4px 15px rgba($accent-blue, 0.3);
+  gap: 18px;
+  box-shadow: $shadow;
+  border: 3px solid $light-blue;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 6px;
+    height: 100%;
+    background: $secondary-orange;
+    border-radius: 0 $border-radius $border-radius 0;
+  }
 
   .qr-icon {
-    font-size: 40px;
+    font-size: 44px;
     flex-shrink: 0;
   }
 
   .qr-text {
-    line-height: 1.4;
+    line-height: 1.5;
+    font-weight: 500;
 
     strong {
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: 17px;
     }
   }
 }

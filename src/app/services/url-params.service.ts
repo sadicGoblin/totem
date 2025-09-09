@@ -24,11 +24,16 @@ export class UrlParamsService {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
-      this.checkForSkuParam();
+      // Pequeño delay para evitar procesamiento múltiple
+      setTimeout(() => {
+        this.checkForSkuParam();
+      }, 100);
     });
     
-    // Verificar inmediatamente al inicializar
-    this.checkForSkuParam();
+    // Verificar inmediatamente al inicializar con delay
+    setTimeout(() => {
+      this.checkForSkuParam();
+    }, 200);
   }
 
   // Verificar si hay parámetros SKU en la URL
@@ -39,7 +44,7 @@ export class UrlParamsService {
     
     if (skuParam && skuParam !== this.skuProcessedSubject.getValue()) {
       this.processSku(skuParam);
-    } else if (skusParam) {
+    } else if (skusParam && skusParam !== this.skuProcessedSubject.getValue()) {
       this.processMultipleSkus(skusParam);
     }
   }
@@ -49,6 +54,9 @@ export class UrlParamsService {
     const skus = skusString.split(',').map(sku => sku.trim()).filter(sku => sku.length > 0);
     
     if (skus.length === 0) return;
+
+    // Marcar como procesado para evitar duplicados
+    this.skuProcessedSubject.next(skusString);
 
     this.productService.getProducts().subscribe(products => {
       const foundProducts: any[] = [];

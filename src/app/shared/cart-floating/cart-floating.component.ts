@@ -38,16 +38,9 @@ export class CartFloatingComponent implements OnInit, OnDestroy {
   // Propiedad para evitar cerrar el carrito inmediatamente al abrirlo
   private isOpeningCart: boolean = false;
 
-  // Manejador para mostrar/ocultar carrito
+  // Manejador para ir directamente al carrito móvil
   toggleCart(): void {
-    if (!this.showCart) {
-      // Está abriendo el carrito
-      this.isOpeningCart = true;
-      setTimeout(() => {
-        this.isOpeningCart = false;
-      }, 100);
-    }
-    this.showCart = !this.showCart;
+    this.router.navigate(['/cart']);
   }
   
   // Cerrar carrito al hacer clic fuera de él

@@ -159,7 +159,89 @@
         "price": 44990,
         "category": "ACCESORIOS",
         "subcategory": "CARGA",
-        "image": "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=300&h=300&fit=crop&auto=format",
+        "image": "https://placehold.co/300x300/EFEFEF/333?text=PowerBank+20000mAh",
         "description": "Batería portátil de alta capacidad con carga rápida y doble puerto USB"
-    }
+      },
+      {
+        "id": 13,
+        "sku": "1CB06013",
+        "name": "CABLE USB C A USB C - 1MT 60W",
+        "price": 44990,
+        "category": "ACCESORIOS",
+        "subcategory": "CARGA",
+        "image": "https://placehold.co/300x300/EFEFEF/333?text=Cable+USB-C+60W",
+        "description": "Cable de carga USB C a USB C de 1 metro con velocidad de carga de 60W"
+      },
+      {
+        "id": 14,
+        "sku": "1AU06116",
+        "name": "FREEBUDS 6i BLANCO",
+        "price": 89990,
+        "category": "ACCESORIOS",
+        "subcategory": "AUDÍFONOS",
+        "image": "https://placehold.co/300x300/EFEFEF/333?text=FreeBuds+6i",
+        "description": "Audífonos inalámbricos Huawei FreeBuds 6i color blanco con cancelación de ruido."
+      },
+      {
+        "id": 15,
+        "sku": "1CG05120",
+        "name": "CARGADOR BLANCO TIPO C 25W",
+        "price": 19990,
+        "category": "ACCESORIOS",
+        "subcategory": "CARGA",
+        "image": "https://placehold.co/300x300/EFEFEF/333?text=Cargador+25W",
+        "description": "Cargador Samsung blanco de 25W con puerto USB-C, ideal para carga rápida."
+      },
+      {
+        "id": 16,
+        "sku": "1AU06118",
+        "name": "BUDS 3 GRAFITO",
+        "price": 109990,
+        "category": "ACCESORIOS",
+        "subcategory": "AUDÍFONOS",
+        "image": "https://placehold.co/300x300/EFEFEF/333?text=Buds+3+Grafito",
+        "description": "Auriculares inalámbricos Samsung Buds 3 en color grafito con sonido premium."
+      },
+      {
+        "id": 17,
+        "sku": "1SW06211",
+        "name": "WATCH GT5 46mm PRO NEGRO",
+        "price": 259990,
+        "category": "ACCESORIOS",
+        "subcategory": "HUAWEI",
+        "image": "https://placehold.co/300x300/EFEFEF/333?text=Watch+GT5+Pro",
+        "description": "Reloj inteligente Huawei Watch GT5 Pro de 46mm en color negro, diseño premium y múltiples funciones de salud."
+      },
+      {
+        "id": 18,
+        "sku": "1CG04985",
+        "name": "CARGADOR 20W USB-C BLANCO",
+        "price": 27990,
+        "category": "ACCESORIOS",
+        "subcategory": "CARGA",
+        "image": "https://placehold.co/300x300/EFEFEF/333?text=Cargador+20W",
+        "description": "Cargador Apple de 20W USB-C en color blanco, compacto y eficiente para iPhone y iPad."
+      },
+      {
+        "id": 19,
+        "sku": "136851",
+        "name": "IPHONE 16 256GB",
+        "price": 1199990,
+        "category": "TELEFONIA",
+        "subcategory": "EQUIPOS",
+        "image": "https://placehold.co/300x300/EFEFEF/333?text=iPhone+16",
+        "description": "Apple iPhone 16 con 256GB de almacenamiento, diseño elegante y rendimiento de última generación."
+      },
+      {
+        "id": 20,
+        "sku": "1AU06259",
+        "name": "FREEBUDS SE 3",
+        "price": 41990,
+        "category": "ACCESORIOS",
+        "subcategory": "AUDÍFONOS",
+        "image": "https://placehold.co/300x300/EFEFEF/333?text=FreeBuds+SE+3",
+        "description": "Audífonos inalámbricos Huawei FreeBuds SE 3 con diseño ergonómico y gran calidad de sonido."
+      }
+    
+    
 ]

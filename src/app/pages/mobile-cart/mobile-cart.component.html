@@ -1,15 +1,25 @@
 <div class="mobile-cart-container">
-  <!-- Header del carrito -->
-  <div class="cart-header">
+  <!-- Modal de confirmación para vaciar carrito -->
+  <app-confirm-modal
+    [(visible)]="showConfirmModal"
+    title="Vaciar carrito"
+    [message]="confirmMessage"
+    confirmText="Vaciar"
+    cancelText="Cancelar"
+    confirmType="danger"
+    (onConfirm)="confirmClearCart()"
+  ></app-confirm-modal>
+
+  <header class="cart-header">
     <button class="back-button" (click)="continueShopping()">
       <i class="back-icon">←</i>
-      <span>Seguir comprando</span>
+      Seguir comprando
     </button>
-    <h1>Mi Carrito</h1>
+    <h1 class="cart-title">Mi carrito</h1>
     <div class="cart-count" *ngIf="(cartCount$ | async) as count">
       {{count}} {{ count === 1 ? 'producto' : 'productos' }}
     </div>
-  </div>
+  </header>
 
   <!-- Lista de productos en el carrito -->
   <div class="cart-content" *ngIf="(cartItems$ | async) as cartItems">
@@ -46,9 +56,9 @@
             <button class="quantity-btn plus" (click)="increaseQuantity(item.product.id)">+</button>
           </div>
           <div class="item-total">{{formatPrice(item.product.price * item.quantity)}}</div>
-          <button class="remove-btn" (click)="removeFromCart(item.product.id)">
+          <!-- <button class="remove-btn" (click)="removeFromCart(item.product.id)">
             <i class="remove-icon">🗑️</i>
-          </button>
+          </button> -->
         </div>
       </div>
     </div>
@@ -73,9 +83,13 @@
           Vaciar carrito
         </button>
         
-        <button class="checkout-button" (click)="proceedToCheckout()">
-          <i class="checkout-icon">💳</i>
-          Proceder al pago
+        <button class="payment-button button-online" (click)="payWithCard()">
+          <i class="payment-icon">💳</i>
+          Pagar con botón de pago
+        </button>
+        <button class="payment-button button-cashier" (click)="payAtCashier()">
+          <i class="payment-icon">🏪</i>
+          Pagar en Caja
         </button>
       </div>
     </div>

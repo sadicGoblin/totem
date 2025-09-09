@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { CartItem } from '../../models/products.model';
+import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
 import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-mobile-cart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ConfirmModalComponent],
   templateUrl: './mobile-cart.component.html',
   styleUrls: ['./mobile-cart.component.scss']
 })
@@ -16,6 +17,10 @@ export class MobileCartComponent implements OnInit {
   cartItems$: Observable<CartItem[]>;
   cartTotal$: Observable<number>;
   cartCount$: Observable<number>;
+  
+  // Para el modal de confirmación
+  showConfirmModal: boolean = false;
+  confirmMessage: string = '¿Estás seguro de que deseas vaciar todo el carrito?';
 
   constructor(
     private cartService: CartService,
@@ -49,9 +54,34 @@ export class MobileCartComponent implements OnInit {
 
   // Limpiar todo el carrito
   clearCart(): void {
-    if (confirm('¿Estás seguro de que quieres vaciar tu carrito?')) {
-      this.cartService.clearCart();
-    }
+    this.showConfirmModal = true;
+  }
+  
+  // Confirmar el vaciado del carrito
+  confirmClearCart(): void {
+    this.cartService.clearCart();
+    this.showConfirmModal = false;
+  }
+
+  // Métodos de pago
+  payWithCard(): void {
+    // Lógica para pago con tarjeta online
+    console.log('Iniciando pago con tarjeta...');
+    // Aquí iría la integración con pasarela de pagos
+    this.showNotification('Acá serías redirigido a la pasarela de pago...');
+  }
+
+  payWithMercadoPago(): void {
+    // Lógica para pago con MercadoPago
+    console.log('Iniciando pago con MercadoPago...');
+    // Aquí iría la integración con MercadoPago
+    this.showNotification('Redirigiendo a MercadoPago...');
+  }
+
+  payAtCashier(): void {
+    // Lógica para pagar en caja - navegar al checkout para imprimir ticket
+    this.showNotification('Procesando para pago en caja...');
+    this.router.navigate(['/checkout']);
   }
 
   // Navegar al catálogo para seguir comprando
