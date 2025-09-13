@@ -1,12 +1,12 @@
-// Variables - Esquema de colores corporativo Entel
-$primary-blue: #062fff; // Azul principal Entel
-$secondary-orange: #f73e00; // Naranja secundario Entel
-$light-blue: #e8f0ff; // Azul claro derivado
+// Variables - Nueva paleta negro y amarillo
+$primary-black: #000000; // Negro principal
+$secondary-yellow: #FFD700; // Amarillo secundario
+$light-yellow: #FFF8DC; // Amarillo claro derivado
 $light-gray: #f8f9fa;
 $medium-gray: #6c757d;
 $dark-gray: #343a40;
 $white: #ffffff;
-$shadow-blue: rgba(6, 47, 255, 0.15);
+$shadow-black: rgba(0, 0, 0, 0.15);
 
 // Estilos generales del contenedor
 .category-container {
@@ -21,7 +21,7 @@ $shadow-blue: rgba(6, 47, 255, 0.15);
 // Header con gradiente Entel
 .category-header {
   min-height: 120px;
-  background: linear-gradient(135deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
+  background: linear-gradient(135deg, $primary-black 0%, lighten($primary-black, 10%) 100%);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -46,7 +46,6 @@ $shadow-blue: rgba(6, 47, 255, 0.15);
       height: 80px;
       width: auto;
       object-fit: contain;
-      filter: brightness(0) invert(1); // Make logo white
     }
   }
   
@@ -57,7 +56,7 @@ $shadow-blue: rgba(6, 47, 255, 0.15);
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, $secondary-orange, lighten($secondary-orange, 15%));
+    background: linear-gradient(90deg, $secondary-yellow, lighten($secondary-yellow, 15%));
   }
   
   h1 {
@@ -85,7 +84,7 @@ $shadow-blue: rgba(6, 47, 255, 0.15);
   flex: 1;
   
   h2 {
-    color: $primary-blue;
+    color: $primary-black;
     font-size: 1.8rem;
     font-weight: 500;
     text-align: center;
@@ -102,7 +101,7 @@ $shadow-blue: rgba(6, 47, 255, 0.15);
       transform: translateX(-50%);
       width: 60px;
       height: 2px;
-      background-color: $secondary-orange;
+      background-color: $secondary-yellow;
     }
   }
 }
@@ -134,15 +133,15 @@ $shadow-blue: rgba(6, 47, 255, 0.15);
   background-color: $white;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 10px 30px $shadow-blue;
+  box-shadow: 0 10px 30px $shadow-black;
   cursor: pointer;
   transition: all 0.4s ease;
   border: 2px solid transparent;
   
   &:hover {
     transform: translateY(-12px);
-    box-shadow: 0 20px 40px rgba(6, 47, 255, 0.25);
-    border-color: $primary-blue;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    border-color: $primary-black;
   }
   
   .card-image {
@@ -165,12 +164,12 @@ $shadow-blue: rgba(6, 47, 255, 0.15);
   
   .card-content {
     padding: 24px 20px;
-    background: linear-gradient(135deg, $white 0%, $light-blue 100%);
+    background: linear-gradient(135deg, $white 0%, $light-yellow 100%);
     
     .card-title {
       font-size: 1.5rem;
       font-weight: 700;
-      color: $primary-blue;
+      color: $primary-black;
       text-align: center;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -185,7 +184,7 @@ $shadow-blue: rgba(6, 47, 255, 0.15);
         transform: translateX(-50%);
         width: 30px;
         height: 2px;
-        background-color: $secondary-orange;
+        background-color: $secondary-yellow;
       }
     }
     

@@ -1,5 +1,5 @@
 // Variables
-$primary-blue: #062fff;
+$primary-black: #000000;
 $danger-color: #d91a1a;
 $warning-color: #f5a623;
 $text-color: #ffffff;
@@ -38,7 +38,7 @@ $border-radius: 8px;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #eee;
-  background-color: $primary-blue;
+  background-color: $primary-black;
   color: white;
   
   .modal-title {
@@ -125,10 +125,10 @@ $border-radius: 8px;
   }
   
   &.primary {
-    background-color: $primary-blue;
+    background-color: $primary-black;
     
     &:hover {
-      background-color: darken($primary-blue, 10%);
+      background-color: lighten($primary-black, 15%);
     }
   }
 }

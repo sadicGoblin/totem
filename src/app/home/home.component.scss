@@ -1,16 +1,18 @@
 // Optimización para pantalla táctil
 
-// Variables - Esquema de colores corporativo
-$primary-blue: #062fff;
-$discount-orange: #f73e00;
+// Variables - Nueva paleta negro y amarillo
+$primary-black: #000000;
+$secondary-yellow: #FFD700;
 $secondary-blue: #3c5066;
 $accent-blue: #5ca6c1;
-$light-blue: #dce3ea;
+$light-yellow: #FFF8DC;
 $light-gray: #eef0f3;
 $medium-gray: #c3c8cd;
 $dark-gray: #1f2731;
 $white: #ffffff;
 $discount-red: #c44545;
+$discount-orange: #FFD700;
+$light-blue: #3c5066;
 
 // Barra de navegación superior
 .top-nav-bar {
@@ -18,7 +20,7 @@ $discount-red: #c44545;
   align-items: center;
   justify-content: space-between;
   padding: 10px 15px;
-  background-color: $primary-blue;
+  background-color: $primary-black;
   color: white;
   position: sticky;
   top: 0;
@@ -35,7 +37,6 @@ $discount-red: #c44545;
       height: 60px;
       width: auto;
       object-fit: contain;
-      filter: brightness(0) invert(1); // Make logo white
     }
   }
   
@@ -75,7 +76,7 @@ $discount-red: #c44545;
   position: fixed;
   bottom: 40px;
   right: 40px;
-  background-color: $primary-blue;
+  background-color: $primary-black;
   color: white;
   border-radius: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -155,7 +156,7 @@ $discount-red: #c44545;
   
   .cart-header {
     padding: 15px;
-    background-color: $primary-blue;
+    background-color: $primary-black;
     color: white;
     display: flex;
     justify-content: space-between;
@@ -280,7 +281,7 @@ $discount-red: #c44545;
     }
     
     .continue-btn {
-      background-color: $primary-blue;
+      background-color: $primary-black;
       color: white;
       border: none;
       padding: 12px 20px;
@@ -308,7 +309,7 @@ $discount-red: #c44545;
     }
     
     .checkout-btn {
-      background-color: $primary-blue;
+      background-color: $primary-black;
       color: white;
       border: none;
       padding: 15px;
@@ -409,7 +410,7 @@ $discount-red: #c44545;
     position: absolute;
     top: 10px;
     left: 10px;
-    background-color: $primary-blue;
+    background-color: $primary-black;
     color: $white;
     padding: 4px 8px;
     font-size: 12px;
@@ -462,7 +463,7 @@ $discount-red: #c44545;
       font-weight: 600;
       margin-bottom: 10px;
       line-height: 1.3;
-      color: $primary-blue;
+      color: $primary-black;
     }
     
     .product-description {
@@ -487,7 +488,7 @@ $discount-red: #c44545;
       .current-price {
         font-size: 30px;
         font-weight: bold;
-        color: $primary-blue;
+        color: $primary-black;
       }
       
       .original-price {
@@ -519,9 +520,9 @@ $discount-red: #c44545;
     .subcategory-btn {
       flex: 1;
       padding: 15px 30px;
-      border: 2px solid $primary-blue;
+      border: 2px solid $primary-black;
       background-color: $white;
-      color: $primary-blue;
+      color: $primary-black;
       font-size: 18px;
       font-weight: 600;
       border-radius: 12px;
@@ -531,17 +532,17 @@ $discount-red: #c44545;
       letter-spacing: 0.5px;
       
       &:hover {
-        background-color: $primary-blue;
+        background-color: $primary-black;
         color: $white;
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(6, 47, 255, 0.3);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
       }
       
       &.active {
-        background: linear-gradient(135deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
+        background: linear-gradient(135deg, $primary-black 0%, lighten($primary-black, 15%) 100%);
         color: $white;
-        border-color: $discount-orange;
-        box-shadow: 0 4px 15px rgba(6, 47, 255, 0.4);
+        border-color: $secondary-yellow;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
         
         &:hover {
           transform: translateY(-1px);
@@ -569,7 +570,7 @@ $discount-red: #c44545;
     padding: 12px 0;
     width: 100%;
     height: 50px;
-    background-color: $primary-blue;
+    background-color: $primary-black;
     color: $white;
     border: none;
     font-size: 18px;
@@ -606,7 +607,7 @@ $discount-red: #c44545;
     }
 
     &:hover {
-      background-color: darken($primary-blue, 5%);
+      background-color: lighten($primary-black, 15%);
     }
     
     &:active {
@@ -621,7 +622,7 @@ $discount-red: #c44545;
     justify-content: space-between;
     width: 100%;
     height: 50px;
-    background-color: $primary-blue;
+    background-color: $primary-black;
     border-radius: 0 0 8px 8px;
     
     .quantity-btn {
@@ -675,7 +676,7 @@ $discount-red: #c44545;
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: $primary-blue;
+  background-color: $primary-black;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   z-index: 100;
   
@@ -692,7 +693,7 @@ $discount-red: #c44545;
   .nav-button {
     flex: 1;
     padding: 15px 5px;
-    background-color: $primary-blue;
+    background-color: $primary-black;
     border: none;
     font-weight: 600;
     font-size: 16px; // Texto más grande para pantalla táctil
@@ -714,7 +715,7 @@ $discount-red: #c44545;
     }
     
     &:hover:not(.active) {
-      background-color: darken($primary-blue, 5%);
+      background-color: lighten($primary-black, 15%);
       color: $white;
     }
     

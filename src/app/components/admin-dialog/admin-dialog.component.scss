@@ -8,7 +8,7 @@ $shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 
 // Variables adicionales
 $dark-blue: #1e3a5f;
-$primary-blue: #062fff;
+$primary-black: #000000;
 $white: #ffffff;
 $success-green: #2ecc71;
 $danger-red: #e74c3c;
@@ -166,11 +166,11 @@ $danger-red: #e74c3c;
       }
       
       &.submit-btn {
-        background-color: $primary-blue;
+        background-color: $primary-black;
         color: $white;
         
         &:hover, &:active {
-          background-color: darken($primary-blue, 10%);
+          background-color: lighten($primary-black, 15%);
           transform: translateY(-2px);
         }
       }
