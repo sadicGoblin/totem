@@ -15,49 +15,35 @@
   <div class="category-selection">
     <!-- <h2>Selecciona una categoría</h2> -->
 
-    <div class="category-grid">
-      <!-- Tarjeta de TELEFONÍA -->
-      <div class="category-card" (click)="selectCategory('TELEFONIA')">
-        <div class="card-image">
-          <img
-            src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop&auto=format"
-            alt="Telefonía"
-            onerror="this.src='https://via.placeholder.com/400x300/062fff/ffffff?text=TELEFONIA'"
-          />
-        </div>
-        <div class="card-content">
-          <div class="card-title">TELEFONÍA</div>
-          <div class="card-description">Smartphones, planes y servicios móviles</div>
-        </div>
-      </div>
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Cargando categorías...</p>
+    </div>
 
-      <!-- Tarjeta de HOGAR -->
-      <div class="category-card" (click)="selectCategory('HOGAR')">
-        <div class="card-image">
-          <img
-            src="https://entel.cdn.modyo.com/uploads/3f7e8595-15c0-4057-a189-a371a759a3c8/original/bg-armatupack-card-general.webp"
-            alt="Hogar"
-            onerror="this.src='https://via.placeholder.com/400x300/062fff/ffffff?text=HOGAR'"
-          />
-        </div>
-        <div class="card-content">
-          <div class="card-title">HOGAR</div>
-          <div class="card-description">Internet, TV y servicios para el hogar</div>
-        </div>
-      </div>
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="error-container">
+      <p>Error al cargar las categorías. Por favor, intenta nuevamente.</p>
+      <button (click)="loadCategories()" class="retry-button">Reintentar</button>
+    </div>
 
-      <!-- Tarjeta de ACCESORIOS -->
-      <div class="category-card" (click)="selectCategory('ACCESORIOS')">
+    <!-- Categories Grid -->
+    <div class="category-grid" *ngIf="!loading && !error">
+      <div 
+        class="category-card" 
+        *ngFor="let category of categories; trackBy: trackByCategory"
+        (click)="selectCategory(category)"
+      >
         <div class="card-image">
           <img
-            src="https://images.unsplash.com/photo-1609081219090-a6d81d3085bf?w=400&h=300&fit=crop&auto=format"
-            alt="Accesorios"
-            onerror="this.src='https://via.placeholder.com/400x300/062fff/ffffff?text=ACCESORIOS'"
+            [src]="category.image"
+            [alt]="category.name"
+            (error)="onImageError($event, category)"
           />
         </div>
         <div class="card-content">
-          <div class="card-title">ACCESORIOS</div>
-          <div class="card-description">Fundas, cargadores y complementos</div>
+          <div class="card-title">{{ category.name.toUpperCase() }}</div>
+          <div class="card-description">{{ category.description }}</div>
         </div>
       </div>
     </div>
