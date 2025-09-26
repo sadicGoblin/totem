@@ -19,6 +19,9 @@ export class CategoryComponent implements OnInit, OnDestroy {
   // Categoría seleccionada actualmente
   selectedCategory: string = 'promociones';
   
+  // Tamaño de pizza seleccionado
+  selectedSize: string = 'TODOS';
+  
   // Productos cargados
   products: Product[] = [];
   
@@ -61,6 +64,15 @@ export class CategoryComponent implements OnInit, OnDestroy {
    */
   selectCategory(category: string): void {
     this.selectedCategory = category;
+    // Resetear filtro de tamaño cuando cambia la categoría
+    this.selectedSize = 'TODOS';
+  }
+
+  /**
+   * Selecciona un tamaño de pizza para filtrar
+   */
+  selectSize(size: string): void {
+    this.selectedSize = size;
   }
 
   /**
@@ -79,7 +91,7 @@ export class CategoryComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Filtra productos por categoría seleccionada
+   * Filtra productos por categoría seleccionada y tamaño (para pizzas)
    */
   getFilteredProducts(): Product[] {
     if (!this.selectedCategory) {
@@ -97,9 +109,18 @@ export class CategoryComponent implements OnInit, OnDestroy {
     };
     
     const mappedCategory = categoryMapping[this.selectedCategory];
-    return this.products.filter(p => 
+    let filteredProducts = this.products.filter(p => 
       p.category.toUpperCase() === mappedCategory?.toUpperCase()
     );
+
+    // Aplicar filtro por tamaño solo para pizzas
+    if (this.selectedCategory === 'pizzas' && this.selectedSize !== 'TODOS') {
+      filteredProducts = filteredProducts.filter(p => 
+        p.size === this.selectedSize
+      );
+    }
+
+    return filteredProducts;
   }
 
   /**

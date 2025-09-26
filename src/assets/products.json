@@ -91,6 +91,7 @@
         "name": "Pizza Pepperoni Familiar",
         "price": 12990,
         "category": "PIZZAS",
+        "size": "FAMILIAR",
         "image": "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?q=80&w=300&auto=format",
         "description": "La clásica pizza con pepperoni y queso mozzarella sobre masa tradicional",
         "specialTag": "CLÁSICA"
@@ -100,6 +101,7 @@
         "name": "Pizza Hawaiana Familiar",
         "price": 13490,
         "category": "PIZZAS",
+        "size": "FAMILIAR",
         "image": "https://images.unsplash.com/photo-1595708684082-a173bb3a06c5?q=80&w=300&auto=format",
         "description": "Jamón, piña y queso mozzarella sobre masa tradicional Papa John's"
     },
@@ -108,6 +110,7 @@
         "name": "Pizza Suprema Familiar",
         "price": 14990,
         "category": "PIZZAS",
+        "size": "FAMILIAR",
         "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=300&auto=format",
         "description": "Pepperoni, salchicha italiana, pimientos, champiñones, cebolla y aceitunas",
         "specialTag": "SUPREMA"
@@ -142,6 +145,7 @@
         "name": "Pizza Cuatro Quesos Familiar",
         "price": 13990,
         "category": "PIZZAS",
+        "size": "FAMILIAR",
         "image": "https://images.unsplash.com/photo-1628840042765-356cda07504e?q=80&w=300&auto=format",
         "description": "Mozzarella, parmesano, gorgonzola y queso cheddar sobre masa tradicional"
     },
@@ -152,6 +156,44 @@
         "category": "BEBIDAS",
         "image": "https://images.unsplash.com/photo-1564419320461-6870880221ad?q=80&w=300&auto=format",
         "description": "Agua mineral natural sin gas"
+    },
+    {
+        "id": 50,
+        "name": "Pizza Pepperoni Mediana",
+        "price": 9990,
+        "category": "PIZZAS",
+        "size": "MEDIANA",
+        "image": "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?q=80&w=300&auto=format",
+        "description": "La clásica pizza con pepperoni y queso mozzarella sobre masa tradicional"
+    },
+    {
+        "id": 51,
+        "name": "Pizza Hawaiana Mediana",
+        "price": 10490,
+        "category": "PIZZAS",
+        "size": "MEDIANA",
+        "image": "https://images.unsplash.com/photo-1595708684082-a173bb3a06c5?q=80&w=300&auto=format",
+        "description": "Jamón, piña y queso mozzarella sobre masa tradicional Papa John's"
+    },
+    {
+        "id": 52,
+        "name": "Pizza Suprema XL",
+        "price": 17990,
+        "category": "PIZZAS",
+        "size": "XL",
+        "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=300&auto=format",
+        "description": "Pepperoni, salchicha italiana, pimientos, champiñones, cebolla y aceitunas",
+        "specialTag": "XL"
+    },
+    {
+        "id": 53,
+        "name": "Pizza Pepperoni XL",
+        "price": 16990,
+        "category": "PIZZAS",
+        "size": "XL",
+        "image": "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?q=80&w=300&auto=format",
+        "description": "La clásica pizza con pepperoni y queso mozzarella sobre masa tradicional",
+        "specialTag": "XL"
     },
     {
         "id": 17,
@@ -175,6 +217,7 @@
         "name": "Pizza BBQ Chicken Familiar",
         "price": 14490,
         "category": "PIZZAS",
+        "size": "FAMILIAR",
         "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=300&auto=format",
         "description": "Pollo BBQ, cebolla morada, pimientos y queso mozzarella"
     },
@@ -183,6 +226,7 @@
         "name": "Pizza Vegetariana Familiar",
         "price": 12990,
         "category": "PIZZAS",
+        "size": "FAMILIAR",
         "image": "https://images.unsplash.com/photo-1604917877934-07d8d248d396?q=80&w=300&auto=format",
         "description": "Pimientos, champiñones, aceitunas, cebolla, tomate y queso mozzarella",
         "specialTag": "VEGGIE"

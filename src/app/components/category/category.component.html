@@ -92,6 +92,37 @@
         <h2>{{ getCategoryDisplayName(selectedCategory) }}</h2>
       </div>
       
+      <!-- Filtros de tamaño de pizza (solo para categoría PIZZAS) -->
+      <div class="size-filters" *ngIf="selectedCategory === 'pizzas'">
+        <div class="filter-label">Tamaño:</div>
+        <div class="size-chips">
+          <button 
+            class="size-chip" 
+            [class.active]="selectedSize === 'TODOS'"
+            (click)="selectSize('TODOS')">
+            Todos
+          </button>
+          <button 
+            class="size-chip" 
+            [class.active]="selectedSize === 'MEDIANA'"
+            (click)="selectSize('MEDIANA')">
+            Mediana
+          </button>
+          <button 
+            class="size-chip" 
+            [class.active]="selectedSize === 'FAMILIAR'"
+            (click)="selectSize('FAMILIAR')">
+            Familiar
+          </button>
+          <button 
+            class="size-chip" 
+            [class.active]="selectedSize === 'XL'"
+            (click)="selectSize('XL')">
+            XL
+          </button>
+        </div>
+      </div>
+      
       <div class="products-grid">
         <div class="product-card" *ngFor="let product of getFilteredProducts()">
           <!-- Special tag -->

@@ -9,6 +9,7 @@ export interface Product {
   discount?: number;
   originalPrice?: number;
   quantity?: number;
+  size?: string; // Para pizzas: 'MEDIANA', 'FAMILIAR', 'XL'
 }
 
 export interface CartItem {
