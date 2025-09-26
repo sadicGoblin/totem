@@ -79,7 +79,7 @@ function createWindow() {
   mainWindow.loadURL(startUrl);
 
   // Abrir DevTools si estamos en desarrollo
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   // Cuando la ventana se cierre
   mainWindow.on('closed', function () {
@@ -135,4 +135,10 @@ ipcMain.on('enter-kiosk-mode', () => {
   if (mainWindow) {
     mainWindow.setKiosk(true);
   }
+});
+
+// Cerrar la aplicación completamente
+ipcMain.on('close-application', () => {
+  console.log('Cerrando aplicación...');
+  app.quit();
 });

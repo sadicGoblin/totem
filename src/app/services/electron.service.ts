@@ -7,6 +7,7 @@ declare global {
       enterKioskMode: () => void;
       onExitKioskResult: (callback: (result: {success: boolean}) => void) => void;
       getScreenOrientation: () => 'vertical' | 'horizontal';
+      closeApplication: () => void;
     };
   }
 }
@@ -78,5 +79,19 @@ export class ElectronService {
     }
 
     window.electronAPI!.enterKioskMode();
+  }
+
+  closeApplication(): void {
+    console.log('Cerrando aplicación...');
+    console.log('isElectron', this.isElectron);
+    if (!this.isElectron) {
+      console.warn('Modo de desarrollo: simulando cierre de aplicación');
+      console.log('Simulación: Aplicación cerrada');
+      // En modo desarrollo, simplemente recargar la página o mostrar mensaje
+      window.electronAPI!.closeApplication();
+      return;
+    }
+
+    window.electronAPI!.closeApplication();
   }
 }

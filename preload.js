@@ -12,6 +12,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return () => ipcRenderer.removeAllListeners('exit-kiosk-result');
   },
   
+  // Cerrar la aplicación completamente
+  closeApplication: () => ipcRenderer.send('close-application'),
+  
   // Detectar orientación de pantalla directamente
   getScreenOrientation: () => {
     return window.innerHeight > window.innerWidth ? 'vertical' : 'horizontal';
