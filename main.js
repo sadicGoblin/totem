@@ -121,10 +121,12 @@ ipcMain.on('exit-kiosk-mode', (event, password) => {
       // Restaurar a un tamaño normal (pero seguimos sin marcos)
       mainWindow.setSize(1024, 768);
       mainWindow.center();
-      event.reply('exit-kiosk-result', { success: true });
+      // Usar event.sender.send para enviar la respuesta
+      event.sender.send('exit-kiosk-result', { success: true });
     }
   } else {
-    event.reply('exit-kiosk-result', { success: false });
+    // Usar event.sender.send para enviar la respuesta
+    event.sender.send('exit-kiosk-result', { success: false });
   }
 });
 
