@@ -1,0 +1,44 @@
+<div class="order-type-container">
+  <!-- Logo de Papa John's más pequeño -->
+  <div class="logo-container">
+    <img class="papa-johns-logo" src="assets/images/papa-johns-logo.png" alt="Papa John's">
+  </div>
+
+  <!-- Cards de selección -->
+  <div class="selection-cards">
+    <!-- Card Para Servir -->
+    <div class="order-card" (click)="selectOrderType('dine-in')">
+      <div class="card-icon">
+        <img src="assets/images/select-icon.png" alt="Para Servir" class="select-icon">
+      </div>
+      <button class="order-button dine-in-btn">
+        PARA SERVIR
+      </button>
+    </div>
+
+    <!-- Card Para Llevar -->
+    <div class="order-card" (click)="selectOrderType('takeaway')">
+      <div class="card-icon">
+        <img src="assets/images/select-icon-2.png" alt="Para Llevar" class="select-icon">
+      </div>
+      <button class="order-button takeaway-btn">
+        PARA LLEVAR
+      </button>
+    </div>
+  </div>
+
+  <!-- Mascota animada con mensaje -->
+  <div class="mascot-section">
+    <div class="mascot-container" [class.bounce]="showMascot">
+      <img [src]="currentMascotImage" alt="Papa John's Mascot" class="animated-mascot">
+      
+      <!-- Globo de mensaje -->
+      <div class="message-bubble" [class.show]="showMessage">
+        <div class="bubble-content">
+          {{ currentMessage }}
+        </div>
+        <div class="bubble-tail"></div>
+      </div>
+    </div>
+  </div>
+</div>

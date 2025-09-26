@@ -1,37 +1,47 @@
 [
     {
         "id": 1,
-        "name": "Hamburguesa Clásica",
-        "price": 8900,
-        "category": "HAMBURGUESAS",
-        "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=300&auto=format",
-        "description": "Carne de res, lechuga, tomate, queso cheddar, pepinillos y salsa especial",
-        "specialTag": "TOP"
+        "name": "Pizza Familiar de 3 Ingredientes + Mediana GRATIS",
+        "price": 17900,
+        "originalPrice": 28300,
+        "category": "PROMOCIONES",
+        "image": "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?q=80&w=300&auto=format",
+        "description": "ANTES $28.300 🍕 Arma tu Pizza Familiar de 3 Ingredientes y lleva una Mediana de regalo! 🍕",
+        "specialTag": "CRAZY WEEK",
+        "discount": 37
     },
     {
         "id": 2,
-        "name": "Hamburguesa BBQ",
-        "price": 9500,
-        "category": "HAMBURGUESAS",
-        "image": "https://images.unsplash.com/photo-1551615593-ef5fe247e8f7?q=80&w=300&auto=format",
-        "description": "Carne de res, tocino, aros de cebolla, queso y salsa BBQ"
+        "name": "Papa Combo Futbolero",
+        "price": 19900,
+        "originalPrice": 25000,
+        "category": "PROMOCIONES",
+        "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=300&auto=format",
+        "description": "Elige tu Pizza XL Favorita con Masa Maestra, más bebida de 1.5 Litros y un acompañamiento a elección ⚽🍕",
+        "specialTag": "FÚTBOL",
+        "discount": 20
     },
     {
         "id": 3,
-        "name": "Hamburguesa Doble",
-        "price": 10900,
-        "category": "HAMBURGUESAS",
-        "image": "https://images.unsplash.com/photo-1607013251379-e6eecfffe234?q=80&w=300&auto=format",
-        "description": "Doble carne, doble queso, lechuga, tomate y salsa especial"
+        "name": "Pizza del Mes Familiar Super Pepperoni",
+        "price": 10990,
+        "originalPrice": 16900,
+        "category": "PROMOCIONES",
+        "image": "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?q=80&w=300&auto=format",
+        "description": "ANTES desde $16.900 AHORA La Super Pepperoni Familiar a un precio increíble 🍕💚",
+        "specialTag": "PIZZA DEL MES",
+        "discount": 35
     },
     {
         "id": 4,
-        "name": "Hamburguesa Vegetariana",
-        "price": 8500,
-        "category": "HAMBURGUESAS",
-        "image": "https://images.unsplash.com/photo-1550950158-d0d960dff51b?q=80&w=300&auto=format",
-        "description": "Hamburguesa de garbanzos, lechuga, tomate y guacamole",
-        "specialTag": "VEGGIE"
+        "name": "Papa Combo Palitos",
+        "price": 16490,
+        "originalPrice": 19180,
+        "category": "PROMOCIONES",
+        "image": "https://images.unsplash.com/photo-1619096252214-ef06c45683e3?q=80&w=300&auto=format",
+        "description": "Pizza de 3 ing. + Palitos + Bebida 1.5 L 🍕 ANTES desde $19.180 - AHORA:",
+        "specialTag": "COMBO",
+        "discount": 14
     },
     {
         "id": 5,
@@ -45,95 +55,103 @@
     },
     {
         "id": 6,
-        "name": "Pizza Vegetariana",
-        "price": 12900,
-        "category": "PIZZAS",
+        "name": "Combo Red Bull",
+        "price": 13490,
+        "originalPrice": 16000,
+        "category": "PROMOCIONES",
         "image": "https://images.unsplash.com/photo-1604917877934-07d8d248d396?q=80&w=300&auto=format",
-        "description": "Pimientos, champiñones, aceitunas, cebolla y queso"
+        "description": "Pizza Mediana + 2 Red Bull a elección ⚡🍕 Incluye envío GRATIS 🚚",
+        "specialTag": "RED BULL",
+        "discount": 16
     },
     {
         "id": 7,
-        "name": "Pizza Suprema",
-        "price": 14900,
-        "category": "PIZZAS",
-        "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=300&auto=format",
-        "description": "Pepperoni, salchicha, pimientos, cebolla, champiñones y extra queso",
-        "specialTag": "NUEVO"
+        "name": "Papa Combo con Postre",
+        "price": 18990,
+        "originalPrice": 22000,
+        "category": "PROMOCIONES",
+        "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?q=80&w=300&auto=format",
+        "description": "Arma tu pizza de 3 ing. + 1 especialidad + bebida 2.5 Lt + Postre 🍕",
+        "specialTag": "CON POSTRE",
+        "discount": 14
     },
     {
         "id": 8,
-        "name": "Pizza Hawaiana",
-        "price": 13500,
-        "category": "PIZZAS",
-        "image": "https://images.unsplash.com/photo-1595708684082-a173bb3a06c5?q=80&w=300&auto=format",
-        "description": "Jamón, piña, queso mozzarella y salsa de tomate"
+        "name": "Papa Combo con Helado Savory",
+        "price": 16490,
+        "originalPrice": 19000,
+        "category": "PROMOCIONES",
+        "image": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?q=80&w=300&auto=format",
+        "description": "Tu especialidad favorita + bebida 1.5 Lt + Helado Savory 🍕 + ENVÍO GRATIS!",
+        "specialTag": "HELADO SAVORY",
+        "discount": 13
     },
     {
         "id": 9,
-        "name": "Coca-Cola 500ml",
-        "price": 2500,
-        "category": "BEBIDAS",
-        "image": "https://images.unsplash.com/photo-1554866585-cd94860890b7?q=80&w=300&auto=format",
-        "description": "Bebida gaseosa"
+        "name": "Pizza Pepperoni Familiar",
+        "price": 12990,
+        "category": "PIZZAS",
+        "image": "https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?q=80&w=300&auto=format",
+        "description": "La clásica pizza con pepperoni y queso mozzarella sobre masa tradicional",
+        "specialTag": "CLÁSICA"
     },
     {
         "id": 10,
-        "name": "Agua Mineral 500ml",
-        "price": 1800,
-        "category": "BEBIDAS",
-        "image": "https://images.unsplash.com/photo-1564419320461-6870880221ad?q=80&w=300&auto=format",
-        "description": "Agua mineral sin gas"
+        "name": "Pizza Hawaiana Familiar",
+        "price": 13490,
+        "category": "PIZZAS",
+        "image": "https://images.unsplash.com/photo-1595708684082-a173bb3a06c5?q=80&w=300&auto=format",
+        "description": "Jamón, piña y queso mozzarella sobre masa tradicional Papa John's"
     },
     {
         "id": 11,
-        "name": "Jugo Natural",
-        "price": 3200,
-        "category": "BEBIDAS",
-        "image": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?q=80&w=300&auto=format",
-        "description": "Jugo de naranja recién exprimido",
-        "specialTag": "SALUDABLE"
+        "name": "Pizza Suprema Familiar",
+        "price": 14990,
+        "category": "PIZZAS",
+        "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=300&auto=format",
+        "description": "Pepperoni, salchicha italiana, pimientos, champiñones, cebolla y aceitunas",
+        "specialTag": "SUPREMA"
     },
     {
         "id": 12,
-        "name": "Cerveza Artesanal",
-        "price": 4500,
+        "name": "Coca-Cola 1.5L",
+        "price": 2990,
         "category": "BEBIDAS",
-        "image": "https://images.unsplash.com/photo-1532634922-8fe0b757fb13?q=80&w=300&auto=format",
-        "description": "Cerveza rubia artesanal 330ml"
+        "image": "https://images.unsplash.com/photo-1554866585-cd94860890b7?q=80&w=300&auto=format",
+        "description": "Bebida gaseosa Coca-Cola 1.5 litros"
     },
     {
         "id": 13,
-        "name": "Tiramisú",
-        "price": 5500,
-        "category": "POSTRES",
-        "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?q=80&w=300&auto=format",
-        "description": "Postre italiano de café y crema mascarpone",
-        "originalPrice": 6500,
-        "discount": 15
+        "name": "Palitos de Ajo Papa John's",
+        "price": 4990,
+        "category": "ACOMPAÑAMIENTO",
+        "image": "https://images.unsplash.com/photo-1619096252214-ef06c45683e3?q=80&w=300&auto=format",
+        "description": "Deliciosos palitos de pan con ajo y queso, acompañados de salsa especial",
+        "specialTag": "FAVORITO"
     },
     {
         "id": 14,
-        "name": "Cheesecake",
-        "price": 4900,
-        "category": "POSTRES",
-        "image": "https://images.unsplash.com/photo-1524351199678-941a58a3df50?q=80&w=300&auto=format",
-        "description": "Tarta de queso con base de galleta y mermelada de frutos rojos"
+        "name": "Red Bull Energy Drink",
+        "price": 2490,
+        "category": "BEBIDAS",
+        "image": "https://images.unsplash.com/photo-1553456558-aff63285bdd1?q=80&w=300&auto=format",
+        "description": "Bebida energética Red Bull 250ml"
     },
     {
         "id": 15,
-        "name": "Helado",
-        "price": 3500,
-        "category": "POSTRES",
-        "image": "https://images.unsplash.com/photo-1563805042-7684c019e1cb?q=80&w=300&auto=format",
-        "description": "Helado de vainilla con salsa de chocolate"
+        "name": "Pizza Cuatro Quesos Familiar",
+        "price": 13990,
+        "category": "PIZZAS",
+        "image": "https://images.unsplash.com/photo-1628840042765-356cda07504e?q=80&w=300&auto=format",
+        "description": "Mozzarella, parmesano, gorgonzola y queso cheddar sobre masa tradicional"
     },
     {
         "id": 16,
-        "name": "Papas Fritas",
-        "price": 3900,
-        "category": "COMPLEMENTOS",
-        "image": "https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?q=80&w=300&auto=format",
-        "description": "Porción de papas fritas crujientes"
+        "name": "Agua Mineral 500ml",
+        "price": 1990,
+        "category": "BEBIDAS",
+        "image": "https://images.unsplash.com/photo-1564419320461-6870880221ad?q=80&w=300&auto=format",
+        "description": "Agua mineral natural sin gas"
     },
     {
         "id": 17,
@@ -154,36 +172,36 @@
     },
     {
         "id": 19,
-        "name": "Hamburguesa Mexicana",
-        "price": 9700,
-        "category": "HAMBURGUESAS",
-        "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=300&auto=format",
-        "description": "Carne de res, jalapeños, guacamole, lechuga, tomate y queso cheddar"
+        "name": "Pizza BBQ Chicken Familiar",
+        "price": 14490,
+        "category": "PIZZAS",
+        "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=300&auto=format",
+        "description": "Pollo BBQ, cebolla morada, pimientos y queso mozzarella"
     },
     {
         "id": 20,
-        "name": "Hamburguesa Italiana",
-        "price": 9900,
-        "category": "HAMBURGUESAS",
-        "image": "https://images.unsplash.com/photo-1551782450-a2132b4ba21d?q=80&w=300&auto=format",
-        "description": "Carne de res, mozzarella, albahaca, tomate y pesto",
-        "specialTag": "NUEVO"
+        "name": "Pizza Vegetariana Familiar",
+        "price": 12990,
+        "category": "PIZZAS",
+        "image": "https://images.unsplash.com/photo-1604917877934-07d8d248d396?q=80&w=300&auto=format",
+        "description": "Pimientos, champiñones, aceitunas, cebolla, tomate y queso mozzarella",
+        "specialTag": "VEGGIE"
     },
     {
         "id": 21,
-        "name": "Hamburguesa de Pollo Crispy",
-        "price": 8800,
-        "category": "HAMBURGUESAS",
-        "image": "https://images.unsplash.com/photo-1513185041617-8ab03f83d6c5?q=80&w=300&auto=format",
-        "description": "Pollo crispy, lechuga, tomate, mayonesa y pan brioche"
+        "name": "Alitas de Pollo BBQ",
+        "price": 6990,
+        "category": "ACOMPAÑAMIENTO",
+        "image": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?q=80&w=300&auto=format",
+        "description": "8 deliciosas alitas de pollo con salsa BBQ Papa John's"
     },
     {
         "id": 22,
-        "name": "Hamburguesa a lo Pobre",
-        "price": 9900,
-        "category": "HAMBURGUESAS",
-        "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=300&auto=format",
-        "description": "Carne de res, cebolla caramelizada, huevo frito y papas hilo"
+        "name": "Papas Gajo con Queso",
+        "price": 4490,
+        "category": "ACOMPAÑAMIENTO",
+        "image": "https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?q=80&w=300&auto=format",
+        "description": "Papas gajo crujientes con salsa de queso cheddar"
     },
     {
         "id": 23,
@@ -325,111 +343,27 @@
         "discount": 15
     },
     {
-        "id": 100,
-        "name": "Zapatillas Urbanas Hombre",
-        "price": 39900,
-        "category": "ZAPATILLAS",
-        "image": "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?q=80&w=300&auto=format",
-        "description": "Zapatillas casuales de lona con suela de goma y diseño urbano",
-        "specialTag": "NUEVO"
-    },
-    {
-        "id": 101,
-        "name": "Zapatillas Running Mujer",
-        "price": 49900,
-        "category": "ZAPATILLAS",
-        "image": "https://images.unsplash.com/photo-1560769629-975ec94e6a86?q=80&w=300&auto=format",
-        "description": "Zapatillas deportivas con amortiguación y tela respirable",
-        "originalPrice": 54900,
-        "discount": 10
-    },
-    {
-        "id": 102,
-        "name": "Zapatillas Trail Mujer",
-        "price": 59900,
-        "category": "ZAPATILLAS",
-        "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=300&auto=format",
-        "description": "Zapatillas resistentes al agua para senderismo y aventura",
-        "specialTag": "NUEVO"
-    },
-    {
-        "id": 103,
-        "name": "Zapatillas Skate Mujer",
-        "price": 42900,
-        "category": "ZAPATILLAS",
-        "image": "https://images.unsplash.com/photo-1608667508764-33cf0726b13a?q=80&w=300&auto=format",
-        "description": "Suela plana y diseño clásico para patinaje urbano",
-        "discount": 15,
-        "originalPrice": 49900
-    },
-    {
-        "id": 104,
-        "name": "Zapatillas Clásicas Blancas",
-        "price": 34900,
-        "category": "ZAPATILLAS",
-        "image": "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?q=80&w=300&auto=format",
-        "description": "Modelo icónico con diseño minimalista, ideal para uso diario"
-    },
-    {
-        "id": 105,
-        "name": "Zapatillas Running Pro",
-        "price": 79900,
-        "category": "ZAPATILLAS",
-        "image": "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?q=80&w=300&auto=format",
-        "description": "Tecnología de amortiguación avanzada y soporte en el talón",
-        "specialTag": "RECOMENDADO"
-    },
-    {
         "id": 200,
-        "name": "Smartphone Galaxy A54",
-        "price": 259900,
-        "category": "CELULARES",
-        "image": "https://images.unsplash.com/photo-1616410011236-7a42121dd981?q=80&w=300&auto=format",
-        "description": "Pantalla AMOLED 6.4”, 128GB de almacenamiento, cámara triple de 50MP"
+        "name": "Sprite 1.5L",
+        "price": 2990,
+        "category": "BEBIDAS",
+        "image": "https://images.unsplash.com/photo-1581006852262-e4307cf6283a?q=80&w=300&auto=format",
+        "description": "Bebida gaseosa Sprite 1.5 litros"
     },
     {
         "id": 201,
-        "name": "iPhone 13 Mini",
-        "price": 599900,
-        "category": "CELULARES",
-        "image": "https://images.unsplash.com/photo-1591337676887-a217a6970a8a?q=80&w=300&auto=format",
-        "description": "Pantalla Super Retina XDR 5.4”, chip A15 Bionic, 128GB",
-        "specialTag": "TOP"
+        "name": "Fanta 1.5L",
+        "price": 2990,
+        "category": "BEBIDAS",
+        "image": "https://images.unsplash.com/photo-1624552184280-8a5d5e1b3c6a?q=80&w=300&auto=format",
+        "description": "Bebida gaseosa Fanta 1.5 litros"
     },
     {
         "id": 202,
-        "name": "Xiaomi Redmi Note 12",
-        "price": 179900,
-        "category": "CELULARES",
-        "image": "https://images.unsplash.com/photo-1546054454-aa26e2b734c7?q=80&w=300&auto=format",
-        "description": "Pantalla AMOLED 6.67”, Snapdragon 685, 128GB",
-        "specialTag": "OFERTA"
-    },
-    {
-        "id": 203,
-        "name": "Motorola Edge 30",
-        "price": 279900,
-        "category": "CELULARES",
-        "image": "https://images.unsplash.com/photo-1585060544812-6b45742d762f?q=80&w=300&auto=format",
-        "description": "Pantalla OLED, cámara de 50MP, 5G y 256GB de almacenamiento"
-    },
-    {
-        "id": 204,
-        "name": "Samsung Galaxy S21 FE",
-        "price": 399900,
-        "category": "CELULARES",
-        "image": "https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?q=80&w=300&auto=format",
-        "description": "Pantalla 120Hz, Snapdragon 888, cámara triple",
-        "originalPrice": 449900,
-        "discount": 11
-    },
-    {
-        "id": 205,
-        "name": "iPhone SE 2022",
-        "price": 369900,
-        "category": "CELULARES",
-        "image": "https://images.unsplash.com/photo-1604671368394-2240d0b1bb6c?q=80&w=300&auto=format",
-        "description": "Chip A15 Bionic, Touch ID, 128GB",
-        "specialTag": "NUEVO"
+        "name": "Salsa Extra Papa John's",
+        "price": 990,
+        "category": "EXTRAS",
+        "image": "https://images.unsplash.com/photo-1607330289024-1535c6b4e1c1?q=80&w=300&auto=format",
+        "description": "Salsa especial Papa John's - Ajo, BBQ o Ranch"
     }
 ]

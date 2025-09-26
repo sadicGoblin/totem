@@ -1,13 +1,16 @@
-// Variables de color (coinciden con las del home component)
-$primary-blue: #0052cc;
-$secondary-blue: #0747a6;
-$accent-blue: #2684ff;
+// Variables de color Papa John's
+$papa-green: #145f21;
+$papa-light-green: #1a7a2e;
+$papa-yellow: #ffed00;
+$papa-red: #e31837;
+$papa-blue: #1e6bb8;
 $medium-gray: #dfe1e6;
-$dark-gray: #505f79;
+$dark-gray: #333333;
 $light-gray: #f4f5f7;
 $white: #ffffff;
-$discount-red: #c44545;
-$accent-green: #54dc28;
+$text-color: #333333;
+$text-color-white: #ffffff;
+$accent-green: #5bd830;
 
 // Modal backdrop (fondo oscuro)
 .modal-backdrop {
@@ -45,23 +48,24 @@ $accent-green: #54dc28;
   width: 36px;
   height: 36px;
   border-radius: 10%;
-  background-color: $primary-blue;
+  background-color: $papa-blue;
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 10;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
   
   span {
     font-size: 24px;
     line-height: 1;
-    color: $white;
+    color: $text-color-white;
   }
   
   &:hover {
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: $papa-red;
+    transform: scale(1.1);
   }
 }
 
@@ -95,8 +99,8 @@ $accent-green: #54dc28;
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: $discount-red;
-    color: $white;
+    background-color: $papa-red;
+    color: $text-color-white;
     padding: 5px 10px;
     border-radius: 4px;
     font-size: 14px;
@@ -104,14 +108,15 @@ $accent-green: #54dc28;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     letter-spacing: 0.5px;
     text-transform: uppercase;
+    font-family: 'Anton', sans-serif;
   }
   
   .special-tag {
     position: absolute;
     top: 10px;
     left: 10px;
-    background-color: $accent-blue;
-    color: $white;
+    background-color: $papa-yellow;
+    color: $text-color;
     padding: 5px 10px;
     border-radius: 4px;
     font-size: 14px;
@@ -119,6 +124,7 @@ $accent-green: #54dc28;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     letter-spacing: 0.5px;
     text-transform: uppercase;
+    font-family: 'Anton', sans-serif;
   }
 }
 
@@ -132,8 +138,11 @@ $accent-green: #54dc28;
   .product-name {
     font-size: 24px;
     font-weight: 600;
-    color: $secondary-blue;
+    color: $papa-blue;
     margin: 0 0 16px;
+    font-family: 'Anton', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
   
   .product-description {
@@ -151,10 +160,11 @@ $accent-green: #54dc28;
     .current-price {
       font-size: 24px;
       font-weight: bold;
-      color: $secondary-blue;
+      color: $papa-blue;
+      font-family: 'Anton', sans-serif;
       
       &.discounted {
-        color: $discount-red;
+        color: $papa-red;
       }
     }
     
@@ -178,14 +188,19 @@ $accent-green: #54dc28;
       border-radius: 4px;
       border: 2px solid $accent-green;
       background-color: $white;
+      color: $accent-green;
       display: flex;
       justify-content: center;
       align-items: center;
       cursor: pointer;
       font-size: 25px;
+      font-weight: bold;
+      transition: all 0.3s ease;
       
       &:hover {
-        background-color: $light-gray;
+        background-color: $accent-green;
+        color: $text-color-white;
+        transform: scale(1.1);
       }
       
       &:disabled {
@@ -200,23 +215,28 @@ $accent-green: #54dc28;
       font-weight: 600;
       min-width: 30px;
       text-align: center;
+      color: $text-color;
     }
   }
   
   .add-to-cart-btn {
     padding: 14px;
-    background-color: #5bd830;
-    color: $white;
+    background-color: $accent-green;
+    color: $text-color-white;
     border: none;
     border-radius: 4px;
     font-size: 22px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
+    transition: all 0.3s ease;
     margin-top: auto;
+    font-family: 'Anton', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     
     &:hover {
-      background-color: darken($primary-blue, 5%);
+      background-color: darken($accent-green, 10%);
+      transform: scale(1.05);
     }
     
     &:active {

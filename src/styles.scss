@@ -3,6 +3,19 @@ html {
   margin: 0;
   padding: 0;
   font-family: 'Poppins', sans-serif;
+}
 
+/* Clase utilitaria para usar la fuente Anton */
+.anton-font {
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+}
+
+/* Clase para títulos principales con Anton */
+.titulo-principal {
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 

@@ -1,19 +1,23 @@
-// Variables
-$primary-bg: #151d27;
-$secondary-bg: #222d3d;
-$accent-color: #ffbd00;
-$text-color: #ffffff;
+// Variables - Colores corporativos Papa John's
+$primary-bg: #f5f5f5;
+$secondary-bg: #ffffff;
+$accent-color: #ffed00;
+$papa-green: #145f21;
+$papa-light-green: #1a7a2e;
+$papa-red: #e31837;
+$text-color: #333333;
+$text-color-white: #ffffff;
 $border-radius: 8px;
-$shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-$accent-green: #54dc28;
-$primary-blue: #1a2533;
+$shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+$accent-green: #d0e94d;
+$primary-blue: #145f21;
 
 // Estilos generales
 .checkout-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: $text-color;
+  background-color: $primary-bg;
   color: $text-color;
   padding: 0;
   margin: 0;
@@ -26,7 +30,7 @@ $primary-blue: #1a2533;
   display: flex;
   align-items: center;
   padding: 16px 24px;
-  background-color: $secondary-bg;
+  background-color: $papa-green;
   box-shadow: $shadow;
 
   h1 {
@@ -36,23 +40,29 @@ $primary-blue: #1a2533;
     margin: 0;
     font-size: 2.4rem;
     font-weight: 600;
+    color: $text-color-white;
+    font-family: 'Anton', sans-serif;
+    letter-spacing: 1px;
   }
 }
 
 .back-btn {
   display: flex;
   align-items: center;
-  background-color: green;
+  background-color: $papa-light-green;
   border-radius: 5px;
-  color: $text-color;
+  color: $text-color-white;
   padding: 10px 16px;
   font-size: 20px;
   border: none;
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: all 0.3s ease;
+  font-family: 'Anton', sans-serif;
 
   &:hover {
-    color: $accent-color;
+    background-color: $accent-color;
+    color: $text-color;
+    transform: scale(1.05);
   }
 
   span {
@@ -87,8 +97,8 @@ $primary-blue: #1a2533;
   }
   
   .clear-cart-btn {
-    background-color: #d91a1a;
-    color: white;
+    background-color: $papa-red;
+    color: $text-color-white;
     border: none;
     border-radius: 4px;
     padding: 8px 16px;
@@ -96,14 +106,16 @@ $primary-blue: #1a2533;
     cursor: pointer;
     display: flex;
     align-items: center;
-    transition: background-color 0.2s ease;
+    transition: all 0.3s ease;
+    font-family: 'Anton', sans-serif;
     
     i {
       margin-right: 8px;
     }
     
     &:hover {
-      background-color: darken(#d91a1a, 10%);
+      background-color: darken($papa-red, 10%);
+      transform: scale(1.05);
     }
   }
   
@@ -118,23 +130,26 @@ $primary-blue: #1a2533;
     
     .empty-message {
       font-size: 36px;
-      color: $primary-blue;
+      color: $papa-green;
       margin-bottom: 30px;
+      font-family: 'Anton', sans-serif;
     }
     
     .continue-btn {
-      background-color: $primary-blue;
-      color: white;
+      background-color: $papa-green;
+      color: $text-color-white;
       border: none;
       padding: 15px 25px;
       border-radius: 30px;
       font-size: 30px;
       font-weight: bold;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
+      font-family: 'Anton', sans-serif;
       
       &:hover {
-        background-color: lighten($primary-blue, 5%);
+        background-color: $papa-light-green;
+        transform: scale(1.05);
       }
       
       &:active {
@@ -153,13 +168,14 @@ $primary-blue: #1a2533;
   border-radius: $border-radius;
   padding: 16px;
   box-shadow: $shadow;
+  border: 2px solid $papa-green;
 }
 
 .cart-item {
   display: flex;
   align-items: center;
   padding: 16px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   position: relative;
 
   &:last-child {
@@ -174,18 +190,19 @@ $primary-blue: #1a2533;
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #d91a1a;
-    color: white;
+    background-color: $papa-red;
+    color: $text-color-white;
     border: none;
     cursor: pointer;
     margin-right: 20px;
     font-size: 25px;
     font-weight: bold;
     padding: 0;
-    transition: background-color 0.2s ease;
+    transition: all 0.3s ease;
     
     &:hover {
-      background-color: darken(#d91a1a, 10%);
+      background-color: darken($papa-red, 10%);
+      transform: scale(1.1);
     }
     
     &:active {
@@ -218,7 +235,7 @@ $primary-blue: #1a2533;
 
     .item-price {
       font-size: 25px;
-      color: rgba(255, 255, 255, 0.8);
+      color: rgba(51, 51, 51, 0.8);
     }
   }
 
@@ -231,20 +248,21 @@ $primary-blue: #1a2533;
       width: 45px;
       height: 45px;
       border-radius: 50%;
-      border: none;
-      border: 2px solid $accent-green;
-      background-color: rgba(255, 255, 255, 0.1);
-      color: $text-color;
+      border: 2px solid $papa-green;
+      background-color: $secondary-bg;
+      color: $papa-green;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       font-size: 25px;
-      transition: background-color 0.2s ease;
+      font-weight: bold;
+      transition: all 0.3s ease;
 
       &:hover {
-        background-color: $accent-color;
-        color: $primary-bg;
+        background-color: $papa-green;
+        color: $text-color-white;
+        transform: scale(1.1);
       }
 
       &:disabled {
@@ -276,7 +294,7 @@ $primary-blue: #1a2533;
   left: 0;
   right: 0;
   width: 100%;
-  background-color: #1a2533; // Color azul oscuro como en la imagen
+  background-color: $papa-green;
   box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
   z-index: 100;
   padding: 20px 0;
@@ -303,7 +321,7 @@ $primary-blue: #1a2533;
     margin-top: 0;
     margin-bottom: 16px;
     padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 
     @media (min-width: 768px) {
       margin-bottom: 0;
@@ -347,33 +365,39 @@ $primary-blue: #1a2533;
   .total-label {
     margin-right: 15px;
     font-size: 30px;
+    color: $text-color-white;
+    font-family: 'Anton', sans-serif;
   }
   
   .total-amount {
     font-size: 32px;
-    color: #ffcc00; // Color amarillo como en la imagen
+    color: $accent-color;
+    font-family: 'Anton', sans-serif;
   }
 }
 
 .complete-order-btn {
-  background-color: #ffcc00; // Color amarillo como en la imagen
-  color: #000000;
+  background-color: $accent-color;
+  color: $text-color;
   padding: 15px 24px;
   border-radius: 4px;
   border: none;
   font-weight: 600;
   font-size: 26px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s ease;
   width: auto;
   min-width: 380px;
   height: 80px;
   white-space: nowrap;
+  font-family: 'Anton', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 
   &:hover {
     background-color: darken($accent-color, 10%);
+    transform: scale(1.05);
   }
-
 
   &:disabled {
     opacity: 0.5;
@@ -382,6 +406,7 @@ $primary-blue: #1a2533;
     
     &:hover {
       background-color: #999;
+      transform: none;
     }
   }
 }

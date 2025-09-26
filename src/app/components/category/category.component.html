@@ -2,97 +2,170 @@
 <app-cart-floating></app-cart-floating>
 
 <div class="category-container">
-  <div class="category-header">
-    <h1>Selecciona una categoría</h1>
+  <!-- Header con logo Papa John's -->
+  <div class="header-section">
+    <div class="logo-container">
+      <img class="papa-johns-logo" src="assets/images/papa-johns-logo.png" alt="Papa John's">
+    </div>
   </div>
 
-  <div class="category-selection">
-    <!-- <h2>Selecciona una categoría</h2> -->
-
-    <div class="category-grid">
-      <!-- Tarjeta de BEBIDAS -->
-      <div class="category-card" (click)="selectCategory('bebidas')">
-        <div class="card-image">
-          <img
-            src="assets/images/categories/bebidas.jpg"
-            alt="Bebidas"
-            onerror="this.src='assets/images/categories/default.jpg'"
-          />
+  <!-- Contenido principal: sidebar + productos -->
+  <div class="main-content">
+    <!-- Sidebar de categorías (izquierda) -->
+    <div class="categories-sidebar">
+      <div class="sidebar-header">
+        <h2>CATEGORÍAS</h2>
+      </div>
+      
+      <div class="categories-list">
+        <!-- Categoría PROMOCIONES -->
+        <div class="category-item" 
+             [class.active]="selectedCategory === 'promociones'" 
+             (click)="selectCategory('promociones')">
+          <div class="category-icon">
+            <img src="assets/images/categories/promociones.jpg" alt="Promociones" 
+                 onerror="this.src='assets/images/categories/default.jpg'">
+          </div>
+          <span class="category-name">PROMOCIONES</span>
         </div>
-        <div class="card-title">BEBIDAS</div>
+
+        <!-- Categoría PIZZAS -->
+        <div class="category-item" 
+             [class.active]="selectedCategory === 'pizzas'" 
+             (click)="selectCategory('pizzas')">
+          <div class="category-icon">
+            <img src="assets/images/categories/pizzas.jpg" alt="Pizzas" 
+                 onerror="this.src='assets/images/categories/default.jpg'">
+          </div>
+          <span class="category-name">PIZZAS</span>
+        </div>
+
+        <!-- Categoría ACOMPAÑAMIENTO -->
+        <div class="category-item" 
+             [class.active]="selectedCategory === 'acompañamiento'" 
+             (click)="selectCategory('acompañamiento')">
+          <div class="category-icon">
+            <img src="assets/images/categories/complementos.jpg" alt="Acompañamiento" 
+                 onerror="this.src='assets/images/categories/default.jpg'">
+          </div>
+          <span class="category-name">ACOMPAÑAMIENTO</span>
+        </div>
+
+        <!-- Categoría BEBIDAS -->
+        <div class="category-item" 
+             [class.active]="selectedCategory === 'bebidas'" 
+             (click)="selectCategory('bebidas')">
+          <div class="category-icon">
+            <img src="assets/images/categories/bebidas.jpg" alt="Bebidas" 
+                 onerror="this.src='assets/images/categories/default.jpg'">
+          </div>
+          <span class="category-name">BEBIDAS</span>
+        </div>
+
+        <!-- Categoría POSTRES -->
+        <div class="category-item" 
+             [class.active]="selectedCategory === 'postres'" 
+             (click)="selectCategory('postres')">
+          <div class="category-icon">
+            <img src="assets/images/categories/postres.jpg" alt="Postres" 
+                 onerror="this.src='assets/images/categories/default.jpg'">
+          </div>
+          <span class="category-name">POSTRES</span>
+        </div>
+
+        <!-- Categoría EXTRAS -->
+        <div class="category-item" 
+             [class.active]="selectedCategory === 'extras'" 
+             (click)="selectCategory('extras')">
+          <div class="category-icon">
+            <img src="assets/images/categories/extras.jpg" alt="Extras" 
+                 onerror="this.src='assets/images/categories/default.jpg'">
+          </div>
+          <span class="category-name">EXTRAS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Área de productos (derecha) -->
+    <div class="products-area">
+      <div class="products-header">
+        <h2>{{ getCategoryDisplayName(selectedCategory) }}</h2>
+      </div>
+      
+      <div class="products-grid">
+        <div class="product-card" *ngFor="let product of getFilteredProducts()">
+          <!-- Special tag -->
+          <div class="special-tag" *ngIf="product.specialTag">
+            {{ product.specialTag }}
+          </div>
+          
+          <!-- Discount tag -->
+          <div class="discount-tag" *ngIf="product.discount">
+            <span class="tag-icon">Oferta</span>
+          </div>
+
+          <!-- Product image (clickeable) -->
+          <div class="product-image" (click)="openProductModal(product)">
+            <img [src]="product.image" [alt]="product.name" />
+          </div>
+
+          <!-- Product info -->
+          <div class="product-info">
+            <div class="product-name">{{ product.name }}</div>
+            <div class="product-description">{{ product.description }}</div>
+            <div class="product-price">
+              <span class="current-price">{{ formatPrice(product.price) }}</span>
+              <span class="original-price" *ngIf="product.originalPrice">
+                {{ formatPrice(product.originalPrice) }}
+              </span>
+            </div>
+          </div>
+          
+          <!-- Add to cart buttons with quantity control -->
+          <div class="cart-controls">
+            <!-- Si no hay productos en el carrito, mostrar botón simple de añadir -->
+            <button 
+              class="add-to-cart-btn" 
+              (click)="addToCart(product)" 
+              *ngIf="getItemQuantityInCart(product.id) === 0">
+              <span class="btn-text">Agregar</span>
+              <span class="btn-icon">+</span>
+            </button>
+            
+            <!-- Si ya hay productos, mostrar controles de cantidad -->
+            <div class="quantity-controls" *ngIf="getItemQuantityInCart(product.id) > 0">
+              <button class="quantity-btn decrease" (click)="decreaseQuantity(product)">
+                <span>-</span>
+              </button>
+              <div class="quantity-display">
+                {{ getItemQuantityInCart(product.id) }}
+              </div>
+              <button class="quantity-btn increase" (click)="addToCart(product)">
+                <span>+</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Tarjeta de PIZZAS -->
-      <div class="category-card" (click)="selectCategory('pizzas')">
-        <div class="card-image">
-          <img
-            src="assets/images/categories/pizzas.jpg"
-            alt="Pizzas"
-            onerror="this.src='assets/images/categories/default.jpg'"
-          />
-        </div>
-        <div class="card-title">PIZZAS</div>
-      </div>
-
-      <!-- Tarjeta de POSTRES -->
-      <div class="category-card" (click)="selectCategory('postres')">
-        <div class="card-image">
-          <img
-            src="assets/images/categories/postres.jpg"
-            alt="Postres"
-            onerror="this.src='assets/images/categories/default.jpg'"
-          />
-        </div>
-        <div class="card-title">POSTRES</div>
-      </div>
-
-      <!-- Tarjeta de COMPLEMENTOS -->
-      <div class="category-card" (click)="selectCategory('complementos')">
-        <div class="card-image">
-          <img
-            src="assets/images/categories/complementos.jpg"
-            alt="Complementos"
-            onerror="this.src='assets/images/categories/default.jpg'"
-          />
-        </div>
-        <div class="card-title">COMPLEMENTOS</div>
-      </div>
-
-      <!-- Tarjeta de HAMBURGUESAS -->
-      <div class="category-card" (click)="selectCategory('hamburguesas')">
-        <div class="card-image">
-          <img
-            src="assets/images/categories/hamburguesas.jpg"
-            alt="Hamburguesas"
-            onerror="this.src='assets/images/categories/default.jpg'"
-          />
-        </div>
-        <div class="card-title">HAMBURGUESAS</div>
-      </div>
-
-      <!-- Tarjeta de ZAPATILLAS -->
-      <div class="category-card" (click)="selectCategory('zapatillas')">
-        <div class="card-image">
-          <img
-            src="assets/images/categories/zapatillas.jpg"
-            alt="Zapatillas"
-            onerror="this.src='assets/images/categories/default.jpg'"
-          />
-        </div>
-        <div class="card-title">ZAPATILLAS</div>
-      </div>
-
-      <!-- Tarjeta de CELULARES -->
-      <div class="category-card" (click)="selectCategory('celulares')">
-        <div class="card-image">
-          <img
-            src="assets/images/categories/celulares.jpg"
-            alt="Celulares"
-            onerror="this.src='assets/images/categories/default.jpg'"
-          />
-        </div>
-        <div class="card-title">CELULARES</div>
+      <!-- Botones de navegación -->
+      <div class="navigation-buttons">
+        <button class="nav-button back-btn" (click)="goBack()">
+          RETROCEDER
+        </button>
+        <button class="nav-button continue-btn" (click)="goToCheckout()">
+          CONTINUAR
+        </button>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Modal para detalles del producto -->
+<app-modal
+  [product]="selectedProduct"
+  [isOpen]="showModal"
+  [initialQuantity]="selectedProduct ? getItemQuantityInCart(selectedProduct.id) : 0"
+  (close)="closeModal()"
+  (addToCart)="handleAddToCartFromModal($event)"
+></app-modal>

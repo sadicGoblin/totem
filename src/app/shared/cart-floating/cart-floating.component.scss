@@ -1,7 +1,7 @@
 // Variables - Esquema de colores corporativo - Usando la paleta existente
-$primary-blue: #2e3e51;
+$primary-blue: #145f21;
 $secondary-blue: #3c5066;
-$accent-green: #54dc28;
+$accent-green: #d0e94d;
 $light-blue: #dce3ea;
 $light-gray: #eef0f3;
 $medium-gray: #c3c8cd;
@@ -13,7 +13,7 @@ $new-background: #586576;
 .cart-floating-button {
   font-family: "Inter", sans-serif;
   position: fixed;
-  bottom: 40px;
+  top: 40px;
   right: 40px;
   background-color: $primary-blue;
   color: white;
@@ -25,7 +25,7 @@ $new-background: #586576;
   transition: transform 0.2s, background-color 0.3s;
   display: flex;
   align-items: center;
-  min-width: 275px;
+  min-width: 175px;
   height: 60px;
   border: 3px solid #54dc28;
 
@@ -46,11 +46,11 @@ $new-background: #586576;
       display: flex;
       align-items: center;
 
-      &:before {
-        content: "\1F6D2";
-        margin-right: 10px;
-        font-size: 20px;
-      }
+      // &:before {
+      //   content: "\1F6D2";
+      //   margin-right: 10px;
+      //   font-size: 20px;
+      // }
     }
 
     .cart-count {
@@ -58,7 +58,7 @@ $new-background: #586576;
       top: 0px;
       right: -45px;
       background-color: $accent-green;
-      color: white;
+      color: $primary-blue;
       border-radius: 50%;
       width: 35px;
       height: 35px;
@@ -97,7 +97,7 @@ $new-background: #586576;
   .cart-header {
     height: 90px;
     padding: 15px;
-    background-color: $new-background;
+    background-color: $primary-blue;
     color: white;
     display: flex;
     justify-content: space-between;

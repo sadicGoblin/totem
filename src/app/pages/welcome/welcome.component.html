@@ -1,21 +1,22 @@
-<div class="welcome-container">
-  <!-- Video de fondo -->
-  <video autoplay muted loop playsinline class="background-video">
-    <source src="assets/videos/welcome.mp4" type="video/mp4">
-    <!-- Mensaje de fallback si el navegador no soporta video -->
-    Tu navegador no soporta videos HTML5.
-  </video>
-  
-  <!-- Overlay para oscurecer ligeramente el video y mejorar la legibilidad -->
-  <div class="video-overlay"></div>
-  
+<div class="welcome-container" (click)="navigateToCatalog()">
   <!-- Contenido principal -->
   <div class="welcome-content">
-    <h1>¡Bienvenido!</h1>   
-    <button class="start-button" (click)="navigateToCatalog()">
-      <span class="icon"><i class="fas fa-shopping-cart"></i></span>
-      PIDE AQUÍ
+    <!-- Logo de Papa John's -->
+    <div class="logo-container">
+      <img class="papa-johns-logo" src="assets/images/papa-johns-logo.png" alt="Papa John's" onerror="this.style.display='none';">
+    </div>
+    
+    <!-- Mascota de Papa John's (tomate) -->
+    <div class="mascot-container">
+      <img class="papa-johns-mascot" [src]="currentMascotImage" alt="Papa John's Mascot" onerror="this.style.display='none';">
+    </div>
+    
+    <!-- Botón principal -->
+    <button class="order-button" (click)="navigateToCatalog()">
+      ORDENA AQUÍ
     </button>
-    <img class="touch-image" src="assets/images/touch.png" alt="Logo" onerror="this.src='assets/images/touch.png'; this.onerror=null;">
+    
+    <!-- Texto inferior -->
+    <p class="touch-text">PRESIONA LA PANTALLA</p>
   </div>
 </div>
