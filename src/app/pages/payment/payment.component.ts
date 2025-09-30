@@ -17,47 +17,41 @@ export class PaymentComponent {
   cartTotal = 0;
   selectedMethod: 'cash' | 'mercadopago' | 'amipass' | 'card' | null = null;
   voucherPrinted = false;
-  
+
   constructor(private router: Router, private cartService: CartService) {
     // Obtener el total del carrito
     this.cartService.getCartTotal().subscribe(total => {
       this.cartTotal = total;
     });
   }
-  
+
   // Volver a la página anterior
   goBack(): void {
     this.router.navigate(['/checkout']);
   }
-  
+
   // Formatear precio para mostrar como moneda
   formatPrice(price: number): string {
     return '$' + price.toLocaleString('es-CL');
   }
-  
+
   // Seleccionar método de pago
   selectPaymentMethod(method: 'cash' | 'mercadopago' | 'amipass' | 'card'): void {
     this.selectedMethod = method;
-    
-    if(method === 'card') {
+
+    if (method === 'card') {
       // Para el pago con tarjeta, mostramos la interfaz especial
-      // No activamos processingPayment porque usamos la vista específica
-      
-      // Aquí podríamos iniciar la comunicación con la máquina de pago
-      // Por ahora solo simulamos un tiempo de espera para demo
       setTimeout(() => {
         // Simulamos un pago exitoso después de 10 segundos
         this.completeOrder();
       }, 10000);
-    } else if(method === 'cash') {
+    } else if (method === 'cash') {
       // Para pago en efectivo, generamos un número de pedido preliminar
       this.orderNumberPreview = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
       
-      // Aquí se imprimiría el voucher en la impresora térmica
+      // Aquí se imprime el voucher en la impresora térmica
       this.printVoucher();
-      
-      // No avanzamos automáticamente para que el cliente pueda ver la información
-      // Esperará a que presionen el botón "ENTENDIDO"
+
     } else {
       // Para otros métodos (mercadopago, amipass), mostramos el spinner de procesamiento general
       this.processingPayment = true;
@@ -68,60 +62,68 @@ export class PaymentComponent {
       }, 3000);
     }
   }
-  
+
   // Cancelar pago con tarjeta y volver a selección de método de pago
   cancelCardPayment(): void {
     this.selectedMethod = null;
   }
-  
+
   // Método para imprimir el voucher en la impresora térmica
   printVoucher(): void {
-    console.log('Preparando impresión con Parzibyte HTTP ESC/POS...');
-    
+    console.log('Enviando datos de productos al servidor de impresión...');
+
     this.cartService.getCartItems().subscribe(items => {
-      const operaciones: any[] = [
-        { nombre: "Iniciar" },
-        { nombre: "EstablecerAlineacion", argumentos: [1] },
-        { nombre: "EscribirTexto", argumentos: [`Pedido #${this.orderNumberPreview}\n`] },
-        { nombre: "EscribirTexto", argumentos: [`Total: ${this.formatPrice(this.cartTotal)}\n`] },
-        { nombre: "Feed", argumentos: [2] },
-        { nombre: "Corte" }
-      ];
-  
-      // Enviar las operaciones al servidor de impresión
+      // **LA CORRECCIÓN CLAVE ESTÁ AQUÍ**
+      // Creamos un objeto que coincida con lo que el servidor Flask espera.
+      const payload = {
+        // Opcional: puedes enviar el nombre de la impresora si lo tienes
+        // nombreImpresora: "nombre_de_tu_impresora_termica", 
+        productos: items // 'items' ya debería tener el formato {nombre, cantidad, precio}
+      };
+
+      // Enviar el payload correcto al servidor de impresión
       fetch('http://localhost:8000/imprimir', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(operaciones)
+        body: JSON.stringify(payload) // Enviamos el objeto con la clave "productos"
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          // Si la respuesta no es 2xx, lanzamos un error para que lo capture el .catch
+          throw new Error(`Error del servidor: ${res.status}`);
+        }
+        return res.json();
+      })
       .then(result => {
-        console.log('Resultado impresión:', result);
+        console.log('Resultado de la impresión:', result);
+        if (result.resultado === 'ok') {
+          this.voucherPrinted = true;
+        }
       })
       .catch(err => {
         console.error('Error enviando a la impresora:', err);
+        // Aquí podrías mostrar un mensaje de error al usuario
       });
     });
   }
-    
-  
+
+
   // Confirmación de que el cliente ha visto el voucher impreso
   confirmVoucherPrinted(): void {
     // Completamos el pedido como con cualquier otro método de pago
     this.completeOrder();
   }
-  
+
   // Completar el pedido después del pago
   completeOrder(): void {
     // Ocultamos la pantalla de pago
-    if(this.selectedMethod === 'card') {
-      
+    if (this.selectedMethod === 'card') {
       this.processingPayment = false;
     }
-    
+
     // Generamos un número de orden aleatorio
     this.orderNumber = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-    
+
     // Limpiar el carrito
     setTimeout(() => {
       this.cartService.clearCart();
