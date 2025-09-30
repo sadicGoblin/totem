@@ -1,4 +1,4 @@
-// Variables - Paleta corporativa Entel
+// Variables - Paleta corporativa (usar variables CSS dinámicas cuando sea posible)
 $primary-bg: #f8f9fa;
 $secondary-bg: #ffffff;
 $accent-color: #f73e00;
@@ -55,7 +55,7 @@ $light-blue: #e8f0ff;
     text-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
   
-  .entel-logo {
+  .logo {
     display: flex;
     align-items: center;
     justify-content: center;

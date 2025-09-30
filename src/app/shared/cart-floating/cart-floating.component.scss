@@ -1,6 +1,6 @@
-// Variables - Esquema de colores corporativo Entel
-$primary-blue: #062fff; // Azul principal Entel
-$secondary-orange: #f73e00; // Naranja secundario Entel
+// Variables - Esquema de colores corporativo
+$primary-blue: #062fff; // Color primario por defecto
+$secondary-orange: #f73e00; // Color secundario por defecto
 $accent-orange: #f73e00;
 $light-blue: #e8f0ff;
 $light-gray: #f8f9fa;
@@ -15,7 +15,7 @@ $shadow-blue: rgba(6, 47, 255, 0.15);
   position: fixed;
   bottom: 40px;
   right: 40px;
-  background: linear-gradient(135deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
+  background: linear-gradient(135deg, var(--primary-color, #{$primary-blue}) 0%, var(--primary-color-light, #{lighten($primary-blue, 10%)}) 100%);
   color: white;
   border-radius: 20px;
   box-shadow: 0 6px 20px $shadow-blue;
@@ -62,7 +62,7 @@ $shadow-blue: rgba(6, 47, 255, 0.15);
       position: absolute;
       top: 0px;
       right: -45px;
-      background: linear-gradient(135deg, $secondary-orange 0%, lighten($secondary-orange, 10%) 100%);
+      background: linear-gradient(135deg, var(--secondary-color, #{$secondary-orange}) 0%, var(--secondary-color-light, #{lighten($secondary-orange, 10%)}) 100%);
       color: white;
       border-radius: 50%;
       width: 35px;
@@ -103,7 +103,7 @@ $shadow-blue: rgba(6, 47, 255, 0.15);
   .cart-header {
     height: 90px;
     padding: 15px;
-    background: linear-gradient(315deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
+    background: linear-gradient(315deg, var(--primary-color, #{$primary-blue}) 0%, var(--primary-color-light, #{lighten($primary-blue, 10%)}) 100%);
     color: white;
     display: flex;
     justify-content: space-between;
@@ -117,7 +117,7 @@ $shadow-blue: rgba(6, 47, 255, 0.15);
       left: 0;
       right: 0;
       height: 3px;
-      background: linear-gradient(90deg, $secondary-orange, lighten($secondary-orange, 15%));
+      background: linear-gradient(90deg, var(--secondary-color, #{$secondary-orange}), var(--secondary-color-light, #{lighten($secondary-orange, 15%)}));
     }
 
     .cart-title {
@@ -313,7 +313,7 @@ $shadow-blue: rgba(6, 47, 255, 0.15);
     }
 
     .continue-btn {
-      background: linear-gradient(135deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
+      background: linear-gradient(135deg, var(--primary-color, #{$primary-blue}) 0%, var(--primary-color-light, #{lighten($primary-blue, 10%)}) 100%);
       color: white;
       border: none;
       padding: 12px 20px;
@@ -349,7 +349,7 @@ $shadow-blue: rgba(6, 47, 255, 0.15);
     }
 
     .checkout-btn {
-      background: linear-gradient(135deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
+      background: linear-gradient(135deg, var(--primary-color, #{$primary-blue}) 0%, var(--primary-color-light, #{lighten($primary-blue, 10%)}) 100%);
       color: white;
       border: none;
       padding: 15px;

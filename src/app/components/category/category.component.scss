@@ -1,6 +1,6 @@
-// Variables - Esquema de colores corporativo Entel
-$primary-blue: #062fff; // Azul principal Entel
-$secondary-orange: #f73e00; // Naranja secundario Entel
+// Variables - Esquema de colores corporativo
+$primary-blue: #062fff; // Color primario por defecto
+$secondary-orange: #f73e00; // Color secundario por defecto
 $light-blue: #e8f0ff; // Azul claro derivado
 $light-gray: #f8f9fa;
 $medium-gray: #6c757d;
@@ -18,10 +18,10 @@ $shadow-blue: rgba(6, 47, 255, 0.15);
   flex-direction: column;
 }
 
-// Header con gradiente Entel
+// Header con gradiente dinámico
 .category-header {
   min-height: 120px;
-  background: linear-gradient(135deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
+  background: linear-gradient(135deg, var(--primary-color, #{$primary-blue}) 0%, var(--primary-color-light, #{lighten($primary-blue, 10%)}) 100%);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -50,7 +50,7 @@ $shadow-blue: rgba(6, 47, 255, 0.15);
     }
   }
   
-  .entel-logo {
+  .logo {
     display: flex;
     align-items: center;
     justify-content: center;

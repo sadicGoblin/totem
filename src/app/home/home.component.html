@@ -10,8 +10,8 @@
     </svg>
   </button>
   <div class="current-category">{{ selectedCategory || 'TODOS LOS PRODUCTOS' }}</div>
-  <div class="entel-logo">
-    <img src="https://pdv-entel.web.app/assets/resources/Recurso1@3x.png" alt="Entel Logo" />
+  <div class="logo">
+    <img src="https://pdv-entel.web.app/assets/resources/Recurso1@3x.png" alt="Logo" />
   </div>
 </div>
 
@@ -28,21 +28,25 @@
       class="subcategory-btn" 
       [class.active]="selectedSubcategory === 'EQUIPOS'"
       (click)="setSubcategory('EQUIPOS')">
-      EQUIPOS
     </button>
   </div>
 </div>
 
 <div class="main-container">
-  <!-- Main content area with products grid -->
-  <div class="content-area">
-    <div class="products-grid">
+  <!-- Main content area -->
+  <!-- Loading indicator -->
+  <div class="loading-container" *ngIf="isLoadingProducts">
+    <div class="loading-spinner">Cargando productos...</div>
+  </div>
+
+  <!-- Products grid -->
+  <div class="products-grid" *ngIf="!isLoadingProducts">
+    <div class="product-grid-container">
       <div class="product-card" *ngFor="let product of getFilteredProducts()">
         <!-- Special tag -->
         <div class="special-tag" *ngIf="product.specialTag">
           {{ product.specialTag }}
         </div>
-        
         <!-- Discount tag -->
         <div class="discount-tag" *ngIf="product.discount">
           <span class="tag-icon">Oferta</span>

@@ -1,11 +1,14 @@
 import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Product, CartItem } from '../models/products.model';
+import { Product as ApiProduct } from '../models/product.model';
+import { CartItem, Product } from '../models/products.model';
 import { ProductService } from '../services/product.service';
 import { CartService } from '../services/cart.service';
+import { CategoryService } from '../services/category.service';
 import { ModalComponent } from '../components/modal/modal.component';
 import { CartFloatingComponent } from '../shared/cart-floating/cart-floating.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Category } from '../models/category.model';
 
 @Component({
   selector: 'app-home',
@@ -19,24 +22,22 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   isLandscapeMode: boolean = false;
-  selectedCategory: string | null = 'TELEFONIA';
-  selectedSubcategory: string | null = 'PLANES'; // Por defecto PLANES para TELEFONIA
+  selectedCategory: string | null = null;
+  selectedSubcategory: string | null = null;
   hideNavButtons: boolean = false; // Para ocultar los botones de navegación
 
   // Subscripciones
   private subscriptions: any[] = [];
 
   // Modal properties
-  selectedProduct: Product | null = null;
+  selectedProduct: any = null;
   showModal: boolean = false;
 
-  categories = [
-    'TELEFONIA',
-    'HOGAR',
-    'ACCESORIOS',
-  ];
+  // Categorías dinámicas desde API
+  categories: Category[] = [];
+  currentCategory: Category | null = null;
 
-  // Subcategorías por categoría principal
+  // Subcategorías por categoría principal (mantenemos para compatibilidad)
   subcategories: { [key: string]: string[] } = {
     'TELEFONIA': ['PLANES', 'EQUIPOS'],
     'HOGAR': ['INTERNET', 'PACKS', 'EQUIPOS'],
@@ -44,10 +45,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   };
 
   products: Product[] = [];
+  isLoadingProducts: boolean = false;
 
   constructor(
     private productService: ProductService,
     private cartService: CartService,
+    private categoryService: CategoryService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -55,44 +58,96 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Cargar productos
-    this.productService.getProducts().subscribe((products) => {
-      this.products = products;
+    // Primero cargar las categorías disponibles
+    this.categoryService.getCategoriesResults().subscribe({
+      next: (categories) => {
+        this.categories = categories;
+        console.log('Categorías cargadas:', categories);
 
-      // Verificar si hay un parámetro de categoría en la URL
-      // this.route.queryParams.subscribe(params => {
-      //   if (params['category']) {
-      //     const category = params['category'].toUpperCase();
-      //     // Verificar si la categoría existe en nuestras categorías
-      //     if (category === 'ALL') {
-      //       this.selectedCategory = null;
-      //     } else if (this.categories.includes(category) || category === 'TODO') {
-      //       this.selectedCategory = category;
-      //     }
+        // Después verificar parámetros de URL
+        this.route.queryParams.subscribe((params) => {
+          if (params['category']) {
+            const categorySlug = params['category'].toLowerCase();
+            console.log('Buscando categoría con slug:', categorySlug);
 
-      //     // Indicar que venimos de la página de categorías para ocultar los botones de navegación
-      //     this.hideNavButtons = true;
-      //   }
-      // });
+            // Buscar la categoría usando el método del servicio
+            this.currentCategory = this.categoryService.findCategoryBySlugOrName(categorySlug) || null;
 
-      this.route.queryParams.subscribe((params) => {
-        if (params['category']) {
-          const category = params['category'].toUpperCase();
+            if (this.currentCategory) {
+              console.log('Categoría encontrada:', this.currentCategory);
+              this.selectedCategory = this.currentCategory.name;
+              this.loadProductsByCategory(this.currentCategory.id);
+            } else {
+              console.warn('Categoría no encontrada:', categorySlug);
+              console.log('Categorías disponibles:', this.categories.map(c => ({ slug: c.slug, name: c.name })));
+            }
 
-          // Validar solo contra categorías disponibles
-          if (this.categories.includes(category)) {
-            this.selectedCategory = category;
-            // Establecer subcategoría por defecto
-            this.setDefaultSubcategory(category);
+            // Ocultar botones si venimos desde selección de categoría
+            this.hideNavButtons = true;
+          } else {
+            // Si no hay categoría específica, cargar todos los productos
+            this.loadAllProducts();
           }
-
-          // Ocultar botones si venimos desde selección de categoría
-          this.hideNavButtons = true;
-        }
-      });
+        });
+      },
+      error: (error) => {
+        console.error('Error cargando categorías:', error);
+        // Fallback: cargar todos los productos
+        this.loadAllProducts();
+      }
     });
+  }
 
-    // Ya no necesitamos suscribirnos al carrito, lo maneja CartFloatingComponent
+  /**
+   * Carga productos por categoría específica
+   */
+  private loadProductsByCategory(categoryId: number): void {
+    this.isLoadingProducts = true;
+    this.products = [];
+
+    console.log('Cargando productos para categoría ID:', categoryId);
+
+    this.productService.getProductsByCategory(categoryId).subscribe({
+      next: (products) => {
+        this.products = products as Product[];
+        this.isLoadingProducts = false;
+        console.log('Productos cargados:', products);
+      },
+      error: (error) => {
+        console.error('Error cargando productos por categoría:', error);
+        this.isLoadingProducts = false;
+      }
+    });
+  }
+
+  /**
+   * Carga todos los productos (fallback)
+   */
+  private loadAllProducts(): void {
+    this.isLoadingProducts = true;
+    this.productService.getProducts().subscribe({
+      next: (response) => {
+        this.products = response.results.map(product => ({
+          id: product.id,
+          sku: product.sku,
+          name: product.name,
+          price: product.price,
+          category: String(product.category),
+          image: product.image,
+          description: product.description,
+          discount: product.discount || 0,
+          specialTag: product.specialTag || '',
+          originalPrice: product.originalPrice || product.price,
+          quantity: product.quantity || 1
+        })) as Product[];
+        this.isLoadingProducts = false;
+        console.log('Todos los productos cargados:', this.products);
+      },
+      error: (error) => {
+        console.error('Error cargando todos los productos:', error);
+        this.isLoadingProducts = false;
+      }
+    });
   }
 
   @HostListener('window:resize')
@@ -140,7 +195,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     let filtered = this.products.filter(
-      (p) => p.category.toUpperCase() === this.selectedCategory?.toUpperCase()
+      (p) => String(p.category).toUpperCase() === this.selectedCategory?.toUpperCase()
     );
 
     // Si hay subcategoría seleccionada, filtrar también por subcategoría
@@ -158,7 +213,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   addToCart(product: Product): void {
-    this.cartService.addToCart(product);
+    const adaptedProduct = this.adaptProductForModal(product);
+    this.cartService.addToCart(adaptedProduct);
   }
 
   decreaseQuantity(product: Product): void {
@@ -174,8 +230,27 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
+  /**
+   * Convierte un producto al formato esperado por el modal
+   */
+  private adaptProductForModal(product: Product): any {
+    return {
+      id: product.id,
+      sku: product.sku || '',
+      name: product.name,
+      price: product.price,
+      category: String(product.category),
+      image: product.image || '',
+      description: product.description || '',
+      discount: product.discount,
+      specialTag: product.specialTag,
+      originalPrice: product.originalPrice,
+      quantity: product.quantity
+    };
+  }
+
   openProductModal(product: Product): void {
-    this.selectedProduct = product;
+    this.selectedProduct = this.adaptProductForModal(product);
     this.showModal = true;
   }
 
@@ -185,7 +260,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   // Método para manejar la adición de productos desde el modal con cantidades específicas
-  handleAddToCartFromModal(data: { product: Product; quantity: number }): void {
+  handleAddToCartFromModal(data: { product: any; quantity: number }): void {
     const { product, quantity } = data;
 
     // Si la cantidad es positiva, añadir al carrito

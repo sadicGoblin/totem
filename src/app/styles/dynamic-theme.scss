@@ -1,0 +1,172 @@
+/**
+ * Variables CSS dinámicas para temas de cliente
+ * Estas variables se actualizan automáticamente por ConfigService
+ */
+
+:root {
+  /* Colores por defecto - serán sobrescritos por ConfigService */
+  --primary-color: #000000;
+  --secondary-color: #FFD700;
+  --accent-color: #666666;
+  
+  /* Variables derivadas para diferentes opacidades */
+  --primary-color-light: color-mix(in srgb, var(--primary-color) 20%, white);
+  --primary-color-dark: color-mix(in srgb, var(--primary-color) 80%, black);
+  --secondary-color-light: color-mix(in srgb, var(--secondary-color) 20%, white);
+  --secondary-color-dark: color-mix(in srgb, var(--secondary-color) 80%, black);
+}
+
+/**
+ * Clases utilitarias para usar los colores dinámicos
+ */
+
+/* Colores de texto */
+.text-primary {
+  color: var(--primary-color) !important;
+}
+
+.text-secondary {
+  color: var(--secondary-color) !important;
+}
+
+.text-accent {
+  color: var(--accent-color) !important;
+}
+
+/* Colores de fondo */
+.bg-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.bg-secondary {
+  background-color: var(--secondary-color) !important;
+}
+
+.bg-accent {
+  background-color: var(--accent-color) !important;
+}
+
+.bg-primary-light {
+  background-color: var(--primary-color-light) !important;
+}
+
+.bg-secondary-light {
+  background-color: var(--secondary-color-light) !important;
+}
+
+/* Bordes */
+.border-primary {
+  border-color: var(--primary-color) !important;
+}
+
+.border-secondary {
+  border-color: var(--secondary-color) !important;
+}
+
+/* Botones dinámicos */
+.btn-primary-dynamic {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  
+  &:hover {
+    background-color: var(--primary-color-dark);
+    border-color: var(--primary-color-dark);
+  }
+  
+  &:active {
+    background-color: var(--primary-color-dark);
+    border-color: var(--primary-color-dark);
+  }
+}
+
+.btn-secondary-dynamic {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: var(--primary-color);
+  
+  &:hover {
+    background-color: var(--secondary-color-dark);
+    border-color: var(--secondary-color-dark);
+  }
+  
+  &:active {
+    background-color: var(--secondary-color-dark);
+    border-color: var(--secondary-color-dark);
+  }
+}
+
+.btn-outline-primary-dynamic {
+  background-color: transparent;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  
+  &:hover {
+    background-color: var(--primary-color);
+    color: white;
+  }
+}
+
+.btn-outline-secondary-dynamic {
+  background-color: transparent;
+  border-color: var(--secondary-color);
+  color: var(--secondary-color);
+  
+  &:hover {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+  }
+}
+
+/* Gradientes dinámicos */
+.gradient-primary-secondary {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+}
+
+.gradient-secondary-primary {
+  background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+}
+
+/* Sombras dinámicas */
+.shadow-primary {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 0 0 1px var(--primary-color);
+}
+
+.shadow-secondary {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 0 0 1px var(--secondary-color);
+}
+
+/* Estados de hover con colores dinámicos */
+.hover-primary {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: var(--primary-color-light);
+    transform: translateY(-2px);
+  }
+}
+
+.hover-secondary {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: var(--secondary-color-light);
+    transform: translateY(-2px);
+  }
+}
+
+/**
+ * Ejemplo de uso en componentes:
+ * 
+ * <div class="bg-primary text-secondary">
+ *   Fondo con color primario del cliente, texto con color secundario
+ * </div>
+ * 
+ * <button class="btn-primary-dynamic">
+ *   Botón que se adapta a los colores del cliente
+ * </button>
+ * 
+ * <div class="gradient-primary-secondary">
+ *   Gradiente usando los colores del cliente
+ * </div>
+ */

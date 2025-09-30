@@ -40,6 +40,7 @@ export class CategoryComponent implements OnInit {
     this.isLoading = true;
     this.categoryService.getCategoriesResults().subscribe({
       next: (categories: Category[]) => {
+        console.log('Categories loaded:', categories);
         this.categories = categories;
         this.isLoading = false;
       },

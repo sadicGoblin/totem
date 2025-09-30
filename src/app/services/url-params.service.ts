@@ -58,13 +58,27 @@ export class UrlParamsService {
     // Marcar como procesado para evitar duplicados
     this.skuProcessedSubject.next(skusString);
 
-    this.productService.getProducts().subscribe(products => {
+    this.productService.getProducts().subscribe(response => {
       const foundProducts: any[] = [];
       const notFoundSkus: string[] = [];
 
       skus.forEach(sku => {
-        const product = products.find(p => p.sku === sku);
-        if (product) {
+        const apiProduct = response.results.find((p: any) => p.sku === sku);
+        if (apiProduct) {
+          // Convertir al formato esperado por el carrito
+          const product = {
+            id: apiProduct.id,
+            sku: apiProduct.sku,
+            name: apiProduct.name,
+            price: apiProduct.price,
+            category: String(apiProduct.category),
+            image: apiProduct.image,
+            description: apiProduct.description,
+            discount: apiProduct.discount,
+            specialTag: apiProduct.specialTag,
+            originalPrice: apiProduct.originalPrice,
+            quantity: apiProduct.quantity
+          };
           foundProducts.push(product);
           this.cartService.addToCart(product);
         } else {
@@ -95,10 +109,24 @@ export class UrlParamsService {
 
   // Procesar el SKU encontrado en la URL
   private processSku(sku: string): void {
-    this.productService.getProducts().subscribe(products => {
-      const product = products.find(p => p.sku === sku);
+    this.productService.getProducts().subscribe(response => {
+      const apiProduct = response.results.find((p: any) => p.sku === sku);
       
-      if (product) {
+      if (apiProduct) {
+        // Convertir al formato esperado por el carrito
+        const product = {
+          id: apiProduct.id,
+          sku: apiProduct.sku,
+          name: apiProduct.name,
+          price: apiProduct.price,
+          category: String(apiProduct.category),
+          image: apiProduct.image,
+          description: apiProduct.description,
+          discount: apiProduct.discount,
+          specialTag: apiProduct.specialTag,
+          originalPrice: apiProduct.originalPrice,
+          quantity: apiProduct.quantity
+        };
         this.cartService.addToCart(product);
         this.skuProcessedSubject.next(sku);
         this.productAddedSubject.next(true);
