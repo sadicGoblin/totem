@@ -6,6 +6,9 @@ import { CartService } from '../services/cart.service';
 import { ModalComponent } from '../components/modal/modal.component';
 import { CartFloatingComponent } from '../shared/cart-floating/cart-floating.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ConfigService, ClientConfig } from '../services/config.service';
+import { CategoryService } from '../services/category.service';
+import { getActiveClientSlug } from '../config/client.config';
 
 @Component({
   selector: 'app-home',
@@ -22,6 +25,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   selectedCategory: string | null = 'TELEFONIA';
   selectedSubcategory: string | null = 'PLANES'; // Por defecto PLANES para TELEFONIA
   hideNavButtons: boolean = false; // Para ocultar los botones de navegación
+  
+  // Configuración del cliente
+  clientConfig: ClientConfig | null = null;
 
   // Subscripciones
   private subscriptions: any[] = [];
@@ -49,47 +55,50 @@ export class HomeComponent implements OnInit, OnDestroy {
     private productService: ProductService,
     private cartService: CartService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private configService: ConfigService,
+    private categoryService: CategoryService
   ) {
     this.checkOrientation();
   }
 
   ngOnInit(): void {
-    // Cargar productos
-    this.productService.getProducts().subscribe((products) => {
-      this.products = products;
+    // Cargar configuración del cliente
+    const clientSlug = getActiveClientSlug();
+    this.configService.loadConfig(clientSlug).subscribe({
+      next: (config) => {
+        this.clientConfig = config;
+      },
+      error: (error) => {
+        console.error('Error cargando configuración del cliente:', error);
+      }
+    });
 
-      // Verificar si hay un parámetro de categoría en la URL
-      // this.route.queryParams.subscribe(params => {
-      //   if (params['category']) {
-      //     const category = params['category'].toUpperCase();
-      //     // Verificar si la categoría existe en nuestras categorías
-      //     if (category === 'ALL') {
-      //       this.selectedCategory = null;
-      //     } else if (this.categories.includes(category) || category === 'TODO') {
-      //       this.selectedCategory = category;
-      //     }
-
-      //     // Indicar que venimos de la página de categorías para ocultar los botones de navegación
-      //     this.hideNavButtons = true;
-      //   }
-      // });
-
-      this.route.queryParams.subscribe((params) => {
-        if (params['category']) {
-          const category = params['category'].toUpperCase();
-
-          // Validar solo contra categorías disponibles
-          if (this.categories.includes(category)) {
-            this.selectedCategory = category;
-            // Establecer subcategoría por defecto
-            this.setDefaultSubcategory(category);
+    // Verificar si hay un parámetro de categoría en la URL
+    this.route.queryParams.subscribe((params) => {
+      if (params['category']) {
+        const categorySlug = params['category'].toLowerCase();
+        
+        // Buscar la categoría por slug y cargar productos filtrados
+        this.categoryService.getCategoryBySlug(categorySlug).subscribe((category) => {
+          if (category) {
+            this.selectedCategory = category.name.toUpperCase();
+            // Cargar productos filtrados por categoría
+            this.productService.getProductsByCategory(category.id).subscribe((products) => {
+              this.products = products;
+              console.log(`Productos cargados para categoría ${category.name}:`, products);
+            });
           }
-
-          // Ocultar botones si venimos desde selección de categoría
-          this.hideNavButtons = true;
-        }
-      });
+        });
+        
+        // Ocultar botones si venimos desde selección de categoría
+        this.hideNavButtons = true;
+      } else {
+        // Si no hay categoría seleccionada, cargar todos los productos
+        this.productService.getProducts().subscribe((products) => {
+          this.products = products;
+        });
+      }
     });
 
     // Ya no necesitamos suscribirnos al carrito, lo maneja CartFloatingComponent
@@ -135,26 +144,26 @@ export class HomeComponent implements OnInit, OnDestroy {
   // }
 
   getFilteredProducts(): Product[] {
-    if (this.selectedCategory === null) {
-      return this.products;
-    }
-
-    let filtered = this.products.filter(
-      (p) => p.category.toUpperCase() === this.selectedCategory?.toUpperCase()
-    );
-
-    // Si hay subcategoría seleccionada, filtrar también por subcategoría
+    // Los productos ya vienen filtrados del backend
+    // Solo necesitamos filtrar por subcategoría si aplica
     if (this.selectedSubcategory && this.shouldShowSubcategories()) {
-      filtered = filtered.filter(
+      return this.products.filter(
         (p: any) => p.subcategory?.toUpperCase() === this.selectedSubcategory?.toUpperCase()
       );
     }
-
-    return filtered;
+    
+    return this.products;
   }
 
-  formatPrice(price: number): string {
-    return '$' + price.toLocaleString('es-CL');
+  formatPrice(price: number | string | undefined): string {
+    if (price === undefined || price === null) {
+      return '$0';
+    }
+    // Convertir a número si viene como string
+    const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+    
+    // Formatear con separador de miles (punto) y sin decimales
+    return '$' + Math.round(numPrice).toLocaleString('es-CL');
   }
 
   addToCart(product: Product): void {

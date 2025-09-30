@@ -18,7 +18,7 @@ $shadow-black: rgba(0, 0, 0, 0.15);
   flex-direction: column;
 }
 
-// Header con gradiente Entel
+// Header con gradiente
 .category-header {
   min-height: 120px;
   background: linear-gradient(135deg, $primary-black 0%, lighten($primary-black, 10%) 100%);
@@ -37,15 +37,16 @@ $shadow-black: rgba(0, 0, 0, 0.15);
     flex: 1;
   }
   
-  .entel-logo {
+  .client-logo {
     display: flex;
     align-items: center;
     justify-content: center;
     
     img {
-      height: 80px;
+      height: 60px;
       width: auto;
       object-fit: contain;
+      max-width: 150px;
     }
   }
   

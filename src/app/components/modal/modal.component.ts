@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Product } from '../../models/products.model';
+import { Product, getProductPrice } from '../../models/products.model';
 
 @Component({
   selector: 'app-modal',
@@ -47,8 +47,19 @@ export class ModalComponent {
     }
   }
   
-  formatPrice(price: number): string {
-    return '$' + price.toLocaleString('es-CL');
+  formatPrice(price: number | string | undefined): string {
+    if (price === undefined || price === null) {
+      return '$0';
+    }
+    // Convertir a número si viene como string
+    const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+    
+    // Formatear con separador de miles (punto) y sin decimales
+    return '$' + Math.round(numPrice).toLocaleString('es-CL');
+  }
+  
+  getPrice(product: Product | null): number {
+    return product ? getProductPrice(product) : 0;
   }
   
   // Cerrar modal si se hace clic en el fondo (backdrop)

@@ -10,8 +10,8 @@
     </svg>
   </button>
   <div class="current-category">{{ selectedCategory || 'TODOS LOS PRODUCTOS' }}</div>
-  <div class="entel-logo">
-    <img src="https://storage.googleapis.com/liquidos-public/Isologo_R_crop.png" alt="Entel Logo" />
+  <div class="client-logo">
+    <img [src]="clientConfig?.logo_url || 'https://storage.googleapis.com/liquidos-public/Isologo_R_crop.png'" [alt]="clientConfig?.name + ' Logo' || 'Logo'" />
   </div>
 </div>
 
@@ -56,11 +56,11 @@
         <!-- Product info -->
         <div class="product-info">
           <div class="product-name">{{ product.name }}</div>
-          <div class="product-description">{{ product.description }}</div>
+          <div class="product-description" [innerHTML]="product.short_description || product.description"></div>
           <div class="product-price">
-            <span class="current-price">{{ formatPrice(product.price) }}</span>
-            <span class="original-price" *ngIf="product.originalPrice">
-              {{ formatPrice(product.originalPrice) }}
+            <span class="current-price">{{ formatPrice(product.price_1 || product.price || 0) }}</span>
+            <span class="original-price" *ngIf="product.price_2">
+              {{ formatPrice(product.price_2) }}
             </span>
           </div>
         </div>

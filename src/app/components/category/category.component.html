@@ -7,45 +7,43 @@
       <h1>¿Qué estás buscando hoy?</h1>
       <p>Explora nuestros productos y servicios</p>
     </div>
-    <div class="entel-logo">
-      <img src="https://storage.googleapis.com/liquidos-public/Isologo_R_crop.png" alt="Entel Logo" />
+    <div class="client-logo">
+      <img [src]="clientConfig?.logo_url || 'https://storage.googleapis.com/liquidos-public/Isologo_R_crop.png'" [alt]="clientConfig?.name + ' Logo' || 'Logo'" />
     </div>
   </div>
 
   <div class="category-selection">
     <!-- <h2>Selecciona una categoría</h2> -->
 
-    <!-- Loading State -->
-    <div *ngIf="loading" class="loading-container">
-      <div class="loading-spinner"></div>
-      <p>Cargando categorías...</p>
+    <!-- Loading spinner -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="loading-spinner">Cargando categorías...</div>
     </div>
 
-    <!-- Error State -->
-    <div *ngIf="error && !loading" class="error-container">
-      <p>Error al cargar las categorías. Por favor, intenta nuevamente.</p>
-      <button (click)="loadCategories()" class="retry-button">Reintentar</button>
-    </div>
-
-    <!-- Categories Grid -->
-    <div class="category-grid" *ngIf="!loading && !error">
+    <!-- Categories grid -->
+    <div *ngIf="!isLoading" class="category-grid">
       <div 
+        *ngFor="let category of categories" 
         class="category-card" 
-        *ngFor="let category of categories; trackBy: trackByCategory"
-        (click)="selectCategory(category)"
+        (click)="selectCategory(category.slug)"
       >
         <div class="card-image">
           <img
             [src]="category.image"
             [alt]="category.name"
-            (error)="onImageError($event, category)"
+            (error)="onImageError($event, category.name)"
           />
         </div>
         <div class="card-content">
-          <div class="card-title">{{ category.name.toUpperCase() }}</div>
-          <div class="card-description">{{ category.description }}</div>
+          <div class="card-title">{{ category.name }}</div>
+          <div class="card-description" [innerHTML]="category.description"></div>
         </div>
       </div>
+    </div>
+
+    <!-- Error message -->
+    <div *ngIf="!isLoading && categories.length === 0" class="no-categories">
+      <p>No se pudieron cargar las categorías. Por favor, intenta más tarde.</p>
     </div>
   </div>
 </div>

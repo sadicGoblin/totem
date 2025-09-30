@@ -56,8 +56,8 @@
       </button>
       <h1>Revisa aquí tu pedido</h1>
       <div class="spacer"></div>
-      <div class="entel-logo">
-        <img src="https://storage.googleapis.com/liquidos-public/Isologo_R_crop.png" alt="Entel Logo" />
+      <div class="client-logo">
+        <img src="https://storage.googleapis.com/liquidos-public/Isologo_R_crop.png" alt="Logo" />
       </div>
     </div>
 
@@ -82,7 +82,7 @@
             </div>
             <div class="item-details">
               <div class="item-name">{{ item.product.name }}</div>
-              <div class="item-price">{{ formatPrice(item.product.price) }}</div>
+              <div class="item-price">{{ formatPrice(getPrice(item)) }}</div>
             </div>
             <div class="item-quantity">
               <button class="quantity-btn" (click)="decreaseQuantity(item)">
@@ -93,7 +93,7 @@
                 <span>+</span>
               </button>
             </div>
-            <div class="item-total">{{ formatPrice(item.product.price * item.quantity) }}</div>
+            <div class="item-total">{{ formatPrice(getPrice(item) * item.quantity) }}</div>
           </div>
         </div>
         

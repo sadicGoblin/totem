@@ -42,14 +42,14 @@
         </div>
         <div class="item-info">
           <div class="item-name">{{ item.product.name }}</div>
-          <div class="item-price">{{ formatPrice(item.product.price) }}</div>
+          <div class="item-price">{{ formatPrice(getPrice(item)) }}</div>
         </div>
         <div class="item-quantity">
           <button class="quantity-btn" (click)="decreaseQuantity(item.product.id, $event)">-</button>
           <span class="quantity">{{ item.quantity }}</span>
           <button class="quantity-btn" (click)="increaseQuantity(item.product, $event)">+</button>
         </div>
-        <div class="item-total">{{ formatPrice(item.product.price * item.quantity) }}</div>
+        <div class="item-total">{{ formatPrice(getPrice(item) * item.quantity) }}</div>
       </div>
     </div>
     <div class="cart-empty" *ngIf="cartItems.length === 0">

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ElementRef, HostListener } from '@angular
 import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { ProductService } from '../../services/product.service';
-import { CartItem } from '../../models/products.model';
+import { CartItem, getProductPrice } from '../../models/products.model';
 import { CommonModule } from '@angular/common';
 import { ConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 
@@ -125,12 +125,23 @@ export class CartFloatingComponent implements OnInit, OnDestroy {
     this.cartService.removeFromCart(productId);
   }
   
-  formatPrice(price: number): string {
-    return '$ ' + price.toLocaleString('es-CL');
+  formatPrice(price: number | string | undefined): string {
+    if (price === undefined || price === null) {
+      return '$0';
+    }
+    // Convertir a número si viene como string
+    const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+    
+    // Formatear con separador de miles (punto) y sin decimales
+    return '$' + Math.round(numPrice).toLocaleString('es-CL');
+  }
+  
+  getPrice(item: CartItem): number {
+    return getProductPrice(item.product);
   }
   
   // Método para mostrar el modal de confirmación para vaciar carrito
-  clearCart(event: MouseEvent): void {
+  clearCart(event?: MouseEvent): void {
     // Detener la propagación del evento para evitar que se cierre el carrito
     if (event) {
       event.stopPropagation();

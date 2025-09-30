@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
-import { CartItem } from '../../models/products.model';
+import { CartItem, getProductPrice } from '../../models/products.model';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
 
 @Component({
@@ -41,8 +41,19 @@ export class CheckoutComponent implements OnInit {
   }
 
   // Formatear precio para mostrarlo con separador de miles y signo $
-  formatPrice(price: number): string {
-    return '$' + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  formatPrice(price: number | string | undefined): string {
+    if (price === undefined || price === null) {
+      return '$0';
+    }
+    // Convertir a número si viene como string
+    const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+    
+    // Formatear con separador de miles (punto) y sin decimales
+    return '$' + Math.round(numPrice).toLocaleString('es-CL');
+  }
+  
+  getPrice(item: CartItem): number {
+    return getProductPrice(item.product);
   }
 
   // Método para incrementar la cantidad de un producto

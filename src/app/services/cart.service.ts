@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { CartItem, Product } from '../models/products.model';
+import { CartItem, Product, getProductPrice } from '../models/products.model';
 
 @Injectable({
   providedIn: 'root'
@@ -105,7 +105,7 @@ export class CartService {
   // Calcular el total del carrito
   private updateCartTotal(cartItems: CartItem[]): void {
     const total = cartItems.reduce((sum, item) => 
-      sum + (item.product.price * item.quantity), 0);
+      sum + (getProductPrice(item.product) * item.quantity), 0);
     this.cartTotalSubject.next(total);
   }
   

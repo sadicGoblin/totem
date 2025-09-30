@@ -24,14 +24,14 @@
       <div class="product-details">
         <h2 class="product-name">{{ product.name }}</h2>
 
-        <p class="product-description">{{ product.description }}</p>
+        <div class="product-description" [innerHTML]="product.description"></div>
 
         <div class="product-price">
           <span class="current-price" [class.discounted]="product.discount">
-            {{ formatPrice(product.price) }}
+            {{ formatPrice(getPrice(product)) }}
           </span>
-          <span class="original-price" *ngIf="product.discount">
-            {{ formatPrice((product.price * 100) / (100 - product.discount)) }}
+          <span class="original-price" *ngIf="product.discount && product.discount > 0">
+            {{ formatPrice((getPrice(product) * 100) / (100 - product.discount)) }}
           </span>
         </div>
 

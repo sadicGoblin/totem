@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
+import { getProductPrice } from '../../models/products.model';
 import { PrinterService, ProductoTicket } from '../../services/printer.service';
 
 @Component({
@@ -90,7 +91,7 @@ export class PaymentComponent {
     const productos: ProductoTicket[] = items.map(item => ({
       nombre: item.product.name,
       cantidad: item.quantity,
-      precio: item.product.price
+      precio: getProductPrice(item.product)
     }));
 
     // Enviar al plugin de impresión con el número de pedido
