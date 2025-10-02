@@ -1,22 +1,31 @@
-<div class="welcome-container" (click)="navigateToCatalog()">
-  <!-- Contenido principal -->
+<!-- <div class="welcome-container" (click)="navigateToCatalog()">
   <div class="welcome-content">
-    <!-- Logo de Papa John's -->
     <div class="logo-container">
       <img class="papa-johns-logo" src="assets/images/papa-johns-logo.png" alt="Papa John's" onerror="this.style.display='none';">
     </div>
     
-    <!-- Mascota de Papa John's (tomate) -->
     <div class="mascot-container">
       <img class="papa-johns-mascot" [src]="currentMascotImage" alt="Papa John's Mascot" onerror="this.style.display='none';">
     </div>
     
-    <!-- Botón principal -->
     <button class="order-button" (click)="navigateToCatalog()">
       ORDENA AQUÍ
     </button>
     
-    <!-- Texto inferior -->
     <p class="touch-text">PRESIONA LA PANTALLA</p>
   </div>
+</div> -->
+
+<div class="video-container" (click)="navigateToCatalog()">
+  <video 
+    autoplay 
+    loop 
+    muted 
+    playsinline 
+    class="welcome-video"
+  >
+    <source src="assets/videos/home_papa.mp4" type="video/mp4">
+    <source src="assets/videos/home_papa.webm" type="video/webm">
+    Tu navegador no soporta el elemento de video.
+  </video>
 </div>
