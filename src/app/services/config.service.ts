@@ -32,6 +32,7 @@ export interface ClientConfig {
   providedIn: 'root'
 })
 export class ConfigService {
+  private readonly STORAGE_KEY = 'client_config';
   private configSubject = new BehaviorSubject<ClientConfig | null>(null);
   public config$ = this.configSubject.asObservable();
   
@@ -40,7 +41,38 @@ export class ConfigService {
     return this.configSubject.value;
   }
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    // Cargar configuración desde localStorage al iniciar
+    this.loadFromStorage();
+  }
+
+  /**
+   * Carga configuración desde localStorage si existe
+   */
+  private loadFromStorage(): void {
+    try {
+      const storedConfig = localStorage.getItem(this.STORAGE_KEY);
+      if (storedConfig) {
+        const config: ClientConfig = JSON.parse(storedConfig);
+        this.configSubject.next(config);
+        this.applyCSSVariables(config);
+        console.log('Configuración cargada desde localStorage:', config);
+      }
+    } catch (error) {
+      console.error('Error al cargar configuración desde localStorage:', error);
+    }
+  }
+
+  /**
+   * Guarda configuración en localStorage
+   */
+  private saveToStorage(config: ClientConfig): void {
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(config));
+    } catch (error) {
+      console.error('Error al guardar configuración en localStorage:', error);
+    }
+  }
 
   /**
    * Carga la configuración del cliente desde la API
@@ -52,7 +84,8 @@ export class ConfigService {
     return this.http.get<ClientConfig>(apiUrl).pipe(
       tap(config => {
         this.configSubject.next(config);
-        console.log('Configuración cargada:', config);
+        this.saveToStorage(config); // Guardar en localStorage
+        console.log('Configuración cargada desde API:', config);
         
         // Aplicar colores CSS dinámicamente
         this.applyCSSVariables(config);

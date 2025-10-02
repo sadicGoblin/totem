@@ -1,8 +1,16 @@
+// Variables CSS dinámicas (se sobrescriben desde ConfigService)
+:root {
+  --primary-color: #000000;
+  --secondary-color: #FFD700;
+  --accent-color: #007BFF;
+  --primary-color-light: #1a1a1a;
+  --secondary-color-light: #ffed4d;
+}
+
 body,
 html {
   margin: 0;
   padding: 0;
   font-family: 'Poppins', sans-serif;
-
 }
 

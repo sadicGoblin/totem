@@ -15,13 +15,13 @@ import { getActiveClientSlug } from '../../config/client.config';
   standalone: true,
   imports: [CommonModule, CartFloatingComponent, HttpClientModule],
   templateUrl: './category.component.html',
-  styleUrls: ['./category.component.scss']
+  styleUrls: ['./category.component.scss'],
 })
 export class CategoryComponent implements OnInit {
   categories: Category[] = [];
   isLoading = true;
   clientConfig: ClientConfig | null = null;
-  
+
   constructor(
     private router: Router,
     private cartService: CartService,
@@ -42,9 +42,9 @@ export class CategoryComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error cargando configuración del cliente:', error);
-      }
+      },
     });
-    
+
     this.loadCategories();
   }
 
@@ -64,10 +64,10 @@ export class CategoryComponent implements OnInit {
         this.isLoading = false;
         // Fallback en caso de error - mostrar categorías por defecto
         this.categories = [];
-      }
+      },
     });
   }
-  
+
   // selectCategory(category: string): void {
   //   // Navegamos al home con el parámetro de categoría
   //   if (category.toLowerCase() === 'all' || category.toLowerCase() === 'todo') {
@@ -85,7 +85,9 @@ export class CategoryComponent implements OnInit {
    */
   selectCategory(category: string): void {
     const formattedCategory = category.trim().toLowerCase();
-    this.router.navigate(['/home'], { queryParams: { category: formattedCategory } });
+    this.router.navigate(['/home'], {
+      queryParams: { category: formattedCategory },
+    });
   }
 
   /**
@@ -97,6 +99,4 @@ export class CategoryComponent implements OnInit {
     const img = event.target as HTMLImageElement;
     img.src = ``;
   }
-  
-
 }
