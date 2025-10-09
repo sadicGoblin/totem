@@ -27,7 +27,7 @@ export class AppComponent implements OnInit {
     // Cargar configuración del cliente al iniciar la app
     // Si ya existe en localStorage, se cargará automáticamente en el constructor del servicio
     // Aquí forzamos una actualización desde la API
-    const clientSlug = environment.clientSlug || 'liquidos';
+    const clientSlug = environment.clientSlug || 'default';
     
     this.configService.loadConfig(clientSlug).subscribe({
       next: (config) => {

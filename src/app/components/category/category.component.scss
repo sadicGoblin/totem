@@ -1,12 +1,13 @@
-// Variables - Nueva paleta negro y amarillo
-$primary-black: #000000; // Negro principal
-$secondary-yellow: #FFD700; // Amarillo secundario
-$light-yellow: #FFF8DC; // Amarillo claro derivado
+// Variables SCSS estáticas (colores auxiliares)
 $light-gray: #f8f9fa;
 $medium-gray: #6c757d;
 $dark-gray: #343a40;
 $white: #ffffff;
 $shadow-black: rgba(0, 0, 0, 0.15);
+
+// NOTA: Los colores principales (--primary-color, --secondary-color, etc.) 
+// se cargan dinámicamente desde la API vía ConfigService.
+// Usa var(--primary-color) directamente en tus estilos.
 
 // Estilos generales del contenedor
 .category-container {
@@ -21,7 +22,7 @@ $shadow-black: rgba(0, 0, 0, 0.15);
 // Header con gradiente
 .category-header {
   min-height: 120px;
-  background: linear-gradient(135deg, $primary-black 0%, lighten($primary-black, 10%) 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-light) 100%);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -57,7 +58,7 @@ $shadow-black: rgba(0, 0, 0, 0.15);
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, $secondary-yellow, lighten($secondary-yellow, 15%));
+    background: linear-gradient(90deg, var(--secondary-color), var(--secondary-color-light));
   }
   
   h1 {
@@ -85,7 +86,7 @@ $shadow-black: rgba(0, 0, 0, 0.15);
   flex: 1;
   
   h2 {
-    color: $primary-black;
+    color: var(--primary-color);
     font-size: 1.8rem;
     font-weight: 500;
     text-align: center;
@@ -102,7 +103,7 @@ $shadow-black: rgba(0, 0, 0, 0.15);
       transform: translateX(-50%);
       width: 60px;
       height: 2px;
-      background-color: $secondary-yellow;
+      background-color: var(--secondary-color);
     }
   }
 }
@@ -142,7 +143,7 @@ $shadow-black: rgba(0, 0, 0, 0.15);
   &:hover {
     transform: translateY(-12px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-    border-color: $primary-black;
+    border-color: var(--primary-color);
   }
   
   .card-image {
@@ -165,12 +166,12 @@ $shadow-black: rgba(0, 0, 0, 0.15);
   
   .card-content {
     padding: 24px 20px;
-    background: linear-gradient(135deg, $white 0%, $light-yellow 100%);
+    background: linear-gradient(135deg, $white 0%, var(--secondary-color-light) 100%);
     
     .card-title {
       font-size: 1.5rem;
       font-weight: 700;
-      color: $primary-black;
+      color: var(--primary-color);
       text-align: center;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -185,7 +186,7 @@ $shadow-black: rgba(0, 0, 0, 0.15);
         transform: translateX(-50%);
         width: 30px;
         height: 2px;
-        background-color: $secondary-yellow;
+        background-color: var(--secondary-color);
       }
     }
     
@@ -213,7 +214,7 @@ $shadow-black: rgba(0, 0, 0, 0.15);
     width: 50px;
     height: 50px;
     border: 4px solid $light-gray;
-    border-top: 4px solid $secondary-yellow;
+    border-top: 4px solid var(--secondary-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 20px;
@@ -244,7 +245,7 @@ $shadow-black: rgba(0, 0, 0, 0.15);
   }
 
   .retry-button {
-    background: linear-gradient(135deg, $primary-black 0%, lighten($primary-black, 10%) 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-light) 100%);
     color: $white;
     border: none;
     border-radius: 8px;
@@ -257,7 +258,7 @@ $shadow-black: rgba(0, 0, 0, 0.15);
     letter-spacing: 0.5px;
 
     &:hover {
-      background: linear-gradient(135deg, lighten($primary-black, 5%) 0%, lighten($primary-black, 15%) 100%);
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-light) 100%);
       transform: translateY(-2px);
       box-shadow: 0 4px 12px $shadow-black;
     }

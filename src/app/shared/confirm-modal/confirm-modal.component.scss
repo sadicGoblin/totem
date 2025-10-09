@@ -1,11 +1,13 @@
-// Variables
-$primary-black: #000000;
+// Variables estáticas
 $danger-color: #d91a1a;
 $warning-color: #f5a623;
 $text-color: #ffffff;
 $overlay-bg: rgba(0, 0, 0, 0.5);
 $modal-bg: #fff;
 $border-radius: 8px;
+
+// NOTA: Los colores principales se cargan dinámicamente desde la API
+// Usa var(--primary-color), var(--secondary-color), etc.
 
 // Estilos del modal
 .modal-overlay {
@@ -38,7 +40,7 @@ $border-radius: 8px;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #eee;
-  background-color: $primary-black;
+  background-color: var(--primary-color);
   color: white;
   
   .modal-title {
@@ -125,10 +127,10 @@ $border-radius: 8px;
   }
   
   &.primary {
-    background-color: $primary-black;
+    background-color: var(--primary-color);
     
     &:hover {
-      background-color: lighten($primary-black, 15%);
+      background-color: var(--primary-color-light);
     }
   }
 }

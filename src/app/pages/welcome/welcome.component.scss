@@ -1,13 +1,13 @@
-// Variables - Nueva paleta negro y amarillo
-$primary-black: #000000;
+// Variables estáticas (colores auxiliares)
 $secondary-black: #333333;
-$accent-yellow: #FFD700;
 $light-blue: #dce3ea;
 $light-gray: #eef0f3;
 $medium-gray: #c3c8cd;
 $dark-gray: #1f2731;
 $white: #ffffff;
-$secondary-yellow: #FFD700;
+
+// NOTA: Los colores principales se cargan dinámicamente desde la API
+// Usa var(--primary-color), var(--secondary-color), etc.
 
 .welcome-container {
   width: 100%;
@@ -82,7 +82,7 @@ h1 {
   font-size: 4rem;
   font-weight: 700;
   margin-bottom: 15px;
-  color: $primary-black;
+  color: var(--primary-color);
   letter-spacing: 2px;
   text-transform: uppercase;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -92,13 +92,13 @@ h2 {
   font-size: 2.5rem;
   font-weight: 600;
   margin-bottom: 20px;
-  color: $secondary-yellow; /* Color acento */
+  color: var(--secondary-color); /* Color acento */
 }
 
 p {
   font-size: 1.6rem;
   margin-bottom: 30px;
-  color: $primary-black;
+  color: var(--primary-color);
   line-height: 1.6;
   max-width: 600px;
   margin-left: auto;
@@ -106,7 +106,7 @@ p {
 }
 
 .start-button {
-  background-color: $primary-black; /* Color primario corporativo */
+  background-color: var(--primary-color); /* Color primario corporativo */
   color: $white;
   border: none;
   border-radius: 50px;
@@ -150,7 +150,7 @@ p {
   }
 
   &:hover {
-    background: linear-gradient(135deg, $primary-black 0%, $secondary-yellow 50%, $secondary-yellow 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 50%, var(--secondary-color) 100%);
     transform: scale(1.05);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   }

@@ -5,7 +5,7 @@
  */
 
 // Slug del cliente - cambiar este valor según el cliente que se desee usar
-export const ACTIVE_CLIENT_SLUG = 'liquidos';
+export const ACTIVE_CLIENT_SLUG = 'entel';
 
 /**
  * Obtiene el slug del cliente configurado

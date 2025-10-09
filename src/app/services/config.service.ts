@@ -115,17 +115,43 @@ export class ConfigService {
    * @param config Configuración del cliente
    */
   private applyCSSVariables(config: ClientConfig): void {
+    console.log('🎨 ===== APLICANDO VARIABLES CSS =====');
+    console.log('📋 Configuración recibida:', config);
+    
     const root = document.documentElement;
+    
+    // Aplicar color primario
+    console.log(`🔵 Aplicando --primary-color: ${config.primary_color}`);
     root.style.setProperty('--primary-color', config.primary_color);
+    
+    // Aplicar color secundario
+    console.log(`🟡 Aplicando --secondary-color: ${config.secondary_color}`);
     root.style.setProperty('--secondary-color', config.secondary_color);
     
     // Generar variaciones de colores más claros
-    root.style.setProperty('--primary-color-light', this.lightenColor(config.primary_color, 10));
-    root.style.setProperty('--secondary-color-light', this.lightenColor(config.secondary_color, 10));
+    const primaryLight = this.lightenColor(config.primary_color, 10);
+    console.log(`🔵💡 Aplicando --primary-color-light: ${primaryLight}`);
+    root.style.setProperty('--primary-color-light', primaryLight);
+    
+    const secondaryLight = this.lightenColor(config.secondary_color, 10);
+    console.log(`🟡💡 Aplicando --secondary-color-light: ${secondaryLight}`);
+    root.style.setProperty('--secondary-color-light', secondaryLight);
     
     if (config.accent_color) {
+      console.log(`🟣 Aplicando --accent-color: ${config.accent_color}`);
       root.style.setProperty('--accent-color', config.accent_color);
     }
+    
+    // Verificar que se aplicaron correctamente
+    console.log('✅ Variables CSS aplicadas en el DOM:');
+    console.log('   --primary-color:', getComputedStyle(root).getPropertyValue('--primary-color'));
+    console.log('   --secondary-color:', getComputedStyle(root).getPropertyValue('--secondary-color'));
+    console.log('   --primary-color-light:', getComputedStyle(root).getPropertyValue('--primary-color-light'));
+    console.log('   --secondary-color-light:', getComputedStyle(root).getPropertyValue('--secondary-color-light'));
+    if (config.accent_color) {
+      console.log('   --accent-color:', getComputedStyle(root).getPropertyValue('--accent-color'));
+    }
+    console.log('🎨 ===== FIN APLICACIÓN VARIABLES CSS =====\n');
 
     // También podemos aplicar el favicon dinámicamente
     if (config.favicon) {
