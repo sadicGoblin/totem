@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { CartItem } from '../../models/products.model';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
+import { CLIENT_CONFIG } from '../../../config/client.config';
 
 @Component({
   selector: 'app-checkout',
@@ -15,6 +16,7 @@ import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.
 export class CheckoutComponent implements OnInit {
   cartItems: CartItem[] = [];
   cartTotal: number = 0;
+  logoUrl = CLIENT_CONFIG.branding.logoUrl;
   orderComplete: boolean = false;
   processingPayment: boolean = false;
   orderNumber: string = '';

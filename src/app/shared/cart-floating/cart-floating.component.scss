@@ -1,15 +1,15 @@
-// Variables - Nueva paleta negro y amarillo
-$primary-black: #000000; // Negro principal
-$secondary-yellow: #FFD700; // Amarillo secundario
-$accent-yellow: #FFD700;
-$light-yellow: #FFF8DC;
-$light-gray: #f8f9fa;
+// Variables - Paleta TicketPro
+$primary-blue: #0066CC; // Azul principal TicketPro
+$secondary-blue: #004d99; // Azul secundario
+$accent-blue: #3399ff; // Azul acento
+$light-blue: #e6f0ff; // Azul claro
+$light-gray: #f5f7fa;
 $medium-gray: #6c757d;
 $dark-gray: #343a40;
 $white: #ffffff;
-$shadow-black: rgba(0, 0, 0, 0.15);
+$shadow-blue: rgba(0, 102, 204, 0.15);
 
-$discount-orange: #FFD700;
+$discount-blue: #3399ff;
 
 // Estilos del carrito flotante
 .cart-floating-button {
@@ -17,10 +17,10 @@ $discount-orange: #FFD700;
   position: fixed;
   bottom: 40px;
   right: 40px;
-  background: linear-gradient(135deg, $primary-black 0%, lighten($primary-black, 10%) 100%);
+  background: linear-gradient(135deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
   color: white;
   border-radius: 20px;
-  box-shadow: 0 6px 20px $shadow-black;
+  box-shadow: 0 6px 20px $shadow-blue;
   z-index: 100;
   padding: 15px 25px;
   cursor: pointer;
@@ -29,7 +29,7 @@ $discount-orange: #FFD700;
   align-items: center;
   min-width: 275px;
   height: 60px;
-  border: 3px solid $secondary-yellow;
+  border: 3px solid $accent-blue;
   
   &:hover {
     transform: translateY(-2px);
@@ -64,7 +64,7 @@ $discount-orange: #FFD700;
       position: absolute;
       top: 0px;
       right: -45px;
-      background: linear-gradient(135deg, $secondary-yellow 0%, lighten($secondary-yellow, 10%) 100%);
+      background: linear-gradient(135deg, $accent-blue 0%, lighten($accent-blue, 10%) 100%);
       color: white;
       border-radius: 50%;
       width: 35px;
@@ -74,7 +74,7 @@ $discount-orange: #FFD700;
       align-items: center;
       font-weight: bold;
       font-size: 20px;
-      box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+      box-shadow: 0 2px 8px rgba(0, 102, 204, 0.3);
     }
 
     .cart-amount {
@@ -105,7 +105,7 @@ $discount-orange: #FFD700;
   .cart-header {
     height: 90px;
     padding: 15px;
-    background: linear-gradient(315deg, $primary-black 0%, lighten($primary-black, 10%) 100%);
+    background: linear-gradient(315deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
     color: white;
     display: flex;
     justify-content: space-between;
@@ -119,7 +119,7 @@ $discount-orange: #FFD700;
       left: 0;
       right: 0;
       height: 3px;
-      background: linear-gradient(90deg, $secondary-yellow, lighten($secondary-yellow, 15%));
+      background: linear-gradient(90deg, $accent-blue, lighten($accent-blue, 15%));
     }
 
     .cart-title {
@@ -158,7 +158,7 @@ $discount-orange: #FFD700;
   }
   
   .clear-cart-btn {
-    background: linear-gradient(135deg, $secondary-yellow 0%, darken($secondary-yellow, 10%) 100%);
+    background: linear-gradient(135deg, $accent-blue 0%, darken($accent-blue, 10%) 100%);
     color: white;
     border: none;
     border-radius: 8px;
@@ -169,7 +169,7 @@ $discount-orange: #FFD700;
     align-items: center;
     transition: all 0.2s ease;
     text-transform: uppercase;
-    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
     
     i {
       margin-right: 8px;
@@ -177,7 +177,7 @@ $discount-orange: #FFD700;
     
     &:hover {
       transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(255, 215, 0, 0.4);
+      box-shadow: 0 6px 16px rgba(0, 102, 204, 0.4);
     }
   }
 
@@ -202,7 +202,7 @@ $discount-orange: #FFD700;
         width: 30px;
         height: 30px;
         border-radius: 50%;
-        background: linear-gradient(135deg, $secondary-yellow 0%, darken($secondary-yellow, 10%) 100%);
+        background: linear-gradient(135deg, $accent-blue 0%, darken($accent-blue, 10%) 100%);
         color: white;
         border: none;
         cursor: pointer;
@@ -211,11 +211,11 @@ $discount-orange: #FFD700;
         font-weight: bold;
         padding: 0;
         transition: all 0.2s ease;
-        box-shadow: 0 2px 6px rgba(255, 215, 0, 0.3);
+        box-shadow: 0 2px 6px rgba(0, 102, 204, 0.3);
 
         &:hover {
           transform: translateY(-1px);
-          box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4);
+          box-shadow: 0 4px 10px rgba(0, 102, 204, 0.4);
         }
 
         &:active {
@@ -261,9 +261,9 @@ $discount-orange: #FFD700;
           width: 45px;
           height: 45px;
           border-radius: 50%;
-          border: 2px solid $primary-black;
+          border: 2px solid $primary-blue;
           background-color: white;
-          color: $primary-black;
+          color: $primary-blue;
           font-size: 35px;
           font-weight: bold;
           display: flex;
@@ -273,7 +273,7 @@ $discount-orange: #FFD700;
           transition: all 0.2s ease;
 
           &:hover {
-            background-color: $primary-black;
+            background-color: $primary-blue;
             color: white;
           }
 
@@ -315,7 +315,7 @@ $discount-orange: #FFD700;
     }
 
     .continue-btn {
-      background: linear-gradient(135deg, $primary-black 0%, lighten($primary-black, 10%) 100%);
+      background: linear-gradient(135deg, $primary-blue 0%, lighten($primary-blue, 10%) 100%);
       color: white;
       border: none;
       padding: 12px 20px;
@@ -323,7 +323,7 @@ $discount-orange: #FFD700;
       font-size: 30px;
       cursor: pointer;
       transition: all 0.2s ease;
-      box-shadow: 0 4px 12px $shadow-black;
+      box-shadow: 0 4px 12px $shadow-blue;
 
       &:hover {
         transform: translateY(-1px);
@@ -351,7 +351,7 @@ $discount-orange: #FFD700;
     }
 
     .checkout-btn {
-      background: linear-gradient(135deg, $primary-black 0%, lighten($primary-black, 15%) 100%);
+      background: linear-gradient(135deg, $primary-blue 0%, lighten($primary-blue, 15%) 100%);
       color: white;
       border: none;
       padding: 15px;
@@ -360,9 +360,9 @@ $discount-orange: #FFD700;
       font-weight: 600;
       width: 100%;
       cursor: pointer;
-      border: 4px solid $secondary-yellow;
+      border: 4px solid $accent-blue;
       transition: all 0.2s ease;
-      box-shadow: 0 4px 12px $shadow-black;
+      box-shadow: 0 4px 12px $shadow-blue;
 
       &:hover {
         transform: translateY(-1px);

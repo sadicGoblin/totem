@@ -1,14 +1,14 @@
-// Variables (usando los mismos colores que tu aplicación)
-$primary-bg: #1a1a1a;
-$secondary-bg: #2a2a2a;
-$accent-color: #ffd700;
+// Variables - Paleta TicketPro
+$primary-bg: #003366;
+$secondary-bg: #004d99;
+$accent-color: #3399ff;
 $text-color: #ffffff;
 $border-radius: 6px;
-$shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+$shadow: 0 5px 15px rgba(0, 102, 204, 0.5);
 
 // Variables adicionales
-$dark-blue: #1e3a5f;
-$primary-black: #000000;
+$dark-blue: #0066CC;
+$primary-blue: #0066CC;
 $white: #ffffff;
 $success-green: #2ecc71;
 $danger-red: #e74c3c;
@@ -166,11 +166,11 @@ $danger-red: #e74c3c;
       }
       
       &.submit-btn {
-        background-color: $primary-black;
+        background-color: $primary-blue;
         color: $white;
         
         &:hover, &:active {
-          background-color: lighten($primary-black, 15%);
+          background-color: lighten($primary-blue, 15%);
           transform: translateY(-2px);
         }
       }

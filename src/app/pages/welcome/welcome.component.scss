@@ -1,13 +1,12 @@
-// Variables - Nueva paleta negro y amarillo
-$primary-black: #000000;
-$secondary-black: #333333;
-$accent-yellow: #FFD700;
-$light-blue: #dce3ea;
-$light-gray: #eef0f3;
-$medium-gray: #c3c8cd;
+// Variables - Paleta TicketPro
+$primary-blue: #0066CC;
+$secondary-blue: #004d99;
+$accent-blue: #3399ff;
+$light-blue: #e6f0ff;
+$light-gray: #f5f7fa;
+$medium-gray: #8c9bab;
 $dark-gray: #1f2731;
 $white: #ffffff;
-$secondary-yellow: #FFD700;
 
 .welcome-container {
   width: 100%;
@@ -82,7 +81,7 @@ h1 {
   font-size: 4rem;
   font-weight: 700;
   margin-bottom: 15px;
-  color: $primary-black;
+  color: $primary-blue;
   letter-spacing: 2px;
   text-transform: uppercase;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -92,13 +91,13 @@ h2 {
   font-size: 2.5rem;
   font-weight: 600;
   margin-bottom: 20px;
-  color: $secondary-yellow; /* Color acento */
+  color: $accent-blue; /* Color acento */
 }
 
 p {
   font-size: 1.6rem;
   margin-bottom: 30px;
-  color: $primary-black;
+  color: $primary-blue;
   line-height: 1.6;
   max-width: 600px;
   margin-left: auto;
@@ -106,7 +105,7 @@ p {
 }
 
 .start-button {
-  background-color: $primary-black; /* Color primario corporativo */
+  background-color: $primary-blue; /* Color primario corporativo */
   color: $white;
   border: none;
   border-radius: 50px;
@@ -150,7 +149,7 @@ p {
   }
 
   &:hover {
-    background: linear-gradient(135deg, $primary-black 0%, $secondary-yellow 50%, $secondary-yellow 100%);
+    background: linear-gradient(135deg, $primary-blue 0%, $secondary-blue 50%, $accent-blue 100%);
     transform: scale(1.05);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   }

@@ -6,6 +6,7 @@ import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
 import { CartFloatingComponent } from '../../shared/cart-floating/cart-floating.component';
 import { Category } from '../../models/category.model';
+import { CLIENT_CONFIG } from '../../../config/client.config';
 
 @Component({
   selector: 'app-category',
@@ -18,6 +19,7 @@ export class CategoryComponent implements OnInit {
   categories: Category[] = [];
   loading = false;
   error = false;
+  logoUrl = CLIENT_CONFIG.branding.logoUrl;
   
   constructor(
     private router: Router,

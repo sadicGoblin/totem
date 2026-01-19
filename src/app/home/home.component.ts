@@ -6,6 +6,7 @@ import { CartService } from '../services/cart.service';
 import { ModalComponent } from '../components/modal/modal.component';
 import { CartFloatingComponent } from '../shared/cart-floating/cart-floating.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CLIENT_CONFIG } from '../../config/client.config';
 
 @Component({
   selector: 'app-home',
@@ -20,6 +21,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class HomeComponent implements OnInit, OnDestroy {
   isLandscapeMode: boolean = false;
   selectedCategory: string | null = 'TELEFONIA';
+  logoUrl = CLIENT_CONFIG.branding.logoUrl;
   selectedSubcategory: string | null = 'PLANES'; // Por defecto PLANES para TELEFONIA
   hideNavButtons: boolean = false; // Para ocultar los botones de navegación
 

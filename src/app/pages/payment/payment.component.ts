@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { PrinterService, ProductoTicket } from '../../services/printer.service';
+import { CLIENT_CONFIG } from '../../../config/client.config';
 
 @Component({
   selector: 'app-payment',
@@ -14,6 +15,7 @@ import { PrinterService, ProductoTicket } from '../../services/printer.service';
 export class PaymentComponent {
   processingPayment = false;
   orderNumber = '';
+  logoUrl = CLIENT_CONFIG.branding.logoUrl;
   orderNumberPreview = '';
   cartTotal = 0;
   selectedMethod: 'cash' | 'mercadopago' | 'amipass' | 'card' | null = null;

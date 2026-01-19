@@ -1,6 +1,6 @@
 export const CLIENT_CONFIG = {
   // ⭐ CAMBIAR SOLO ESTA LÍNEA POR CLIENTE
-  organizationSlug: 'liquidos',
+  organizationSlug: 'ticketpro',
   
   // Configuración de API
   apiBase: 'http://catalogue.favric.cl/api',
@@ -8,11 +8,12 @@ export const CLIENT_CONFIG = {
   
   // Personalización opcional por cliente
   branding: {
-    primaryColor: '#000000',
-    secondaryColor: '#FFD700',
-    lightColor: '#FFF8DC',
+    primaryColor: '#0066CC',
+    secondaryColor: '#004d99',
+    accentColor: '#3399ff',
+    lightColor: '#e6f0ff',
     storeName: '', // Se obtiene de la API
-    logoUrl: '', // Se obtiene de la API o se usa default
+    logoUrl: 'https://www.ticketpro.cl/assets/images/logotipoTP.png',
   },
   
   // Configuración de funcionalidades
