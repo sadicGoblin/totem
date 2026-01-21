@@ -1,11 +1,17 @@
 import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Product, CartItem } from '../models/products.model';
-import { ProductService } from '../services/product.service';
 import { CartService } from '../services/cart.service';
+import { CatalogueService, Product as CatalogueProduct } from '../services/catalogue.service';
+import { Product } from '../models/products.model';
 import { ModalComponent } from '../components/modal/modal.component';
 import { CartFloatingComponent } from '../shared/cart-floating/cart-floating.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+
+// Interface extendida para agregar categoryId
+interface ProductWithCategory extends Product {
+  categoryId?: number;
+}
 
 @Component({
   selector: 'app-home',
@@ -19,34 +25,27 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   isLandscapeMode: boolean = false;
-  selectedCategory: string | null = 'TELEFONIA';
-  selectedSubcategory: string | null = 'PLANES'; // Por defecto PLANES para TELEFONIA
-  hideNavButtons: boolean = false; // Para ocultar los botones de navegación
+  selectedCategory: string | null = null;
+  selectedCategoryId: number | null = null;
+  hideNavButtons: boolean = false;
+
+  // Logo de la tienda desde client_configuration
+  get storeLogo(): string {
+    const config = this.catalogueService.getClientConfiguration();
+    return config?.logo || config?.logo_url || '';
+  }
 
   // Subscripciones
-  private subscriptions: any[] = [];
+  private subscriptions: Subscription[] = [];
 
   // Modal properties
-  selectedProduct: Product | null = null;
+  selectedProduct: ProductWithCategory | null = null;
   showModal: boolean = false;
 
-  categories = [
-    'TELEFONIA',
-    'HOGAR',
-    'ACCESORIOS',
-  ];
-
-  // Subcategorías por categoría principal
-  subcategories: { [key: string]: string[] } = {
-    'TELEFONIA': ['PLANES', 'EQUIPOS'],
-    'HOGAR': ['INTERNET', 'PACKS', 'EQUIPOS'],
-    'ACCESORIOS': ['PROTECCION', 'CARGA', 'AUDIO']
-  };
-
-  products: Product[] = [];
+  products: ProductWithCategory[] = [];
 
   constructor(
-    private productService: ProductService,
+    private catalogueService: CatalogueService,
     private cartService: CartService,
     private router: Router,
     private route: ActivatedRoute
@@ -55,44 +54,82 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Cargar productos
-    this.productService.getProducts().subscribe((products) => {
-      this.products = products;
+    // Scroll al inicio de la página
+    window.scrollTo(0, 0);
+    
+    // Cargar productos desde el caché local
+    this.loadProducts();
 
-      // Verificar si hay un parámetro de categoría en la URL
-      // this.route.queryParams.subscribe(params => {
-      //   if (params['category']) {
-      //     const category = params['category'].toUpperCase();
-      //     // Verificar si la categoría existe en nuestras categorías
-      //     if (category === 'ALL') {
-      //       this.selectedCategory = null;
-      //     } else if (this.categories.includes(category) || category === 'TODO') {
-      //       this.selectedCategory = category;
-      //     }
-
-      //     // Indicar que venimos de la página de categorías para ocultar los botones de navegación
-      //     this.hideNavButtons = true;
-      //   }
-      // });
-
-      this.route.queryParams.subscribe((params) => {
-        if (params['category']) {
-          const category = params['category'].toUpperCase();
-
-          // Validar solo contra categorías disponibles
-          if (this.categories.includes(category)) {
-            this.selectedCategory = category;
-            // Establecer subcategoría por defecto
-            this.setDefaultSubcategory(category);
-          }
-
-          // Ocultar botones si venimos desde selección de categoría
-          this.hideNavButtons = true;
-        }
-      });
+    // Suscribirse a los parámetros de la URL
+    const paramsSub = this.route.queryParams.subscribe((params) => {
+      if (params['categoryId']) {
+        this.selectedCategoryId = parseInt(params['categoryId'], 10);
+        this.selectedCategory = params['categoryName'] || 'Categoría';
+        this.hideNavButtons = true;
+      } else {
+        this.selectedCategoryId = null;
+        this.selectedCategory = null;
+      }
     });
+    this.subscriptions.push(paramsSub);
 
-    // Ya no necesitamos suscribirnos al carrito, lo maneja CartFloatingComponent
+    // Suscribirse a cambios del catálogo para actualizar productos
+    const catalogueSub = this.catalogueService.catalogue$.subscribe((catalogue) => {
+      if (catalogue) {
+        this.loadProducts();
+      }
+    });
+    this.subscriptions.push(catalogueSub);
+  }
+
+  /**
+   * Carga productos desde el CatalogueService y los adapta al formato del componente
+   */
+  private loadProducts(): void {
+    const catalogueProducts = this.catalogueService.getProducts();
+    this.products = catalogueProducts
+      .filter(p => p.state === 'publish' && !p.is_removed)
+      .map(p => this.mapCatalogueProduct(p));
+  }
+
+  /**
+   * Mapea un producto del catálogo al formato del componente
+   */
+  private mapCatalogueProduct(p: CatalogueProduct): ProductWithCategory {
+    const price = p.price_1 ? parseFloat(p.price_1) : 0;
+    const originalPrice = p.price_2 ? parseFloat(p.price_2) : undefined;
+    
+    // Calcular porcentaje de descuento si hay precio original mayor al precio actual
+    let discountPercent: number | undefined;
+    if (originalPrice && originalPrice > price) {
+      discountPercent = Math.round(((originalPrice - price) / originalPrice) * 100);
+    }
+    
+    return {
+      id: p.id,
+      name: p.name,
+      description: p.short_description || p.description || '',
+      price: price,
+      originalPrice: discountPercent ? originalPrice : undefined,
+      image: p.images && p.images.length > 0 ? p.images[0].image : this.getPlaceholderImage(p.name),
+      category: p.categories && p.categories.length > 0 ? p.categories[0].name : '',
+      categoryId: p.categories && p.categories.length > 0 ? p.categories[0].id : undefined,
+      discount: discountPercent
+    };
+  }
+
+  /**
+   * Genera un placeholder SVG inline para productos sin imagen
+   */
+  private getPlaceholderImage(productName: string): string {
+    const text = productName.substring(0, 12);
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+        <rect width="300" height="300" fill="#f5f5f5"/>
+        <text x="150" y="150" font-family="Arial, sans-serif" font-size="16" fill="#999" text-anchor="middle" dominant-baseline="middle">${text}</text>
+      </svg>
+    `;
+    return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg.trim());
   }
 
   @HostListener('window:resize')
@@ -100,68 +137,26 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.isLandscapeMode = window.innerWidth > window.innerHeight;
   }
 
-  setCategory(category: string | null): void {
-    this.selectedCategory = category;
-    if (category) {
-      this.setDefaultSubcategory(category);
-    }
-  }
-
-  setDefaultSubcategory(category: string): void {
-    if (category === 'TELEFONIA') {
-      this.selectedSubcategory = 'PLANES';
-    } else {
-      this.selectedSubcategory = null;
-    }
-  }
-
-  setSubcategory(subcategory: string): void {
-    this.selectedSubcategory = subcategory;
-  }
-
-  getAvailableSubcategories(): string[] {
-    if (!this.selectedCategory) return [];
-    return this.subcategories[this.selectedCategory] || [];
-  }
-
-  shouldShowSubcategories(): boolean {
-    return this.selectedCategory === 'TELEFONIA';
-  }
-
-  // getFilteredProducts(): Product[] {
-  //   return this.selectedCategory === null
-  //     ? this.products
-  //     : this.products.filter(p => p.category === this.selectedCategory);
-  // }
-
-  getFilteredProducts(): Product[] {
-    if (this.selectedCategory === null) {
+  /**
+   * Filtra productos por categoría seleccionada (usando categoryId)
+   */
+  getFilteredProducts(): ProductWithCategory[] {
+    if (this.selectedCategoryId === null) {
       return this.products;
     }
 
-    let filtered = this.products.filter(
-      (p) => p.category.toUpperCase() === this.selectedCategory?.toUpperCase()
-    );
-
-    // Si hay subcategoría seleccionada, filtrar también por subcategoría
-    if (this.selectedSubcategory && this.shouldShowSubcategories()) {
-      filtered = filtered.filter(
-        (p: any) => p.subcategory?.toUpperCase() === this.selectedSubcategory?.toUpperCase()
-      );
-    }
-
-    return filtered;
+    return this.products.filter(p => p.categoryId === this.selectedCategoryId);
   }
 
   formatPrice(price: number): string {
     return '$' + price.toLocaleString('es-CL');
   }
 
-  addToCart(product: Product): void {
+  addToCart(product: ProductWithCategory): void {
     this.cartService.addToCart(product);
   }
 
-  decreaseQuantity(product: Product): void {
+  decreaseQuantity(product: ProductWithCategory): void {
     this.cartService.decreaseQuantity(product.id);
   }
 
@@ -174,7 +169,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  openProductModal(product: Product): void {
+  openProductModal(product: ProductWithCategory): void {
     this.selectedProduct = product;
     this.showModal = true;
   }

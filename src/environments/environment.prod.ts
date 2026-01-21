@@ -3,7 +3,7 @@ import { CLIENT_CONFIG } from '../config/client.config';
 export const environment = {
   production: true,
   apiUrl: CLIENT_CONFIG.apiBase,
-  organizationSlug: CLIENT_CONFIG.organizationSlug,
+  catalogueCode: CLIENT_CONFIG.catalogueCode,
   branding: CLIENT_CONFIG.branding,
   features: CLIENT_CONFIG.features
 };

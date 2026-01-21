@@ -1,7 +1,7 @@
-// Variables (usando los mismos colores que tu aplicación)
+// Variables - Colores por defecto (se sobrescriben con CSS variables desde la API)
 $primary-bg: #1a1a1a;
 $secondary-bg: #2a2a2a;
-$accent-color: #ffd700;
+$accent-color: #2997db;
 $text-color: #ffffff;
 $border-radius: 6px;
 $shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
@@ -170,7 +170,7 @@ $danger-red: #e74c3c;
         color: $white;
         
         &:hover, &:active {
-          background-color: lighten($primary-black, 15%);
+          background-color: #262626;
           transform: translateY(-2px);
         }
       }

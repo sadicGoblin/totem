@@ -8,20 +8,20 @@ import { CLIENT_CONFIG } from '../../config/client.config';
 })
 export class BaseApiService {
   private baseUrl = CLIENT_CONFIG.apiBase;
-  private orgSlug = CLIENT_CONFIG.organizationSlug;
+  private catalogueCode = CLIENT_CONFIG.catalogueCode;
 
   constructor(private http: HttpClient) {}
 
   /**
-   * Agrega automáticamente el org_slug a todas las requests
+   * Agrega automáticamente el catalogue__code a todas las requests
    * @param endpoint Endpoint de la API
    * @param params Parámetros adicionales opcionales
    */
   private buildUrl(endpoint: string, params?: Record<string, any>): string {
     const url = new URL(`${this.baseUrl}/${endpoint}`);
     
-    // Agregar org_slug automáticamente
-    url.searchParams.set('org_slug', this.orgSlug);
+    // Agregar catalogue__code automáticamente para filtrar por catálogo
+    url.searchParams.set('catalogue__code', this.catalogueCode);
     
     // Agregar parámetros adicionales si existen
     if (params) {
@@ -36,7 +36,7 @@ export class BaseApiService {
   }
 
   /**
-   * GET request genérico que agrega automáticamente org_slug
+   * GET request genérico que agrega automáticamente catalogue__code
    */
   get<T>(endpoint: string, params?: Record<string, any>): Observable<T> {
     const fullUrl = this.buildUrl(endpoint, params);
@@ -44,7 +44,7 @@ export class BaseApiService {
   }
 
   /**
-   * POST request genérico que agrega automáticamente org_slug
+   * POST request genérico que agrega automáticamente catalogue__code
    */
   post<T>(endpoint: string, body: any, params?: Record<string, any>): Observable<T> {
     const fullUrl = this.buildUrl(endpoint, params);
@@ -52,7 +52,7 @@ export class BaseApiService {
   }
 
   /**
-   * PUT request genérico que agrega automáticamente org_slug
+   * PUT request genérico que agrega automáticamente catalogue__code
    */
   put<T>(endpoint: string, body: any, params?: Record<string, any>): Observable<T> {
     const fullUrl = this.buildUrl(endpoint, params);
@@ -60,7 +60,7 @@ export class BaseApiService {
   }
 
   /**
-   * DELETE request genérico que agrega automáticamente org_slug
+   * DELETE request genérico que agrega automáticamente catalogue__code
    */
   delete<T>(endpoint: string, params?: Record<string, any>): Observable<T> {
     const fullUrl = this.buildUrl(endpoint, params);
@@ -75,9 +75,9 @@ export class BaseApiService {
   }
 
   /**
-   * Getter para el slug de la organización actual
+   * Getter para el código del catálogo actual
    */
-  get currentOrgSlug(): string {
-    return this.orgSlug;
+  get currentCatalogueCode(): string {
+    return this.catalogueCode;
   }
 }
