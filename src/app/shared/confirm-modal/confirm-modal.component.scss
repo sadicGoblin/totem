@@ -1,5 +1,6 @@
-// Variables
-$primary-black: #000000;
+// Variables - Colores dinámicos desde branding
+$primary-color: var(--primary-color, #2997db);
+$secondary-color: var(--secondary-color, #1054da);
 $danger-color: #d91a1a;
 $warning-color: #f5a623;
 $text-color: #ffffff;
@@ -38,7 +39,7 @@ $border-radius: 8px;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #eee;
-  background-color: $primary-black;
+  background: linear-gradient(135deg, var(--primary-color, #2997db) 0%, var(--secondary-color, #1054da) 100%);
   color: white;
   
   .modal-title {
@@ -125,10 +126,10 @@ $border-radius: 8px;
   }
   
   &.primary {
-    background-color: $primary-black;
+    background: linear-gradient(135deg, var(--primary-color, #2997db) 0%, var(--secondary-color, #1054da) 100%);
     
     &:hover {
-      background-color: #262626;
+      filter: brightness(0.9);
     }
   }
 }

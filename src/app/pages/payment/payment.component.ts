@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
+import { CatalogueService } from '../../services/catalogue.service';
 import { PrinterService, ProductoTicket } from '../../services/printer.service';
 
 @Component({
@@ -18,11 +19,18 @@ export class PaymentComponent {
   cartTotal = 0;
   selectedMethod: 'cash' | 'mercadopago' | 'amipass' | 'card' | null = null;
   voucherPrinted = false;
+
+  get storeLogo(): string {
+    return this.catalogueService.getClientConfiguration()?.logo_url || 
+           this.catalogueService.getClientConfiguration()?.logo || 
+           '';
+  }
   
   constructor(
     private router: Router, 
     private cartService: CartService,
-    private printerService: PrinterService
+    private printerService: PrinterService,
+    private catalogueService: CatalogueService
   ) {
     // Obtener el total del carrito
     this.cartService.getCartTotal().subscribe(total => {

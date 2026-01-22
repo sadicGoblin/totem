@@ -463,7 +463,7 @@ $light-blue: #3c5066;
       font-weight: 600;
       margin-bottom: 10px;
       line-height: 1.3;
-      color: $primary-black;
+      color: var(--primary-color, #2997db);
     }
     
     .product-description {
@@ -488,7 +488,7 @@ $light-blue: #3c5066;
       .current-price {
         font-size: 30px;
         font-weight: bold;
-        color: $primary-black;
+        color: var(--primary-color, #2997db);
       }
       
       .original-price {
@@ -606,11 +606,8 @@ $light-blue: #3c5066;
       font-weight: bold;
     }
 
-    &:hover {
-      background-color: #262626;
-    }
-    
     &:active {
+      background-color: var(--secondary-color, #1054da);
       transform: scale(0.98);
     }
   }

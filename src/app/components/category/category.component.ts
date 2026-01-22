@@ -119,4 +119,18 @@ export class CategoryComponent implements OnInit {
            this.catalogueService.getClientConfiguration()?.logo || 
            '';
   }
+
+  /**
+   * Título del header de categorías (configurable via metadata)
+   */
+  get categoryTitle(): string {
+    return this.catalogueService.getMetadata('texts.category_title', '¿Qué estás buscando hoy?');
+  }
+
+  /**
+   * Subtítulo del header de categorías (configurable via metadata)
+   */
+  get categorySubtitle(): string {
+    return this.catalogueService.getMetadata('texts.category_subtitle', 'Explora nuestros productos y servicios');
+  }
 }

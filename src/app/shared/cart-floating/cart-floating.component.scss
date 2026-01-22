@@ -293,9 +293,12 @@ $discount-orange: #f5a623;
 
       .item-total {
         font-weight: 600;
-        min-width: 80px;
+        min-width: 110px;
+        width: 110px;
         text-align: right;
         font-size: 25px;
+        flex-shrink: 0;
+        color: var(--primary-color, #2997db);
       }
     }
   }

@@ -502,4 +502,27 @@ export class CatalogueService {
   getCurrency(): string {
     return this.catalogueData?.catalogue?.currency || 'CLP';
   }
+
+  /**
+   * Obtiene un valor de metadata con un valor por defecto
+   * @param key Clave en formato dot notation (ej: 'texts.category_title')
+   * @param defaultValue Valor por defecto si no existe
+   */
+  getMetadata<T>(key: string, defaultValue: T): T {
+    const metadata = this.catalogueData?.client_configuration?.metadata;
+    if (!metadata) return defaultValue;
+    
+    const keys = key.split('.');
+    let value: any = metadata;
+    
+    for (const k of keys) {
+      if (value && typeof value === 'object' && k in value) {
+        value = value[k];
+      } else {
+        return defaultValue;
+      }
+    }
+    
+    return value as T ?? defaultValue;
+  }
 }

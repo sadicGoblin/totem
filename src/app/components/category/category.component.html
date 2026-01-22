@@ -4,8 +4,8 @@
 <div class="category-container">
   <div class="category-header">
     <div class="header-content">
-      <h1>¿Qué estás buscando hoy?</h1>
-      <p>Explora nuestros productos y servicios</p>
+      <h1>{{ categoryTitle }}</h1>
+      <p>{{ categorySubtitle }}</p>
     </div>
     <div class="store-logo" *ngIf="storeLogo">
       <img [src]="storeLogo" alt="Store Logo" />
