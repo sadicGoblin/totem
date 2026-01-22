@@ -118,7 +118,7 @@ export class CheckoutComponent implements OnInit {
 
   // Volver a la página principal
   goToCategory(): void {
-    this.router.navigate(['/category']);
+    this.router.navigate(['/home']);
   }
   
   // Mostrar modal para vaciar el carrito completamente

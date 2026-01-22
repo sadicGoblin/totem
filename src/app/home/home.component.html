@@ -1,23 +1,83 @@
 <!-- Componente compartido del carrito flotante -->
 <app-cart-floating></app-cart-floating>
 
-<!-- Barra de navegación superior (solo visible cuando venimos de categorías) -->
-<div class="top-nav-bar" *ngIf="hideNavButtons">
-  <button class="back-button" (click)="goBackToCategories()">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M19 12H5"></path>
-      <path d="M12 19l-7-7 7-7"></path>
-    </svg>
-  </button>
-  <div class="current-category">{{ selectedCategory || 'TODOS LOS PRODUCTOS' }}</div>
+<!-- Header con logo -->
+<div class="top-header">
   <div class="store-logo" *ngIf="storeLogo">
     <img [src]="storeLogo" alt="Logo" />
   </div>
 </div>
 
-<div class="main-container">
-  <!-- Main content area with products grid -->
-  <div class="content-area">
+<!-- Slides promocionales -->
+<div class="promo-slides" *ngIf="slides.length > 0">
+  <div class="slides-container">
+    <div 
+      class="slide-item" 
+      *ngFor="let slide of slides; let i = index"
+      [class.active]="i === currentSlideIndex"
+      (click)="onSlideClick(slide)">
+      <img [src]="slide.image" [alt]="slide.name" />
+      <div class="slide-content" *ngIf="slide.name || slide.description">
+        <h3>{{ slide.name }}</h3>
+        <p *ngIf="slide.description">{{ slide.description }}</p>
+        <span class="slide-btn" *ngIf="slide.button_text">{{ slide.button_text }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="slide-indicators" *ngIf="slides.length > 1">
+    <span 
+      *ngFor="let slide of slides; let i = index" 
+      class="indicator" 
+      [class.active]="i === currentSlideIndex"
+      (click)="goToSlide(i)">
+    </span>
+  </div>
+</div>
+
+<div class="main-layout">
+  <!-- Sidebar de categorías -->
+  <aside class="categories-sidebar">
+    <div class="sidebar-title">Categorías</div>
+    
+    <!-- Opción "Todos" -->
+    <div 
+      class="category-item" 
+      [class.active]="selectedCategoryId === null"
+      (click)="selectCategory(null)">
+      <div class="category-icon all-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M4 6h4v4H4V6zm6 0h4v4h-4V6zm6 0h4v4h-4V6zM4 12h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 18h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"/>
+        </svg>
+      </div>
+      <span class="category-name">Todos</span>
+    </div>
+    
+    <!-- Categorías dinámicas -->
+    <div 
+      class="category-item" 
+      *ngFor="let category of categories"
+      [class.active]="selectedCategoryId === category.id"
+      (click)="selectCategory(category.id)">
+      <div class="category-icon">
+        <img 
+          *ngIf="category.image || category.icon_file" 
+          [src]="category.icon_file || category.image" 
+          [alt]="category.name" />
+        <span *ngIf="!category.image && !category.icon_file" class="category-initial">
+          {{ category.name.charAt(0) }}
+        </span>
+      </div>
+      <span class="category-name">{{ category.name }}</span>
+    </div>
+  </aside>
+
+  <!-- Contenido principal con productos -->
+  <main class="products-main">
+    <div class="section-header">
+      <h2>{{ selectedCategory || 'Todos los productos' }}</h2>
+      <span class="product-count">{{ getFilteredProducts().length }} productos</span>
+    </div>
+    
     <div class="products-grid">
       <div class="product-card" *ngFor="let product of getFilteredProducts()">
         <!-- Special tag -->
@@ -27,7 +87,7 @@
         
         <!-- Discount tag -->
         <div class="discount-tag" *ngIf="product.discount">
-          <span class="tag-icon">Oferta</span>
+          <span class="tag-icon">-{{ product.discount }}%</span>
         </div>
 
         <!-- Product image (clickeable) -->
@@ -49,7 +109,6 @@
         
         <!-- Add to cart buttons with quantity control -->
         <div class="cart-controls">
-          <!-- Si no hay productos en el carrito, mostrar botón simple de añadir -->
           <button 
             class="add-to-cart-btn" 
             (click)="addToCart(product)" 
@@ -58,7 +117,6 @@
             <span class="btn-icon">+</span>
           </button>
           
-          <!-- Si ya hay productos, mostrar controles de cantidad -->
           <div class="quantity-controls" *ngIf="getItemQuantityInCart(product.id) > 0">
             <button class="quantity-btn decrease" (click)="decreaseQuantity(product)">
               <span>-</span>
@@ -73,10 +131,10 @@
         </div>
       </div>
       
-      <!-- Elemento fantasma para reservar espacio y evitar que el carrito flotante oculte productos -->
+      <!-- Espaciador para el carrito flotante -->
       <div class="product-card cart-spacer"></div>
     </div>
-  </div>
+  </main>
 </div>
 
 <!-- Modal para detalles del producto -->

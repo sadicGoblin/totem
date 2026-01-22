@@ -88,6 +88,7 @@ export interface Product {
   sku?: string;
   description?: string;
   short_description?: string;
+  image?: string; // Imagen principal del producto
   tags?: string;
   tags_list?: string[];
   

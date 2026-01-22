@@ -310,7 +310,9 @@ $light-blue: #3c5066;
     font-weight: 600;
     font-size: 25px;
     text-align: right;
-    min-width: 80px;
+    min-width: 120px;
+    width: 120px;
+    flex-shrink: 0;
   }
 }
 
