@@ -2,14 +2,20 @@
 <app-cart-floating></app-cart-floating>
 
 <!-- Header con logo -->
-<div class="top-header">
+<div class="top-header" [ngStyle]="{
+  'background': homeTheme.header.background,
+  'padding': homeTheme.header.padding
+}">
   <div class="store-logo" *ngIf="storeLogo">
-    <img [src]="storeLogo" alt="Logo" />
+    <img [src]="storeLogo" alt="Logo" [ngStyle]="{ 'height': homeTheme.header.logo.height }" />
   </div>
 </div>
 
 <!-- Slides promocionales -->
-<div class="promo-slides" *ngIf="slides.length > 0">
+<div class="promo-slides" *ngIf="slides.length > 0" [ngStyle]="{
+  'height': homeTheme.promoSlides.height,
+  'background-color': homeTheme.promoSlides.backgroundColor
+}">
   <div class="slides-container">
     <div 
       class="slide-item" 
@@ -17,11 +23,11 @@
       [class.active]="i === currentSlideIndex"
       (click)="onSlideClick(slide)">
       <img [src]="slide.image" [alt]="slide.name" />
-      <div class="slide-content" *ngIf="slide.name || slide.description">
+      <!-- <div class="slide-content" *ngIf="slide.name || slide.description">
         <h3>{{ slide.name }}</h3>
         <p *ngIf="slide.description">{{ slide.description }}</p>
         <span class="slide-btn" *ngIf="slide.button_text">{{ slide.button_text }}</span>
-      </div>
+      </div> -->
     </div>
   </div>
   <div class="slide-indicators" *ngIf="slides.length > 1">
@@ -36,8 +42,16 @@
 
 <div class="main-layout">
   <!-- Sidebar de categorías -->
-  <aside class="categories-sidebar">
-    <div class="sidebar-title">Categorías</div>
+  <aside class="categories-sidebar" [ngStyle]="{
+    'width': homeTheme.sidebar.width,
+    'background-color': homeTheme.sidebar.backgroundColor,
+    'border-color': homeTheme.sidebar.borderColor
+  }">
+    <div class="sidebar-title" [ngStyle]="{
+      'color': homeTheme.sidebar.title.color,
+      'font-size': homeTheme.sidebar.title.fontSize,
+      'font-weight': homeTheme.sidebar.title.fontWeight
+    }">Categorías</div>
     
     <!-- Opción "Todos" -->
     <div 
@@ -72,36 +86,66 @@
   </aside>
 
   <!-- Contenido principal con productos -->
-  <main class="products-main">
-    <div class="section-header">
+  <main class="products-main" [ngStyle]="{
+    'background-color': homeTheme.productsMain.backgroundColor,
+    'padding': homeTheme.productsMain.padding
+  }">
+<!-- <div class="section-header">
       <h2>{{ selectedCategory || 'Todos los productos' }}</h2>
       <span class="product-count">{{ getFilteredProducts().length }} productos</span>
-    </div>
+    </div> -->
     
     <div class="products-grid">
-      <div class="product-card" *ngFor="let product of getFilteredProducts()">
+      <div class="product-card" *ngFor="let product of getFilteredProducts()" [ngStyle]="{
+        'background-color': homeTheme.productCard.backgroundColor,
+        'border-radius': homeTheme.productCard.borderRadius,
+        'border-color': homeTheme.productCard.borderColor
+      }">
         <!-- Special tag -->
-        <div class="special-tag" *ngIf="product.specialTag">
+        <div class="special-tag" *ngIf="product.specialTag" [ngStyle]="{
+          'background-color': homeTheme.productCard.specialTag.backgroundColor,
+          'color': homeTheme.productCard.specialTag.textColor,
+          'font-size': homeTheme.productCard.specialTag.fontSize
+        }">
           {{ product.specialTag }}
         </div>
         
         <!-- Discount tag -->
-        <div class="discount-tag" *ngIf="product.discount">
+        <div class="discount-tag" *ngIf="product.discount" [ngStyle]="{
+          'background-color': homeTheme.productCard.discountTag.backgroundColor,
+          'color': homeTheme.productCard.discountTag.textColor,
+          'font-size': homeTheme.productCard.discountTag.fontSize
+        }">
           <span class="tag-icon">-{{ product.discount }}%</span>
         </div>
 
         <!-- Product image (clickeable) -->
-        <div class="product-image" (click)="openProductModal(product)">
+        <div class="product-image" (click)="openProductModal(product)" [ngStyle]="{
+          'height': homeTheme.productCard.imageHeight
+        }">
           <img [src]="product.image" [alt]="product.name" />
         </div>
 
         <!-- Product info -->
         <div class="product-info">
-          <div class="product-name">{{ product.name }}</div>
-          <div class="product-description">{{ product.description }}</div>
+          <div class="product-name" [ngStyle]="{
+            'color': homeTheme.productCard.name.color,
+            'font-size': homeTheme.productCard.name.fontSize,
+            'font-weight': homeTheme.productCard.name.fontWeight
+          }">{{ product.name }}</div>
+          <div class="product-description" [ngStyle]="{
+            'color': homeTheme.productCard.description.color,
+            'font-size': homeTheme.productCard.description.fontSize
+          }">{{ product.description }}</div>
           <div class="product-price">
-            <span class="current-price">{{ formatPrice(product.price) }}</span>
-            <span class="original-price" *ngIf="product.originalPrice">
+            <span class="current-price" [ngStyle]="{
+              'color': homeTheme.productCard.price.currentColor,
+              'font-size': homeTheme.productCard.price.currentSize
+            }">{{ formatPrice(product.price) }}</span>
+            <span class="original-price" *ngIf="product.originalPrice" [ngStyle]="{
+              'color': homeTheme.productCard.price.originalColor,
+              'font-size': homeTheme.productCard.price.originalSize
+            }">
               {{ formatPrice(product.originalPrice) }}
             </span>
           </div>
@@ -112,19 +156,34 @@
           <button 
             class="add-to-cart-btn" 
             (click)="addToCart(product)" 
-            *ngIf="getItemQuantityInCart(product.id) === 0">
+            *ngIf="getItemQuantityInCart(product.id) === 0"
+            [ngStyle]="{
+              'background-color': homeTheme.productCard.addToCartButton.backgroundColor,
+              'color': homeTheme.productCard.addToCartButton.textColor,
+              'font-size': homeTheme.productCard.addToCartButton.fontSize,
+              'height': homeTheme.productCard.addToCartButton.height,
+              'border-radius': homeTheme.productCard.addToCartButton.borderRadius
+            }">
             <span class="btn-text">Agregar</span>
             <span class="btn-icon">+</span>
           </button>
           
-          <div class="quantity-controls" *ngIf="getItemQuantityInCart(product.id) > 0">
-            <button class="quantity-btn decrease" (click)="decreaseQuantity(product)">
+          <div class="quantity-controls" *ngIf="getItemQuantityInCart(product.id) > 0" [ngStyle]="{
+              'background-color': homeTheme.productCard.quantityControls.backgroundColor,
+              'color': homeTheme.productCard.quantityControls.textColor,
+              'font-size': homeTheme.productCard.quantityControls.fontSize
+            }">
+            <button class="quantity-btn decrease" (click)="decreaseQuantity(product)" [ngStyle]="{
+              'background-color': homeTheme.productCard.quantityControls.decreaseColor
+            }">
               <span>-</span>
             </button>
             <div class="quantity-display">
               {{ getItemQuantityInCart(product.id) }}
             </div>
-            <button class="quantity-btn increase" (click)="addToCart(product)">
+            <button class="quantity-btn increase" (click)="addToCart(product)" [ngStyle]="{
+              'background-color': homeTheme.productCard.quantityControls.increaseColor
+            }">
               <span>+</span>
             </button>
           </div>

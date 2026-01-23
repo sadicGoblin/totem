@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, forwardRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, firstValueFrom, interval, Subscription } from 'rxjs';
 import { CLIENT_CONFIG } from '../../config/client.config';
+import { ThemeService } from './theme.service';
 
 // ==================== Interfaces ====================
 
@@ -185,6 +186,10 @@ export class CatalogueService {
   private isLoading = false;
   private refreshSubscription: Subscription | null = null;
   private lastLoadTime: Date | null = null;
+  
+  // Clave para almacenamiento local
+  private readonly STORAGE_KEY = 'totem_catalogue_cache';
+  private readonly STORAGE_TIMESTAMP_KEY = 'totem_catalogue_timestamp';
 
   // Observable para notificar cuando el catálogo se actualiza
   private catalogueSubject = new BehaviorSubject<CompleteCatalogue | null>(null);
@@ -194,7 +199,41 @@ export class CatalogueService {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   public loading$ = this.loadingSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private themeService: ThemeService
+  ) {}
+
+  /**
+   * Guarda el catálogo en localStorage
+   */
+  private saveCatalogueToStorage(data: CompleteCatalogue): void {
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
+      localStorage.setItem(this.STORAGE_TIMESTAMP_KEY, new Date().toISOString());
+      console.log('💾 Catalogue saved to localStorage');
+    } catch (error) {
+      console.warn('⚠️ Failed to save catalogue to localStorage:', error);
+    }
+  }
+
+  /**
+   * Carga el catálogo desde localStorage
+   */
+  private loadCatalogueFromStorage(): CompleteCatalogue | null {
+    try {
+      const data = localStorage.getItem(this.STORAGE_KEY);
+      const timestamp = localStorage.getItem(this.STORAGE_TIMESTAMP_KEY);
+      
+      if (data) {
+        console.log('📦 Loading catalogue from localStorage (cached at:', timestamp, ')');
+        return JSON.parse(data) as CompleteCatalogue;
+      }
+    } catch (error) {
+      console.warn('⚠️ Failed to load catalogue from localStorage:', error);
+    }
+    return null;
+  }
 
   /**
    * Carga inicial del catálogo - se llama desde APP_INITIALIZER
@@ -219,6 +258,10 @@ export class CatalogueService {
         this.applyClientConfiguration(response.client_configuration);
         this.lastLoadTime = new Date();
         this.isLoaded = true;
+        
+        // Guardar en localStorage para modo offline
+        this.saveCatalogueToStorage(response);
+        
         console.log('✅ Catalogue loaded successfully:', {
           code: response.catalogue?.code,
           products: response.products?.length,
@@ -228,11 +271,22 @@ export class CatalogueService {
         });
       }
 
-      // Iniciar actualización periódica
-      this.startPeriodicRefresh();
+      // Ya no iniciamos refresh automático - solo se actualiza cuando el usuario está en el screensaver
 
     } catch (error) {
       console.error('❌ Failed to load catalogue from API:', error);
+      
+      // Intentar cargar desde localStorage si la API falla
+      const cachedData = this.loadCatalogueFromStorage();
+      if (cachedData) {
+        this.catalogueData = cachedData;
+        this.catalogueSubject.next(cachedData);
+        this.applyClientConfiguration(cachedData.client_configuration);
+        console.log('📦 Using cached catalogue data (offline mode)');
+      } else {
+        console.error('❌ No cached data available');
+      }
+      
       this.isLoaded = true; // Marcar como cargado para no bloquear la app
     } finally {
       this.isLoading = false;
@@ -263,6 +317,10 @@ export class CatalogueService {
         this.catalogueSubject.next(response);
         this.applyClientConfiguration(response.client_configuration);
         this.lastLoadTime = new Date();
+        
+        // Guardar en localStorage para modo offline
+        this.saveCatalogueToStorage(response);
+        
         console.log('🔄 Catalogue refreshed at:', this.lastLoadTime.toISOString());
       }
 
@@ -335,10 +393,16 @@ export class CatalogueService {
     // Aplicar variables CSS
     this.applyCssVariables();
 
+    // Cargar metadata del tema si existe
+    if (config.metadata) {
+      this.themeService.loadFromAPIMetadata(config.metadata);
+    }
+
     console.log('🎨 Client configuration applied:', {
       primaryColor: CLIENT_CONFIG.branding.primaryColor,
       secondaryColor: CLIENT_CONFIG.branding.secondaryColor,
-      storeName: CLIENT_CONFIG.branding.storeName
+      storeName: CLIENT_CONFIG.branding.storeName,
+      hasMetadata: !!config.metadata
     });
   }
 

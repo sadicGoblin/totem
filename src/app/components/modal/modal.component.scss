@@ -45,7 +45,7 @@ $accent-green: #54dc28;
   width: 36px;
   height: 36px;
   border-radius: 10%;
-  background-color: $primary-color;
+  background-color: var(--primary-color, $primary-color);
   border: none;
   display: flex;
   align-items: center;
@@ -110,7 +110,7 @@ $accent-green: #54dc28;
     position: absolute;
     top: 10px;
     left: 10px;
-    background-color: $primary-color;
+    background-color: var(--primary-color, $primary-color);
     color: $white;
     padding: 5px 10px;
     border-radius: 4px;
@@ -132,7 +132,7 @@ $accent-green: #54dc28;
   .product-name {
     font-size: 24px;
     font-weight: 600;
-    color: $primary-color;
+    color: var(--primary-color, $primary-color);
     margin: 0 0 16px;
   }
   
@@ -151,7 +151,7 @@ $accent-green: #54dc28;
     .current-price {
       font-size: 24px;
       font-weight: bold;
-      color: $primary-color;
+      color: var(--primary-color, $primary-color);
       
       &.discounted {
         color: $discount-red;
@@ -205,12 +205,12 @@ $accent-green: #54dc28;
 
   .quantity-text {
     font-size: 16px;
-    color: $primary-color;
+    color: var(--primary-color, $primary-color);
   }
   
   .add-to-cart-btn {
     padding: 14px;
-    background-color: $primary-color;
+    background-color: var(--primary-color, $primary-color);
     color: $white;
     border: none;
     border-radius: 4px;

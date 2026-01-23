@@ -7,6 +7,8 @@ import { ModalComponent } from '../components/modal/modal.component';
 import { CartFloatingComponent } from '../shared/cart-floating/cart-floating.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, interval } from 'rxjs';
+import { ThemeService } from '../services/theme.service';
+import { HomeTheme } from '../models/theme.model';
 
 // Interface extendida para agregar categoryId y tags
 interface ProductWithCategory extends Product {
@@ -55,9 +57,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     private catalogueService: CatalogueService,
     private cartService: CartService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public themeService: ThemeService
   ) {
     this.checkOrientation();
+  }
+
+  // Getter para acceder al tema del home
+  get homeTheme(): HomeTheme {
+    return this.themeService.getHome();
   }
 
   ngOnInit(): void {

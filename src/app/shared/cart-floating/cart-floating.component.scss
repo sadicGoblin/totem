@@ -354,7 +354,7 @@ $discount-orange: #f5a623;
     }
 
     .checkout-btn {
-      background: linear-gradient(135deg, var(--primary-color, #2997db) 0%, var(--secondary-color, #1054da) 100%);
+      background: var(--secondary-color, #1054da);
       color: white;
       border: none;
       padding: 15px;
@@ -363,7 +363,7 @@ $discount-orange: #f5a623;
       font-weight: 600;
       width: 100%;
       cursor: pointer;
-      border: 4px solid $secondary-color;
+      border: 4px solid var(--secondary-color, #1054da);
       transition: all 0.2s ease;
       box-shadow: 0 4px 12px $shadow-black;
 
