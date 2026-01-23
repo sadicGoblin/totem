@@ -19,6 +19,9 @@ export class PaymentComponent {
   cartTotal = 0;
   selectedMethod: 'cash' | 'mercadopago' | 'amipass' | 'card' | null = null;
   voucherPrinted = false;
+  
+  // Referencia al timeout de pago con tarjeta para poder cancelarlo
+  private cardPaymentTimeout: any = null;
 
   get storeLogo(): string {
     return this.catalogueService.getClientConfiguration()?.logo_url || 
@@ -56,9 +59,9 @@ export class PaymentComponent {
       // Para el pago con tarjeta, mostramos la interfaz especial
       // No activamos processingPayment porque usamos la vista específica
       
-      // Aquí podríamos iniciar la comunicación con la máquina de pago
+      // TODO: Aquí se debe integrar con Transbank SDK
       // Por ahora solo simulamos un tiempo de espera para demo
-      setTimeout(() => {
+      this.cardPaymentTimeout = setTimeout(() => {
         // Simulamos un pago exitoso después de 10 segundos
         this.completeOrder();
       }, 10000);
@@ -84,6 +87,14 @@ export class PaymentComponent {
   
   // Cancelar pago con tarjeta y volver a selección de método de pago
   cancelCardPayment(): void {
+    // Cancelar el timeout de simulación para evitar que limpie el carrito
+    if (this.cardPaymentTimeout) {
+      clearTimeout(this.cardPaymentTimeout);
+      this.cardPaymentTimeout = null;
+    }
+    
+    // TODO: Aquí se debería enviar señal de cancelación a Transbank si está en proceso
+    
     this.selectedMethod = null;
   }
   

@@ -165,6 +165,37 @@ export interface ClientConfiguration {
   modified: string;
 }
 
+export interface PlaylistVideo {
+  id: number;
+  name: string;
+  description?: string;
+  file: string;
+  file_url: string;
+  thumbnail?: string;
+  thumbnail_url?: string;
+  orientation: 'vertical' | 'horizontal';
+  duration: number;
+  order: number;
+  is_active: boolean;
+  created: string;
+  modified: string;
+}
+
+export interface Playlist {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+  duration: number;
+  order: number;
+  videos: PlaylistVideo[];
+}
+
+export interface Playlists {
+  vertical: Playlist[];
+  horizontal: Playlist[];
+}
+
 export interface CompleteCatalogue {
   catalogue: Catalogue;
   organization: Organization;
@@ -173,6 +204,7 @@ export interface CompleteCatalogue {
   brands: Brand[];
   slides: Slide[];
   client_configuration: ClientConfiguration | null;
+  playlists?: Playlists;
 }
 
 // ==================== Service ====================
@@ -531,6 +563,38 @@ export class CatalogueService {
    */
   getSlides(): Slide[] {
     return this.catalogueData?.slides || [];
+  }
+
+  /**
+   * Obtiene todas las playlists
+   */
+  getPlaylists(): Playlists | null {
+    return this.catalogueData?.playlists || null;
+  }
+
+  /**
+   * Obtiene las playlists verticales
+   */
+  getVerticalPlaylists(): Playlist[] {
+    return this.catalogueData?.playlists?.vertical || [];
+  }
+
+  /**
+   * Obtiene las playlists horizontales
+   */
+  getHorizontalPlaylists(): Playlist[] {
+    return this.catalogueData?.playlists?.horizontal || [];
+  }
+
+  /**
+   * Obtiene los videos de la primera playlist vertical (para screensaver)
+   */
+  getScreensaverVideos(): PlaylistVideo[] {
+    const verticalPlaylists = this.getVerticalPlaylists();
+    if (verticalPlaylists.length > 0) {
+      return verticalPlaylists[0].videos.filter(v => v.is_active).sort((a, b) => a.order - b.order);
+    }
+    return [];
   }
 
   /**

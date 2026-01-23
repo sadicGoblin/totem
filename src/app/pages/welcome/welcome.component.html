@@ -1,7 +1,13 @@
 <div class="welcome-container" (click)="navigateToCatalog()">
-  <!-- Video de fondo -->
-  <video autoplay muted loop playsinline class="background-video">
-    <source src="assets/videos/home_video.mp4" type="video/mp4" />
+  <!-- Video de fondo dinámico desde playlist -->
+  <video 
+    #videoPlayer
+    autoplay 
+    muted 
+    playsinline 
+    class="background-video"
+    [src]="currentVideoUrl"
+    (ended)="onVideoEnded()">
     <!-- Mensaje de fallback si el navegador no soporta video -->
     Tu navegador no soporta videos HTML5.
   </video>
