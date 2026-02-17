@@ -64,18 +64,17 @@ export class AdminDialogComponent {
   }
 
   async exitKioskMode(): Promise<void> {
-    if (this.password === this.correctPassword) {
-      const success = await this.electronService.exitKioskMode();
-      console.log("exitKioskMode: ", success);
-      if (success) {
-        this.showDialog = false;
-        this.showPassword = false;
-      } else {
-        this.errorMessage = 'Error al salir del modo kiosko';
-      }
+    // Enviar password como string al servicio (Electron valida)
+    const passwordStr = this.password.toString();
+    const success = await this.electronService.exitKioskMode(passwordStr);
+    console.log("exitKioskMode result:", success, "password sent:", passwordStr);
+    
+    if (success) {
+      this.showDialog = false;
+      this.showPassword = false;
+      this.password = 0;
     } else {
       this.errorMessage = 'Contraseña incorrecta';
-      console.log('Contraseña incorrecta', this.password);
       // Efecto visual para feedback de error
       setTimeout(() => {
         this.errorMessage = '';

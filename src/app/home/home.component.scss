@@ -145,7 +145,7 @@ $light-blue: #3c5066;
   min-width: 120px;
   background: white;
   border-right: 1px solid #e0e0e0;
-  padding: 15px 0;
+  padding: 15px 0 80px 0; // Espacio extra al final para scroll
   display: flex;
   flex-direction: column;
   gap: 5px;

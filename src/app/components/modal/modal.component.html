@@ -24,7 +24,7 @@
       <div class="product-details">
         <h2 class="product-name">{{ product.name }}</h2>
 
-        <p class="product-description">{{ product.description }}</p>
+        <p class="product-description" [innerHTML]="product.description"></p>
 
         <div class="product-price">
           <span class="current-price" [class.discounted]="product.discount">

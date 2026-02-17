@@ -136,7 +136,7 @@
           <div class="product-description" [ngStyle]="{
             'color': homeTheme.productCard.description.color,
             'font-size': homeTheme.productCard.description.fontSize
-          }">{{ product.description }}</div>
+          }" [innerHTML]="product.description"></div>
           <div class="product-price">
             <span class="current-price" [ngStyle]="{
               'color': homeTheme.productCard.price.currentColor,
