@@ -112,39 +112,92 @@ Health check del servicio.
 | `CANCELADO` | Transacción cancelada | N/A |
 | `ERROR` | Error en la transacción | N/A |
 
-## 🔧 Integración con SDK Real de Transbank
+## 🔧 Configuración POS Transbank IM30 (USB Serial)
 
-Para producción, debes:
+El servicio incluye una implementación completa para comunicación serial con el POS **PAX IM30**.
 
-1. **Instalar el SDK oficial de Transbank:**
-   ```xml
-   <!-- En TransbankPosService.csproj -->
-   <PackageReference Include="Transbank.POSIntegrado" Version="x.x.x" />
-   ```
+### 1. Identificar el Puerto COM en Windows 11
 
-2. **Crear implementación real de `ITransbankPos`:**
-   ```csharp
-   // Services/RealTransbankPos.cs
-   public class RealTransbankPos : ITransbankPos
-   {
-       private readonly POS _pos; // SDK Transbank
-       
-       public async Task<PaymentResponse> StartPaymentAsync(int amount, string? ticketNumber)
-       {
-           // Implementar usando SDK real
-           var response = await _pos.Sale(amount, ticketNumber);
-           // Mapear respuesta...
-       }
-   }
-   ```
+1. Conecta el POS IM30 por USB al PC
+2. Abre **Administrador de dispositivos** (Win+X → Administrador de dispositivos)
+3. Expande **Puertos (COM y LPT)**
+4. Busca el dispositivo PAX o USB Serial (ejemplo: `COM3`, `COM4`)
 
-3. **Registrar en `Program.cs`:**
-   ```csharp
-   // Cambiar de:
-   builder.Services.AddSingleton<ITransbankPos, MockTransbankPos>();
-   // A:
-   builder.Services.AddSingleton<ITransbankPos, RealTransbankPos>();
-   ```
+### 2. Configurar `appsettings.json`
+
+```json
+{
+  "Transbank": {
+    "PortName": "COM3",      // <-- Cambiar al puerto detectado
+    "BaudRate": 115200,
+    "TimeoutMs": 120000,
+    "UseMock": false          // <-- false para usar POS real
+  }
+}
+```
+
+### 3. Ejecutar en Modo Producción
+
+```bash
+# Con UseMock: false, usará la comunicación serial real
+dotnet run
+```
+
+Verás en consola:
+```
+✅ MODO: PRODUCCIÓN (POS Serial USB)
+```
+
+### 4. Protocolo de Comunicación
+
+La implementación sigue el protocolo oficial de Transbank:
+
+| Parámetro | Valor |
+|-----------|-------|
+| Velocidad | 115200 bps |
+| Data Bits | 8 |
+| Paridad | None |
+| Stop Bits | 1 |
+| STX | 0x02 |
+| ETX | 0x03 |
+| ACK | 0x06 |
+| NAK | 0x15 |
+| Separador | `\|` (0x7C) |
+
+**Formato de mensaje:** `<STX>DATOS<ETX><LRC>`
+
+**Comando de venta (0200):** `<STX>0200|monto|ticket|1|1<ETX><LRC>`
+
+### 5. Flujo de Transacción
+
+```
+PC (Caja)                         POS IM30
+    |                                 |
+    |-- <STX>0200|25000|123<ETX>LRC ->|
+    |                                 |
+    |<------------ ACK ---------------|  (o NAK si LRC incorrecto)
+    |                                 |
+    |         [Cliente opera tarjeta] |
+    |                                 |
+    |<-- Mensajes intermedios 0900 -->|
+    |------------ ACK --------------->|
+    |                                 |
+    |<-- <STX>0210|00|...<ETX>LRC ----| (Respuesta final)
+    |------------ ACK --------------->|
+    |                                 |
+```
+
+### 6. Códigos de Respuesta
+
+| Código | Significado |
+|--------|-------------|
+| 00 | Aprobado |
+| 01 | Rechazado |
+| 51 | Fondos insuficientes |
+| 54 | Tarjeta vencida |
+| 55 | PIN incorrecto |
+| 75 | Exceso de intentos PIN |
+| 91 | Banco no disponible |
 
 ## 📁 Estructura del Proyecto
 
@@ -162,6 +215,7 @@ transbank-pos-service/
 │   └── StatusResponse.cs         # Response de estado
 ├── Services/
 │   ├── MockTransbankPos.cs       # Mock para desarrollo
+│   ├── TransbankPosSerialImpl.cs # Implementación real USB serial
 │   └── TransbankService.cs       # Servicio principal
 ├── Program.cs                    # Entry point y configuración
 ├── appsettings.json             # Configuración

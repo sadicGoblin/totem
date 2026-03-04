@@ -26,12 +26,21 @@ builder.Services.AddSwaggerGen(c =>
 // REGISTRO DE SERVICIOS TRANSBANK
 // ============================================
 
-// 🔧 IMPORTANTE: Para PRODUCCIÓN, reemplazar MockTransbankPos con la implementación real
-// Ejemplo:
-// builder.Services.AddSingleton<ITransbankPos, RealTransbankPos>();
+// Leer configuración para determinar si usar Mock o implementación real
+var useMock = builder.Configuration.GetValue<bool>("Transbank:UseMock");
 
-// Usando MOCK para desarrollo
-builder.Services.AddSingleton<ITransbankPos, MockTransbankPos>();
+if (useMock)
+{
+    // Usando MOCK para desarrollo/testing
+    builder.Services.AddSingleton<ITransbankPos, MockTransbankPos>();
+    Console.WriteLine("⚠️  MODO: MOCK (Desarrollo)");
+}
+else
+{
+    // Usando implementación real con comunicación serial USB
+    builder.Services.AddSingleton<ITransbankPos, TransbankPosSerialImpl>();
+    Console.WriteLine("✅ MODO: PRODUCCIÓN (POS Serial USB)");
+}
 
 // Servicio principal de Transbank
 builder.Services.AddSingleton<TransbankService>();
@@ -88,7 +97,10 @@ app.MapControllers();
 // INICIO DEL SERVICIO
 // ============================================
 
-Console.WriteLine(@"
+var portName = builder.Configuration["Transbank:PortName"] ?? "COM3";
+var modeText = useMock ? "MOCK (Desarrollo)" : $"POS Serial ({portName})";
+
+Console.WriteLine($@"
 ╔═══════════════════════════════════════════════════════════════╗
 ║                                                               ║
 ║   🏦 TRANSBANK POS SERVICE                                    ║
@@ -102,8 +114,8 @@ Console.WriteLine(@"
 ║   • GET  /api/transbank/estado    - Estado del POS            ║
 ║   • GET  /api/transbank/health    - Health check              ║
 ║                                                               ║
-║   ⚠️  MODO: MOCK (Desarrollo)                                 ║
-║   Para producción, implementar ITransbankPos con SDK real     ║
+║   MODO: {modeText,-46}║
+║   Cambiar en appsettings.json -> Transbank:UseMock            ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
 ");
