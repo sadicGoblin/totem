@@ -72,21 +72,43 @@
     </div>
   </div>
   
-  <!-- Pantalla específica para pago con tarjeta (máquina automática) -->
+  <!-- Pantalla específica para pago con tarjeta (Transbank POS) -->
   <div class="payment-processing" *ngIf="selectedMethod === 'card'">
     <div class="payment-content">
-      <div class="payment-icon">
+      <div class="payment-icon" [ngClass]="{
+        'state-waiting': transbankState === 'ESPERANDO_TARJETA',
+        'state-processing': transbankState === 'PROCESANDO',
+        'state-error': transbankState === 'ERROR' || transbankState === 'RECHAZADO'
+      }">
         <i class="fas fa-credit-card"></i>
       </div>
       <h2>Paga tu pedido</h2>
-      <p>Por favor, utiliza la máquina de pago automática</p>
-      <div class="loader">
+      
+      <!-- Mensaje dinámico según estado del POS -->
+      <p class="pos-status">{{ getTransbankDisplayMessage() }}</p>
+      
+      <!-- Indicador de estado -->
+      <div class="state-indicator">
+        <span class="state-badge" [ngClass]="'state-' + transbankState.toLowerCase()">
+          {{ transbankState }}
+        </span>
+      </div>
+      
+      <div class="loader" *ngIf="transbankState !== 'ERROR' && transbankState !== 'RECHAZADO'">
         <div class="loader-bar"></div>
       </div>
-      <p class="payment-message">Procesando pago...</p>
+      
+      <!-- Total a pagar -->
+      <p class="payment-total">Total: <strong>{{ formatPrice(cartTotal) }}</strong></p>
+      
       <button class="cancel-payment-btn" (click)="cancelCardPayment()">
         CANCELAR
       </button>
+      
+      <!-- Mensaje de advertencia cuando no se puede cancelar -->
+      <p class="cancel-warning" *ngIf="transbankState === 'ESPERANDO_TARJETA'">
+        ⚠️ Para cancelar, presione el botón rojo en el POS
+      </p>
     </div>
   </div>
 </div>

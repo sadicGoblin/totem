@@ -554,3 +554,136 @@ $accent-green: #54dc28;
     height: 60px;
   }
 }
+
+// ========================================
+// ESTILOS TRANSBANK POS
+// ========================================
+
+.pos-status {
+  font-size: 1.4rem;
+  color: $text-color;
+  margin: 15px 0;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.state-indicator {
+  margin: 10px 0 20px;
+  
+  .state-badge {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    
+    &.state-idle {
+      background: #e0e0e0;
+      color: #666;
+    }
+    
+    &.state-iniciando_pago {
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    &.state-esperando_tarjeta {
+      background: #cce5ff;
+      color: #004085;
+      animation: pulse-badge 1.5s infinite;
+    }
+    
+    &.state-procesando {
+      background: #d4edda;
+      color: #155724;
+      animation: pulse-badge 1s infinite;
+    }
+    
+    &.state-aprobado {
+      background: #28a745;
+      color: white;
+    }
+    
+    &.state-rechazado {
+      background: #dc3545;
+      color: white;
+    }
+    
+    &.state-cancelado {
+      background: #ffc107;
+      color: #212529;
+    }
+    
+    &.state-error {
+      background: #dc3545;
+      color: white;
+    }
+  }
+}
+
+@keyframes pulse-badge {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.payment-icon {
+  &.state-waiting {
+    animation: bounce-icon 1s infinite;
+  }
+  
+  &.state-processing {
+    animation: spin-slow 2s linear infinite;
+  }
+  
+  &.state-error {
+    color: #dc3545 !important;
+  }
+}
+
+@keyframes bounce-icon {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.payment-total {
+  font-size: 1.5rem;
+  margin: 20px 0;
+  
+  strong {
+    color: var(--primary-color, $primary-color);
+    font-size: 2rem;
+  }
+}
+
+.cancel-warning {
+  margin-top: 15px;
+  padding: 12px 20px;
+  background: #fff3cd;
+  border-radius: 8px;
+  color: #856404;
+  font-size: 1rem;
+  font-weight: 500;
+}
