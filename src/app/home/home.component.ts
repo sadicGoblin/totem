@@ -1,11 +1,20 @@
 import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Product, CartItem } from '../models/products.model';
-import { ProductService } from '../services/product.service';
 import { CartService } from '../services/cart.service';
+import { CatalogueService, Product as CatalogueProduct, Category, Slide } from '../services/catalogue.service';
+import { Product } from '../models/products.model';
 import { ModalComponent } from '../components/modal/modal.component';
 import { CartFloatingComponent } from '../shared/cart-floating/cart-floating.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription, interval } from 'rxjs';
+import { ThemeService } from '../services/theme.service';
+import { HomeTheme } from '../models/theme.model';
+
+// Interface extendida para agregar categoryId y tags
+interface ProductWithCategory extends Product {
+  categoryId?: number;
+  tags?: string;
+}
 
 @Component({
   selector: 'app-home',
@@ -19,74 +28,226 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   isLandscapeMode: boolean = false;
-  selectedCategory: string | null = 'HAMBURGUESAS';
-  hideNavButtons: boolean = false; // Para ocultar los botones de navegación
+  selectedCategory: string | null = null;
+  selectedCategoryId: number | null = null;
+  hideNavButtons: boolean = false;
+
+  // Categories and Slides
+  categories: Category[] = [];
+  slides: Slide[] = [];
+  currentSlideIndex: number = 0;
+  private slideInterval: Subscription | null = null;
+
+  // Logo de la tienda desde client_configuration
+  get storeLogo(): string {
+    const config = this.catalogueService.getClientConfiguration();
+    return config?.logo || config?.logo_url || '';
+  }
 
   // Subscripciones
-  private subscriptions: any[] = [];
+  private subscriptions: Subscription[] = [];
 
   // Modal properties
-  selectedProduct: Product | null = null;
+  selectedProduct: ProductWithCategory | null = null;
   showModal: boolean = false;
 
-  categories = [
-    'HAMBURGUESAS',
-    'PIZZAS',
-    'BEBIDAS',
-    'POSTRES',
-    'COMPLEMENTOS',
-    'ZAPATILLAS',
-    'CELULARES',
-  ];
-
-  products: Product[] = [];
+  products: ProductWithCategory[] = [];
 
   constructor(
-    private productService: ProductService,
+    private catalogueService: CatalogueService,
     private cartService: CartService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public themeService: ThemeService
   ) {
     this.checkOrientation();
   }
 
+  // Getter para acceder al tema del home
+  get homeTheme(): HomeTheme {
+    return this.themeService.getHome();
+  }
+
   ngOnInit(): void {
-    // Cargar productos
-    this.productService.getProducts().subscribe((products) => {
-      this.products = products;
+    // Scroll al inicio de la página
+    window.scrollTo(0, 0);
+    
+    // Cargar datos desde el catálogo
+    this.loadProducts();
+    this.loadCategories();
+    this.loadSlides();
 
-      // Verificar si hay un parámetro de categoría en la URL
-      // this.route.queryParams.subscribe(params => {
-      //   if (params['category']) {
-      //     const category = params['category'].toUpperCase();
-      //     // Verificar si la categoría existe en nuestras categorías
-      //     if (category === 'ALL') {
-      //       this.selectedCategory = null;
-      //     } else if (this.categories.includes(category) || category === 'TODO') {
-      //       this.selectedCategory = category;
-      //     }
-
-      //     // Indicar que venimos de la página de categorías para ocultar los botones de navegación
-      //     this.hideNavButtons = true;
-      //   }
-      // });
-
-      this.route.queryParams.subscribe((params) => {
-        if (params['category']) {
-          const category = params['category'].toUpperCase();
-
-          // Validar solo contra categorías disponibles
-          if (this.categories.includes(category)) {
-            this.selectedCategory = category;
-          }
-
-          // Ocultar botones si venimos desde selección de categoría
-          this.hideNavButtons = true;
-        }
-      });
+    // Suscribirse a los parámetros de la URL
+    const paramsSub = this.route.queryParams.subscribe((params) => {
+      if (params['categoryId']) {
+        this.selectedCategoryId = parseInt(params['categoryId'], 10);
+        this.selectedCategory = params['categoryName'] || 'Categoría';
+      } else if (params['tag']) {
+        // Filtrar por tag desde slide
+        this.filterByTag(params['tag']);
+      }
     });
+    this.subscriptions.push(paramsSub);
 
-    // Ya no necesitamos suscribirnos al carrito, lo maneja CartFloatingComponent
+    // Suscribirse a cambios del catálogo para actualizar datos
+    const catalogueSub = this.catalogueService.catalogue$.subscribe((catalogue) => {
+      if (catalogue) {
+        this.loadProducts();
+        this.loadCategories();
+        this.loadSlides();
+      }
+    });
+    this.subscriptions.push(catalogueSub);
+
+    // Auto-slide cada 5 segundos
+    this.startSlideAutoPlay();
+  }
+
+  /**
+   * Carga productos desde el CatalogueService y los adapta al formato del componente
+   */
+  private loadProducts(): void {
+    const catalogueProducts = this.catalogueService.getProducts();
+    this.products = catalogueProducts
+      .filter(p => p.state === 'publish' && !p.is_removed)
+      .map(p => this.mapCatalogueProduct(p));
+  }
+
+  /**
+   * Carga categorías desde el CatalogueService
+   */
+  private loadCategories(): void {
+    this.categories = this.catalogueService.getCategories()
+      .filter(c => c.state === 'publish');
+  }
+
+  /**
+   * Carga slides desde el CatalogueService
+   */
+  private loadSlides(): void {
+    this.slides = this.catalogueService.getSlides()
+      .filter(s => s.state === 'publish')
+      .sort((a, b) => a.order - b.order);
+  }
+
+  /**
+   * Inicia el auto-play del slider
+   */
+  private startSlideAutoPlay(): void {
+    if (this.slides.length > 1) {
+      this.slideInterval = interval(5000).subscribe(() => {
+        this.nextSlide();
+      });
+    }
+  }
+
+  /**
+   * Avanza al siguiente slide
+   */
+  private nextSlide(): void {
+    this.currentSlideIndex = (this.currentSlideIndex + 1) % this.slides.length;
+  }
+
+  /**
+   * Va a un slide específico
+   */
+  goToSlide(index: number): void {
+    this.currentSlideIndex = index;
+  }
+
+  /**
+   * Maneja el click en un slide
+   */
+  onSlideClick(slide: Slide): void {
+    if (slide.link) {
+      // Si tiene link, puede ser una categoría o un tag
+      if (slide.link.startsWith('category:')) {
+        const categoryId = parseInt(slide.link.replace('category:', ''), 10);
+        this.selectCategory(categoryId);
+      } else if (slide.link.startsWith('tag:')) {
+        const tag = slide.link.replace('tag:', '');
+        this.filterByTag(tag);
+      } else {
+        // Link externo o ruta
+        this.router.navigateByUrl(slide.link);
+      }
+    } else if (slide.tags) {
+      // Si tiene tags, filtrar por el primer tag
+      const tag = slide.tags.split(',')[0].trim();
+      this.filterByTag(tag);
+    }
+  }
+
+  /**
+   * Selecciona una categoría
+   */
+  selectCategory(categoryId: number | null): void {
+    this.selectedCategoryId = categoryId;
+    this.currentTagFilter = null; // Limpiar filtro de tag
+    if (categoryId === null) {
+      this.selectedCategory = null;
+    } else {
+      const category = this.categories.find(c => c.id === categoryId);
+      this.selectedCategory = category?.name || null;
+    }
+    
+    // Scroll al inicio del área de productos
+    const productsMain = document.querySelector('.products-main');
+    if (productsMain) {
+      productsMain.scrollTop = 0;
+    }
+  }
+
+  /**
+   * Filtra productos por tag
+   */
+  private filterByTag(tag: string): void {
+    this.selectedCategory = `#${tag}`;
+    this.selectedCategoryId = null;
+    this.currentTagFilter = tag;
+  }
+
+  private currentTagFilter: string | null = null;
+
+  /**
+   * Mapea un producto del catálogo al formato del componente
+   */
+  private mapCatalogueProduct(p: CatalogueProduct): ProductWithCategory {
+    const price = p.price_1 ? parseFloat(p.price_1) : 0;
+    const originalPrice = p.price_2 ? parseFloat(p.price_2) : undefined;
+    
+    // Calcular porcentaje de descuento si hay precio original mayor al precio actual
+    let discountPercent: number | undefined;
+    if (originalPrice && originalPrice > price) {
+      discountPercent = Math.round(((originalPrice - price) / originalPrice) * 100);
+    }
+    
+    return {
+      id: p.id,
+      name: p.name,
+      description: p.short_description || p.description || '',
+      price: price,
+      originalPrice: discountPercent ? originalPrice : undefined,
+      image: p.image || (p.images && p.images.length > 0 ? p.images[0].image : this.getPlaceholderImage(p.name)),
+      category: p.categories && p.categories.length > 0 ? p.categories[0].name : '',
+      categoryId: p.categories && p.categories.length > 0 ? p.categories[0].id : undefined,
+      discount: discountPercent,
+      tags: p.tags || ''
+    };
+  }
+
+  /**
+   * Genera un placeholder SVG inline para productos sin imagen
+   */
+  private getPlaceholderImage(productName: string): string {
+    const text = productName.substring(0, 12);
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+        <rect width="300" height="300" fill="#f5f5f5"/>
+        <text x="150" y="150" font-family="Arial, sans-serif" font-size="16" fill="#999" text-anchor="middle" dominant-baseline="middle">${text}</text>
+      </svg>
+    `;
+    return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg.trim());
   }
 
   @HostListener('window:resize')
@@ -94,34 +255,34 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.isLandscapeMode = window.innerWidth > window.innerHeight;
   }
 
-  setCategory(category: string | null): void {
-    this.selectedCategory = category;
-  }
+  /**
+   * Filtra productos por categoría o tag seleccionado
+   */
+  getFilteredProducts(): ProductWithCategory[] {
+    // Filtrar por tag si está activo
+    if (this.currentTagFilter) {
+      return this.products.filter(p => 
+        p.tags?.toLowerCase().includes(this.currentTagFilter!.toLowerCase())
+      );
+    }
+    
+    // Filtrar por categoría
+    if (this.selectedCategoryId === null) {
+      return this.products;
+    }
 
-  // getFilteredProducts(): Product[] {
-  //   return this.selectedCategory === null
-  //     ? this.products
-  //     : this.products.filter(p => p.category === this.selectedCategory);
-  // }
-
-  getFilteredProducts(): Product[] {
-    return this.selectedCategory === null
-      ? this.products
-      : this.products.filter(
-          (p) =>
-            p.category.toUpperCase() === this.selectedCategory?.toUpperCase()
-        );
+    return this.products.filter(p => p.categoryId === this.selectedCategoryId);
   }
 
   formatPrice(price: number): string {
     return '$' + price.toLocaleString('es-CL');
   }
 
-  addToCart(product: Product): void {
+  addToCart(product: ProductWithCategory): void {
     this.cartService.addToCart(product);
   }
 
-  decreaseQuantity(product: Product): void {
+  decreaseQuantity(product: ProductWithCategory): void {
     this.cartService.decreaseQuantity(product.id);
   }
 
@@ -132,9 +293,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+    if (this.slideInterval) {
+      this.slideInterval.unsubscribe();
+    }
   }
 
-  openProductModal(product: Product): void {
+  openProductModal(product: ProductWithCategory): void {
     this.selectedProduct = product;
     this.showModal = true;
   }
@@ -164,9 +328,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.router.navigate(['/checkout']);
   }
 
-  // Método para volver a la página de categorías
+  // Método para volver a la página principal (ya no se usa)
   goBackToCategories(): void {
-    // Navegamos a la página de categorías
-    this.router.navigate(['/category']);
+    this.router.navigate(['/home']);
   }
 }

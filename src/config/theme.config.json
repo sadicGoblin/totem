@@ -1,0 +1,545 @@
+{
+  "global": {
+    "colors": {
+      "primary": "#2997db",
+      "secondary": "#1054da",
+      "accent": "#3771ae",
+      "light": "#e8f4fc",
+      "white": "#ffffff",
+      "dark": "#343a40",
+      "gray": {
+        "light": "#f8f9fa",
+        "medium": "#6c757d",
+        "dark": "#1f2731"
+      },
+      "status": {
+        "success": "#54dc28",
+        "error": "#c44545",
+        "warning": "#f5a623"
+      }
+    },
+    "fonts": {
+      "family": "Inter, sans-serif",
+      "sizes": {
+        "xs": "12px",
+        "sm": "14px",
+        "md": "16px",
+        "lg": "20px",
+        "xl": "24px",
+        "xxl": "32px",
+        "xxxl": "40px"
+      }
+    },
+    "borderRadius": {
+      "sm": "4px",
+      "md": "8px",
+      "lg": "12px",
+      "xl": "20px",
+      "round": "50%",
+      "pill": "30px"
+    },
+    "shadows": {
+      "sm": "0 2px 8px rgba(0, 0, 0, 0.1)",
+      "md": "0 4px 12px rgba(0, 0, 0, 0.15)",
+      "lg": "0 6px 20px rgba(0, 0, 0, 0.15)",
+      "xl": "0 10px 30px rgba(0, 0, 0, 0.25)"
+    }
+  },
+
+  "welcome": {
+    "container": {
+      "background": "video"
+    },
+    "overlay": {
+      "backgroundColor": "rgba(0, 0, 0, 0.4)"
+    },
+    "content": {
+      "backgroundColor": "rgba(255, 255, 255, 0.85)",
+      "borderRadius": "15px",
+      "padding": "50px"
+    },
+    "logo": {
+      "width": "180px",
+      "height": "180px"
+    },
+    "title": {
+      "color": "var(--primary-color)",
+      "fontSize": "4rem",
+      "fontWeight": "700"
+    },
+    "subtitle": {
+      "color": "var(--secondary-color)",
+      "fontSize": "2.5rem",
+      "fontWeight": "600"
+    },
+    "description": {
+      "color": "var(--primary-color)",
+      "fontSize": "1.6rem"
+    },
+    "startButton": {
+      "backgroundColor": "var(--primary-color)",
+      "textColor": "#ffffff",
+      "fontSize": "2.2rem",
+      "fontWeight": "700",
+      "padding": "22px 55px",
+      "borderRadius": "50px",
+      "hoverBackground": "linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%)"
+    }
+  },
+
+  "home": {
+    "header": {
+      "background": "linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%)",
+      "padding": "15px 20px",
+      "logo": {
+        "height": "500px"
+      }
+    },
+    "promoSlides": {
+      "height": "180px",
+      "backgroundColor": "#f5f5f5",
+      "slideButton": {
+        "backgroundColor": "var(--primary-color)",
+        "textColor": "#ffffff",
+        "fontSize": "0.9rem",
+        "padding": "8px 20px",
+        "borderRadius": "20px"
+      },
+      "indicators": {
+        "activeColor": "#ffffff",
+        "inactiveColor": "rgba(255, 255, 255, 0.5)",
+        "size": "10px"
+      }
+    },
+    "sidebar": {
+      "width": "120px",
+      "backgroundColor": "#ffffff",
+      "borderColor": "#e0e0e0",
+      "title": {
+        "color": "#666666",
+        "fontSize": "0.85rem",
+        "fontWeight": "600"
+      },
+      "categoryItem": {
+        "activeBackground": "var(--light-color)",
+        "activeBorderColor": "var(--primary-color)",
+        "activeTextColor": "var(--primary-color)",
+        "iconSize": "50px",
+        "iconBorderRadius": "12px",
+        "nameSize": "0.75rem"
+      }
+    },
+    "productsMain": {
+      "backgroundColor": "#f8f9fa",
+      "padding": "20px",
+      "sectionHeader": {
+        "titleColor": "var(--primary-color)",
+        "titleSize": "1.5rem",
+        "borderColor": "var(--primary-color)",
+        "countColor": "#666666"
+      }
+    },
+    "productCard": {
+      "backgroundColor": "#ffffff",
+      "borderRadius": "8px",
+      "borderColor": "#DFE1E6",
+      "imageHeight": "250px",
+      "specialTag": {
+        "backgroundColor": "var(--primary-color)",
+        "textColor": "#ffffff",
+        "fontSize": "12px"
+      },
+      "discountTag": {
+        "backgroundColor": "#f5a623",
+        "textColor": "#ffffff",
+        "fontSize": "12px"
+      },
+      "name": {
+        "color": "var(--primary-color)",
+        "fontSize": "25px",
+        "fontWeight": "600"
+      },
+      "description": {
+        "color": "#4a5568",
+        "fontSize": "15px"
+      },
+      "price": {
+        "currentColor": "var(--primary-color)",
+        "currentSize": "30px",
+        "originalColor": "#1f2731",
+        "originalSize": "14px"
+      },
+      "addToCartButton": {
+        "backgroundColor": "var(--primary-color)",
+        "textColor": "#ffffff",
+        "fontSize": "18px",
+        "height": "50px",
+        "borderRadius": "0 0 8px 8px"
+      },
+      "quantityControls": {
+        "backgroundColor": "var(--primary-color)",
+        "textColor": "#ffffff",
+        "decreaseColor": "#d91a1a",
+        "increaseColor": "#4dae26",
+        "fontSize": "24px"
+      }
+    }
+  },
+
+  "productModal": {
+    "backdrop": {
+      "backgroundColor": "rgba(9, 30, 66, 0.7)"
+    },
+    "container": {
+      "backgroundColor": "#ffffff",
+      "borderRadius": "8px",
+      "maxWidth": "800px"
+    },
+    "closeButton": {
+      "backgroundColor": "var(--primary-color)",
+      "iconColor": "#ffffff",
+      "size": "36px"
+    },
+    "specialTag": {
+      "backgroundColor": "var(--primary-color)",
+      "textColor": "#ffffff"
+    },
+    "discountTag": {
+      "backgroundColor": "#c44545",
+      "textColor": "#ffffff"
+    },
+    "productName": {
+      "color": "var(--primary-color)",
+      "fontSize": "24px",
+      "fontWeight": "600"
+    },
+    "description": {
+      "color": "#505f79",
+      "fontSize": "16px"
+    },
+    "price": {
+      "currentColor": "var(--primary-color)",
+      "currentSize": "24px",
+      "discountedColor": "#c44545"
+    },
+    "quantityControls": {
+      "buttonBorderColor": "#54dc28",
+      "buttonSize": "40px",
+      "fontSize": "25px"
+    },
+    "quantityText": {
+      "color": "var(--primary-color)",
+      "fontSize": "16px"
+    },
+    "actionButton": {
+      "backgroundColor": "var(--primary-color)",
+      "textColor": "#ffffff",
+      "fontSize": "22px",
+      "padding": "14px",
+      "borderRadius": "4px"
+    }
+  },
+
+  "cartFloating": {
+    "button": {
+      "background": "linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%)",
+      "textColor": "#ffffff",
+      "borderColor": "var(--secondary-color)",
+      "borderRadius": "20px",
+      "minWidth": "275px",
+      "height": "60px",
+      "position": {
+        "bottom": "40px",
+        "right": "40px"
+      },
+      "cartText": {
+        "fontSize": "26px",
+        "fontWeight": "600"
+      },
+      "cartCount": {
+        "background": "linear-gradient(135deg, var(--secondary-color) 0%, lighten(var(--secondary-color), 10%) 100%)",
+        "textColor": "#ffffff",
+        "size": "35px",
+        "fontSize": "20px"
+      },
+      "cartAmount": {
+        "fontSize": "22px"
+      }
+    },
+    "sidebar": {
+      "width": "600px",
+      "backgroundColor": "#ffffff",
+      "header": {
+        "height": "90px",
+        "background": "linear-gradient(315deg, var(--primary-color) 0%, var(--secondary-color) 100%)",
+        "textColor": "#ffffff",
+        "titleSize": "40px",
+        "closeButtonSize": "35px"
+      },
+      "clearCartButton": {
+        "background": "linear-gradient(135deg, var(--secondary-color) 0%, darken(var(--secondary-color), 10%) 100%)",
+        "textColor": "#ffffff",
+        "fontSize": "22px",
+        "padding": "16px 28px",
+        "borderRadius": "8px"
+      },
+      "cartItem": {
+        "borderColor": "#eeeeee",
+        "deleteButton": {
+          "background": "linear-gradient(135deg, var(--secondary-color) 0%, darken(var(--secondary-color), 10%) 100%)",
+          "textColor": "#ffffff",
+          "size": "30px"
+        },
+        "imageSize": "70px",
+        "name": {
+          "fontSize": "18px",
+          "fontWeight": "600"
+        },
+        "price": {
+          "color": "#666666",
+          "fontSize": "20px"
+        },
+        "quantityButton": {
+          "size": "45px",
+          "borderColor": "var(--primary-color)",
+          "textColor": "var(--primary-color)",
+          "fontSize": "35px"
+        },
+        "total": {
+          "color": "var(--primary-color)",
+          "fontSize": "25px",
+          "fontWeight": "600"
+        }
+      },
+      "emptyState": {
+        "messageColor": "#888888",
+        "messageSize": "30px",
+        "continueButton": {
+          "background": "linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%)",
+          "textColor": "#ffffff",
+          "fontSize": "30px",
+          "borderRadius": "30px"
+        }
+      },
+      "footer": {
+        "backgroundColor": "#f5f5f5",
+        "height": "150px",
+        "totalRow": {
+          "fontSize": "40px",
+          "fontWeight": "600"
+        },
+        "checkoutButton": {
+          "backgroundColor": "var(--secondary-color)",
+          "textColor": "#ffffff",
+          "borderColor": "var(--secondary-color)",
+          "fontSize": "40px",
+          "fontWeight": "600",
+          "borderRadius": "30px"
+        }
+      }
+    }
+  },
+
+  "checkout": {
+    "container": {
+      "background": "linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)"
+    },
+    "header": {
+      "height": "100px",
+      "background": "linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%)",
+      "titleColor": "#ffffff",
+      "titleSize": "2.4rem",
+      "logo": {
+        "height": "60px"
+      },
+      "backButton": {
+        "background": "linear-gradient(135deg, var(--secondary-color) 0%, darken(var(--secondary-color), 10%) 100%)",
+        "textColor": "#ffffff",
+        "fontSize": "18px",
+        "padding": "12px 20px",
+        "borderRadius": "12px"
+      }
+    },
+    "cartItems": {
+      "backgroundColor": "#ffffff",
+      "borderRadius": "12px",
+      "borderColor": "#3c5066",
+      "clearButton": {
+        "background": "linear-gradient(135deg, var(--secondary-color) 0%, darken(var(--secondary-color), 10%) 100%)",
+        "textColor": "#ffffff",
+        "fontSize": "16px"
+      },
+      "item": {
+        "borderColor": "rgba(0, 0, 0, 0.1)",
+        "deleteButton": {
+          "background": "linear-gradient(135deg, var(--secondary-color) 0%, darken(var(--secondary-color), 10%) 100%)",
+          "size": "40px"
+        },
+        "imageSize": "60px",
+        "name": {
+          "fontSize": "20px",
+          "fontWeight": "600"
+        },
+        "price": {
+          "color": "var(--secondary-color)",
+          "fontSize": "25px"
+        },
+        "quantityButton": {
+          "size": "45px",
+          "borderColor": "var(--primary-color)",
+          "fontSize": "24px"
+        },
+        "total": {
+          "color": "var(--primary-color)",
+          "fontSize": "25px"
+        }
+      },
+      "emptyState": {
+        "messageColor": "var(--primary-color)",
+        "messageSize": "36px",
+        "continueButton": {
+          "backgroundColor": "var(--primary-color)",
+          "fontSize": "30px"
+        }
+      }
+    },
+    "orderSummary": {
+      "background": "linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%)",
+      "borderTopColor": "var(--secondary-color)",
+      "totalLabel": {
+        "color": "#ffffff",
+        "fontSize": "30px"
+      },
+      "totalAmount": {
+        "color": "#ffffff",
+        "fontSize": "36px",
+        "fontWeight": "700"
+      },
+      "completeButton": {
+        "background": "linear-gradient(135deg, var(--secondary-color) 0%, darken(var(--secondary-color), 10%) 100%)",
+        "textColor": "#ffffff",
+        "fontSize": "26px",
+        "height": "80px",
+        "minWidth": "380px",
+        "borderRadius": "12px"
+      }
+    }
+  },
+
+  "payment": {
+    "container": {
+      "background": "linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)"
+    },
+    "header": {
+      "height": "100px",
+      "background": "linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%)",
+      "titleColor": "#ffffff",
+      "titleSize": "2.4rem",
+      "backButton": {
+        "background": "linear-gradient(135deg, var(--secondary-color) 0%, darken(var(--secondary-color), 10%) 100%)",
+        "textColor": "#ffffff"
+      }
+    },
+    "methodCard": {
+      "backgroundColor": "#ffffff",
+      "borderRadius": "12px",
+      "height": "200px",
+      "borderColor": "transparent",
+      "hoverBorderColor": "var(--primary-color)",
+      "iconSize": "80px",
+      "iconColor": "var(--primary-color)",
+      "nameColor": "var(--primary-color)",
+      "nameSize": "22px"
+    },
+    "processing": {
+      "background": "linear-gradient(135deg, #f8f9fa 0%, var(--light-color) 100%)",
+      "content": {
+        "backgroundColor": "#ffffff",
+        "borderColor": "var(--primary-color)",
+        "borderRadius": "12px"
+      },
+      "icon": {
+        "background": "linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%)",
+        "size": "100px",
+        "iconColor": "#ffffff"
+      },
+      "title": {
+        "color": "var(--primary-color)",
+        "fontSize": "32px"
+      },
+      "message": {
+        "color": "var(--secondary-color)",
+        "fontSize": "20px"
+      },
+      "loader": {
+        "backgroundColor": "var(--light-color)",
+        "barGradient": "linear-gradient(90deg, var(--secondary-color), var(--primary-color), var(--secondary-color))"
+      },
+      "cancelButton": {
+        "background": "linear-gradient(135deg, var(--secondary-color) 0%, darken(var(--secondary-color), 10%) 100%)",
+        "textColor": "#ffffff",
+        "fontSize": "20px"
+      }
+    },
+    "voucherPrinting": {
+      "content": {
+        "backgroundColor": "#ffffff",
+        "borderColor": "var(--primary-color)"
+      },
+      "icon": {
+        "background": "linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%)"
+      },
+      "successIcon": {
+        "background": "linear-gradient(135deg, #4dae26 0%, darken(#4dae26, 10%) 100%)"
+      },
+      "title": {
+        "color": "var(--primary-color)",
+        "fontSize": "32px"
+      },
+      "printingMessage": {
+        "color": "#54dc28",
+        "fontSize": "24px"
+      },
+      "orderDetails": {
+        "backgroundColor": "var(--light-color)",
+        "orderNumberColor": "var(--primary-color)",
+        "totalColor": "var(--secondary-color)"
+      },
+      "confirmButton": {
+        "background": "linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%)",
+        "textColor": "#ffffff",
+        "fontSize": "20px"
+      }
+    }
+  },
+
+  "confirmModal": {
+    "backdrop": {
+      "backgroundColor": "rgba(0, 0, 0, 0.5)"
+    },
+    "container": {
+      "backgroundColor": "#ffffff",
+      "borderRadius": "12px",
+      "maxWidth": "400px"
+    },
+    "title": {
+      "fontSize": "24px",
+      "fontWeight": "600"
+    },
+    "message": {
+      "fontSize": "16px",
+      "color": "#666666"
+    },
+    "buttons": {
+      "confirm": {
+        "dangerBackground": "#dc3545",
+        "primaryBackground": "var(--primary-color)",
+        "textColor": "#ffffff"
+      },
+      "cancel": {
+        "backgroundColor": "#6c757d",
+        "textColor": "#ffffff"
+      }
+    }
+  }
+}

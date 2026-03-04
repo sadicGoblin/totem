@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 declare global {
   interface Window {
     electronAPI?: {
-      exitKioskMode: () => void;
+      exitKioskMode: (password: string) => void;
       enterKioskMode: () => void;
       onExitKioskResult: (callback: (result: {success: boolean}) => void) => void;
       getScreenOrientation: () => 'vertical' | 'horizontal';
@@ -48,20 +48,25 @@ export class ElectronService {
     return this._isVerticalOrientation;
   }
 
-  exitKioskMode(): Promise<boolean> {
+  exitKioskMode(password: string): Promise<boolean> {
     return new Promise((resolve) => {
       if (!this.isElectron) {
         console.warn('Modo de desarrollo: simulando salida del modo kiosko');
-        // En modo desarrollo, simulamos que la operación fue exitosa
+        // En modo desarrollo, simulamos verificación de password
         setTimeout(() => {
-          console.log('Simulación: Salida del modo kiosko exitosa');
-          resolve(true);
+          if (password === '1234') {
+            console.log('Simulación: Salida del modo kiosko exitosa');
+            resolve(true);
+          } else {
+            console.log('Simulación: Contraseña incorrecta');
+            resolve(false);
+          }
         }, 500);
         return;
       }
 
-      // Enviar mensaje para salir del modo kiosko
-      window.electronAPI!.exitKioskMode();
+      // Enviar mensaje con password para salir del modo kiosko
+      window.electronAPI!.exitKioskMode(password);
 
       // Configurar callback para recibir respuesta
       window.electronAPI!.onExitKioskResult((result) => {

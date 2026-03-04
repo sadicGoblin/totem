@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
+import { CatalogueService } from '../../services/catalogue.service';
+import { PrinterService, ProductoTicket } from '../../services/printer.service';
 
 @Component({
   selector: 'app-payment',
@@ -18,7 +20,21 @@ export class PaymentComponent {
   selectedMethod: 'cash' | 'mercadopago' | 'amipass' | 'card' | null = null;
   voucherPrinted = false;
   
-  constructor(private router: Router, private cartService: CartService) {
+  // Referencia al timeout de pago con tarjeta para poder cancelarlo
+  private cardPaymentTimeout: any = null;
+
+  get storeLogo(): string {
+    return this.catalogueService.getClientConfiguration()?.logo_url || 
+           this.catalogueService.getClientConfiguration()?.logo || 
+           '';
+  }
+  
+  constructor(
+    private router: Router, 
+    private cartService: CartService,
+    private printerService: PrinterService,
+    private catalogueService: CatalogueService
+  ) {
     // Obtener el total del carrito
     this.cartService.getCartTotal().subscribe(total => {
       this.cartTotal = total;
@@ -43,9 +59,9 @@ export class PaymentComponent {
       // Para el pago con tarjeta, mostramos la interfaz especial
       // No activamos processingPayment porque usamos la vista específica
       
-      // Aquí podríamos iniciar la comunicación con la máquina de pago
+      // TODO: Aquí se debe integrar con Transbank SDK
       // Por ahora solo simulamos un tiempo de espera para demo
-      setTimeout(() => {
+      this.cardPaymentTimeout = setTimeout(() => {
         // Simulamos un pago exitoso después de 10 segundos
         this.completeOrder();
       }, 10000);
@@ -71,44 +87,68 @@ export class PaymentComponent {
   
   // Cancelar pago con tarjeta y volver a selección de método de pago
   cancelCardPayment(): void {
+    // Cancelar el timeout de simulación para evitar que limpie el carrito
+    if (this.cardPaymentTimeout) {
+      clearTimeout(this.cardPaymentTimeout);
+      this.cardPaymentTimeout = null;
+    }
+    
+    // TODO: Aquí se debería enviar señal de cancelación a Transbank si está en proceso
+    
     this.selectedMethod = null;
   }
   
   // Método para imprimir el voucher en la impresora térmica
   printVoucher(): void {
-    console.log('Preparando impresión con Parzibyte HTTP ESC/POS...');
+    console.log('Preparando impresión del ticket de "Pagar en Caja"...');
     
-    this.cartService.getCartItems().subscribe(items => {
-      const operaciones: any[] = [
-        { nombre: "Iniciar" },
-        { nombre: "EstablecerAlineacion", argumentos: [1] },
-        { nombre: "EscribirTexto", argumentos: [`Pedido #${this.orderNumberPreview}\n`] },
-        { nombre: "EscribirTexto", argumentos: [`Total: ${this.formatPrice(this.cartTotal)}\n`] },
-        { nombre: "Feed", argumentos: [2] },
-        { nombre: "Corte" }
-      ];
-  
-      // Enviar las operaciones al servidor de impresión
-      fetch('http://localhost:8000/imprimir', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(operaciones)
-      })
-      .then(res => res.json())
-      .then(result => {
-        console.log('Resultado impresión:', result);
-      })
-      .catch(err => {
-        console.error('Error enviando a la impresora:', err);
-      });
+    // Obtener los items del carrito una sola vez, sin suscripción
+    const items = this.cartService.getCurrentCartItems();
+    
+    // Convertir los items del carrito al formato esperado por el plugin
+    const productos: ProductoTicket[] = items.map(item => ({
+      nombre: item.product.name,
+      cantidad: item.quantity,
+      precio: item.product.price
+    }));
+
+    // Enviar al plugin de impresión con el número de pedido
+    this.printerService.imprimirTicket(productos, undefined, this.orderNumberPreview).subscribe({
+      next: (response) => {
+        if (response.resultado === 'ok') {
+          console.log('Ticket impreso exitosamente');
+          this.voucherPrinted = true;
+          
+          // Después de imprimir exitosamente, esperar 3 segundos y regresar al catálogo
+          setTimeout(() => {
+            this.completeOrderAndReturn();
+          }, 6000);
+        } else {
+          console.error('Error al imprimir ticket:', response.mensaje);
+          // En caso de error, también regresar después de un tiempo
+          setTimeout(() => {
+            this.completeOrderAndReturn();
+          }, 6000);
+        }
+      },
+      error: (error) => {
+        console.error('Error de conexión con el servicio de impresión:', error);
+        // En caso de error, también regresar después de un tiempo
+        setTimeout(() => {
+          this.completeOrderAndReturn();
+        }, 2000);
+      }
     });
   }
     
   
-  // Confirmación de que el cliente ha visto el voucher impreso
-  confirmVoucherPrinted(): void {
-    // Completamos el pedido como con cualquier otro método de pago
-    this.completeOrder();
+  // Método simplificado para completar pedido y regresar al catálogo
+  completeOrderAndReturn(): void {
+    // Limpiar el carrito inmediatamente
+    this.cartService.clearCart();
+    
+    // Regresar al catálogo principal
+    this.router.navigate(['/']);
   }
   
   // Completar el pedido después del pago

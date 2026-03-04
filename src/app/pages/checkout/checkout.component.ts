@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
+import { CatalogueService } from '../../services/catalogue.service';
 import { CartItem } from '../../models/products.model';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
 
@@ -23,7 +24,17 @@ export class CheckoutComponent implements OnInit {
   showConfirmModal: boolean = false;
   confirmMessage: string = '¿Estás seguro de que deseas vaciar todo el carrito?';
 
-  constructor(private cartService: CartService, private router: Router) {}
+  constructor(
+    private cartService: CartService, 
+    private router: Router,
+    private catalogueService: CatalogueService
+  ) {}
+
+  get storeLogo(): string {
+    return this.catalogueService.getClientConfiguration()?.logo_url || 
+           this.catalogueService.getClientConfiguration()?.logo || 
+           '';
+  }
 
   ngOnInit(): void {
     this.cartService.getCartItems().subscribe(items => {
@@ -107,7 +118,7 @@ export class CheckoutComponent implements OnInit {
 
   // Volver a la página principal
   goToCategory(): void {
-    this.router.navigate(['/category']);
+    this.router.navigate(['/home']);
   }
   
   // Mostrar modal para vaciar el carrito completamente

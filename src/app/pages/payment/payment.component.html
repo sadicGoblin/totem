@@ -4,6 +4,9 @@
   </button>
   <h1>¿Cómo quieres pagar?</h1>
   <div class="spacer"></div>
+  <div class="store-logo" *ngIf="storeLogo">
+    <img [src]="storeLogo" alt="Store Logo" />
+  </div>
 </div>
 
 <div class="payment-container"> 
@@ -42,23 +45,30 @@
       <div class="voucher-icon">
         <i class="fas fa-receipt"></i>
       </div>
-      <h2>Tu pedido está listo</h2>
-      <p class="printing-message">Imprimiendo voucher...</p>
-      <div class="printer-animation">
+      <h2 *ngIf="!voucherPrinted">Imprimiendo tu voucher...</h2>
+      <h2 *ngIf="voucherPrinted">¡Voucher impreso exitosamente!</h2>
+      
+      <div class="printer-animation" *ngIf="!voucherPrinted">
         <div class="printer">
           <div class="printer-top"></div>
           <div class="printer-bottom"></div>
           <div class="paper"></div>
         </div>
       </div>
-      <p>Por favor, llévalo a caja para completar tu pago</p>
+      
+      <div class="success-icon" *ngIf="voucherPrinted">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      
+      <p *ngIf="!voucherPrinted">Por favor espera...</p>
+      <p *ngIf="voucherPrinted">Lleva tu voucher a caja para completar el pago</p>
+      
       <div class="order-details">
         <p class="order-number">Número de pedido: <strong>#{{ orderNumberPreview }}</strong></p>
         <p class="order-total">Total a pagar: <strong>{{ formatPrice(cartTotal) }}</strong></p>
       </div>
-      <button class="confirm-btn" (click)="confirmVoucherPrinted()">
-        ENTENDIDO
-      </button>
+      
+      <p *ngIf="voucherPrinted" class="redirect-message">Regresando al catálogo...</p>
     </div>
   </div>
   

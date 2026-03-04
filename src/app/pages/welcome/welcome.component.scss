@@ -1,12 +1,13 @@
-// Importamos las variables para usar los colores corporativos
-$primary-blue: #2e3e51;
-$secondary-blue: #3c5066;
-$accent-blue: #5ca6c1;
+// Variables - Colores por defecto (se sobrescriben con CSS variables desde la API)
+$primary-color: #2997db;
+$secondary-black: #333333;
+$accent-color: #3771ae;
 $light-blue: #dce3ea;
 $light-gray: #eef0f3;
 $medium-gray: #c3c8cd;
 $dark-gray: #1f2731;
 $white: #ffffff;
+$secondary-color: #1054da;
 
 .welcome-container {
   width: 100%;
@@ -81,7 +82,7 @@ h1 {
   font-size: 4rem;
   font-weight: 700;
   margin-bottom: 15px;
-  color: $primary-blue;
+  color: var(--primary-color, #2997db);
   letter-spacing: 2px;
   text-transform: uppercase;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -91,13 +92,13 @@ h2 {
   font-size: 2.5rem;
   font-weight: 600;
   margin-bottom: 20px;
-  color: $accent-blue; /* Color acento */
+  color: $secondary-color; /* Color acento */
 }
 
 p {
   font-size: 1.6rem;
   margin-bottom: 30px;
-  color: $secondary-blue;
+  color: var(--primary-color, #2997db);
   line-height: 1.6;
   max-width: 600px;
   margin-left: auto;
@@ -105,7 +106,7 @@ p {
 }
 
 .start-button {
-  background-color: $primary-blue; /* Color primario corporativo */
+  background-color: var(--primary-color, #2997db); /* Color primario corporativo */
   color: $white;
   border: none;
   border-radius: 50px;
@@ -149,9 +150,9 @@ p {
   }
 
   &:hover {
-    background-color: $secondary-blue;
+    background: linear-gradient(135deg, $primary-color 0%, $secondary-color 50%, $secondary-color 100%);
     transform: scale(1.05);
-    box-shadow: 0 10px 30px rgba(92, 166, 193, 0.6);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   }
 
   &:active {

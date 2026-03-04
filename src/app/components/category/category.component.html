@@ -3,95 +3,48 @@
 
 <div class="category-container">
   <div class="category-header">
-    <h1>Selecciona una categoría</h1>
+    <div class="header-content">
+      <h1>{{ categoryTitle }}</h1>
+      <p>{{ categorySubtitle }}</p>
+    </div>
+    <div class="store-logo" *ngIf="storeLogo">
+      <img [src]="storeLogo" alt="Store Logo" />
+    </div>
   </div>
 
   <div class="category-selection">
     <!-- <h2>Selecciona una categoría</h2> -->
 
-    <div class="category-grid">
-      <!-- Tarjeta de BEBIDAS -->
-      <div class="category-card" (click)="selectCategory('bebidas')">
-        <div class="card-image">
-          <img
-            src="assets/images/categories/bebidas.jpg"
-            alt="Bebidas"
-            onerror="this.src='assets/images/categories/default.jpg'"
-          />
-        </div>
-        <div class="card-title">BEBIDAS</div>
-      </div>
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Cargando categorías...</p>
+    </div>
 
-      <!-- Tarjeta de PIZZAS -->
-      <div class="category-card" (click)="selectCategory('pizzas')">
-        <div class="card-image">
-          <img
-            src="assets/images/categories/pizzas.jpg"
-            alt="Pizzas"
-            onerror="this.src='assets/images/categories/default.jpg'"
-          />
-        </div>
-        <div class="card-title">PIZZAS</div>
-      </div>
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="error-container">
+      <p>Error al cargar las categorías. Por favor, intenta nuevamente.</p>
+      <button (click)="loadCategories()" class="retry-button">Reintentar</button>
+    </div>
 
-      <!-- Tarjeta de POSTRES -->
-      <div class="category-card" (click)="selectCategory('postres')">
+    <!-- Categories Grid -->
+    <div class="category-grid" *ngIf="!loading && !error">
+      <div 
+        class="category-card" 
+        *ngFor="let category of categories; trackBy: trackByCategory"
+        (click)="selectCategory(category)"
+      >
         <div class="card-image">
           <img
-            src="assets/images/categories/postres.jpg"
-            alt="Postres"
-            onerror="this.src='assets/images/categories/default.jpg'"
+            [src]="category.image"
+            [alt]="category.name"
+            (error)="onImageError($event, category)"
           />
         </div>
-        <div class="card-title">POSTRES</div>
-      </div>
-
-      <!-- Tarjeta de COMPLEMENTOS -->
-      <div class="category-card" (click)="selectCategory('complementos')">
-        <div class="card-image">
-          <img
-            src="assets/images/categories/complementos.jpg"
-            alt="Complementos"
-            onerror="this.src='assets/images/categories/default.jpg'"
-          />
+        <div class="card-content">
+          <div class="card-title">{{ category.name.toUpperCase() }}</div>
+          <div class="card-description">{{ category.description }}</div>
         </div>
-        <div class="card-title">COMPLEMENTOS</div>
-      </div>
-
-      <!-- Tarjeta de HAMBURGUESAS -->
-      <div class="category-card" (click)="selectCategory('hamburguesas')">
-        <div class="card-image">
-          <img
-            src="assets/images/categories/hamburguesas.jpg"
-            alt="Hamburguesas"
-            onerror="this.src='assets/images/categories/default.jpg'"
-          />
-        </div>
-        <div class="card-title">HAMBURGUESAS</div>
-      </div>
-
-      <!-- Tarjeta de ZAPATILLAS -->
-      <div class="category-card" (click)="selectCategory('zapatillas')">
-        <div class="card-image">
-          <img
-            src="assets/images/categories/zapatillas.jpg"
-            alt="Zapatillas"
-            onerror="this.src='assets/images/categories/default.jpg'"
-          />
-        </div>
-        <div class="card-title">ZAPATILLAS</div>
-      </div>
-
-      <!-- Tarjeta de CELULARES -->
-      <div class="category-card" (click)="selectCategory('celulares')">
-        <div class="card-image">
-          <img
-            src="assets/images/categories/celulares.jpg"
-            alt="Celulares"
-            onerror="this.src='assets/images/categories/default.jpg'"
-          />
-        </div>
-        <div class="card-title">CELULARES</div>
       </div>
     </div>
   </div>

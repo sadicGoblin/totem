@@ -1,14 +1,14 @@
-// Variables (usando los mismos colores que tu aplicación)
+// Variables - Colores por defecto (se sobrescriben con CSS variables desde la API)
 $primary-bg: #1a1a1a;
 $secondary-bg: #2a2a2a;
-$accent-color: #ffd700;
+$accent-color: #2997db;
 $text-color: #ffffff;
 $border-radius: 6px;
 $shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 
 // Variables adicionales
 $dark-blue: #1e3a5f;
-$primary-blue: #3498db;
+$primary-black: #000000;
 $white: #ffffff;
 $success-green: #2ecc71;
 $danger-red: #e74c3c;
@@ -166,11 +166,11 @@ $danger-red: #e74c3c;
       }
       
       &.submit-btn {
-        background-color: $primary-blue;
+        background-color: $primary-black;
         color: $white;
         
         &:hover, &:active {
-          background-color: darken($primary-blue, 10%);
+          background-color: #262626;
           transform: translateY(-2px);
         }
       }

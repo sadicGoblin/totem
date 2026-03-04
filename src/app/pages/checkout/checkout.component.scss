@@ -1,33 +1,49 @@
-// Variables
-$primary-bg: #151d27;
-$secondary-bg: #222d3d;
-$accent-color: #ffbd00;
-$text-color: #ffffff;
-$border-radius: 8px;
-$shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-$accent-green: #54dc28;
-$primary-blue: #1a2533;
-
+// Variables - Colores por defecto (se sobrescriben con CSS variables desde la API)
+$primary-bg: #f8f9fa;
+$secondary-bg: #ffffff;
+$accent-color: #3771ae;
+$text-color: #343a40;
+$white: #ffffff;
+$border-radius: 12px;
+$shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+$shadow-accent: 0 4px 15px rgba(41, 151, 219, 0.3);
+$primary-color: #2997db;
+$secondary-color: #1054da;
+$light-color: #e8f4fc;
+$shadow-blue: 0 4px 15px rgba(16, 84, 218, 0.3);
+$light-blue: #3c5066;
 // Estilos generales
 .checkout-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: $text-color;
+  background: linear-gradient(135deg, $primary-bg 0%, $white 100%);
   color: $text-color;
   padding: 0;
   margin: 0;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 // Estilos del header
 .checkout-header {
-  height: 80px;
+  height: 100px;
   display: flex;
   align-items: center;
-  padding: 16px 24px;
-  background-color: $secondary-bg;
+  justify-content: space-between;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, var(--primary-color, #2997db) 0%, var(--secondary-color, #1054da) 100%);
   box-shadow: $shadow;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--secondary-color, #1054da), #3771ae);
+  }
 
   h1 {
     text-transform: uppercase;
@@ -35,30 +51,51 @@ $primary-blue: #1a2533;
     text-align: center;
     margin: 0;
     font-size: 2.4rem;
-    font-weight: 600;
+    font-weight: 700;
+    color: $white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  
+  .store-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    img {
+      height: 60px;
+      width: auto;
+      object-fit: contain;
+    }
   }
 }
 
 .back-btn {
   display: flex;
   align-items: center;
-  background-color: green;
-  border-radius: 5px;
-  color: $text-color;
-  padding: 10px 16px;
-  font-size: 20px;
+  background: linear-gradient(135deg, $secondary-color 0%, darken($secondary-color, 10%) 100%);
+  border-radius: 12px;
+  color: $white;
+  padding: 12px 20px;
+  font-size: 18px;
+  font-weight: 600;
   border: none;
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: $shadow-blue;
 
   &:hover {
-    color: $accent-color;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 
   span {
-    margin-right: 15px;
-    font-size: 30px;
-    margin-top: -5px;
+    margin-right: 10px;
+    font-size: 24px;
+    font-weight: bold;
   }
 }
 // Estilos del contenido
@@ -87,23 +124,26 @@ $primary-blue: #1a2533;
   }
   
   .clear-cart-btn {
-    background-color: #d91a1a;
+    background: linear-gradient(135deg, $secondary-color 0%, darken($secondary-color, 10%) 100%);
     color: white;
     border: none;
-    border-radius: 4px;
-    padding: 8px 16px;
+    border-radius: 8px;
+    padding: 12px 20px;
     font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
+    box-shadow: $shadow-blue;
     
     i {
       margin-right: 8px;
     }
     
     &:hover {
-      background-color: darken(#d91a1a, 10%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
     }
   }
   
@@ -118,12 +158,12 @@ $primary-blue: #1a2533;
     
     .empty-message {
       font-size: 36px;
-      color: $primary-blue;
+      color: $primary-color;
       margin-bottom: 30px;
     }
     
     .continue-btn {
-      background-color: $primary-blue;
+      background-color: $primary-color;
       color: white;
       border: none;
       padding: 15px 25px;
@@ -134,7 +174,7 @@ $primary-blue: #1a2533;
       transition: all 0.2s ease;
       
       &:hover {
-        background-color: lighten($primary-blue, 5%);
+        background-color: #262626;
       }
       
       &:active {
@@ -149,17 +189,18 @@ $primary-blue: #1a2533;
 }
 
 .cart-items {
-  background-color: $secondary-bg;
+  background-color: $white;
   border-radius: $border-radius;
-  padding: 16px;
+  padding: 20px;
   box-shadow: $shadow;
+  border: 2px solid $light-blue;
 }
 
 .cart-item {
   display: flex;
   align-items: center;
   padding: 16px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   position: relative;
 
   &:last-child {
@@ -174,18 +215,20 @@ $primary-blue: #1a2533;
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #d91a1a;
+    background: linear-gradient(135deg, $secondary-color 0%, darken($secondary-color, 10%) 100%);
     color: white;
     border: none;
     cursor: pointer;
     margin-right: 20px;
-    font-size: 25px;
+    font-size: 20px;
     font-weight: bold;
     padding: 0;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(247, 62, 0, 0.3);
     
     &:hover {
-      background-color: darken(#d91a1a, 10%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
     }
     
     &:active {
@@ -218,7 +261,7 @@ $primary-blue: #1a2533;
 
     .item-price {
       font-size: 25px;
-      color: rgba(255, 255, 255, 0.8);
+      color: $secondary-color
     }
   }
 
@@ -231,20 +274,21 @@ $primary-blue: #1a2533;
       width: 45px;
       height: 45px;
       border-radius: 50%;
-      border: none;
-      border: 2px solid $accent-green;
-      background-color: rgba(255, 255, 255, 0.1);
-      color: $text-color;
+      border: 2px solid $primary-color;
+      background-color: $white;
+      color: $primary-color;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 25px;
-      transition: background-color 0.2s ease;
+      font-size: 24px;
+      font-weight: bold;
+      transition: all 0.2s ease;
 
       &:hover {
-        background-color: $accent-color;
-        color: $primary-bg;
+        background-color: $primary-color;
+        color: $white;
+        transform: scale(1.05);
       }
 
       &:disabled {
@@ -262,10 +306,13 @@ $primary-blue: #1a2533;
   }
 
   .item-total {
+    color: $primary-color;
     font-weight: 600;
     font-size: 25px;
     text-align: right;
-    min-width: 80px;
+    min-width: 120px;
+    width: 120px;
+    flex-shrink: 0;
   }
 }
 
@@ -276,10 +323,11 @@ $primary-blue: #1a2533;
   left: 0;
   right: 0;
   width: 100%;
-  background-color: #1a2533; // Color azul oscuro como en la imagen
-  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, var(--primary-color, #2997db) 0%, var(--secondary-color, #1054da) 100%);
+  box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.3);
   z-index: 100;
   padding: 20px 0;
+  border-top: 4px solid $secondary-color;
 }
 
 // Estilos del resumen del pedido
@@ -347,41 +395,54 @@ $primary-blue: #1a2533;
   .total-label {
     margin-right: 15px;
     font-size: 30px;
+    color: $white;
   }
   
   .total-amount {
-    font-size: 32px;
-    color: #ffcc00; // Color amarillo como en la imagen
+    font-size: 36px;
+    color: $white;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
   }
 }
 
 .complete-order-btn {
-  background-color: #ffcc00; // Color amarillo como en la imagen
-  color: #000000;
+  background: linear-gradient(135deg, $secondary-color 0%, darken($secondary-color, 10%) 100%);
+  color: $white;
   padding: 15px 24px;
-  border-radius: 4px;
+  border-radius: 12px;
   border: none;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 26px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s ease;
   width: auto;
   min-width: 380px;
   height: 80px;
   white-space: nowrap;
+  box-shadow: $shadow-blue;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 
   &:hover {
-    background-color: darken($accent-color, 10%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
   }
 
+  &:active {
+    transform: scale(0.98);
+  }
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    background-color: #999;
+    background: linear-gradient(135deg, #999 0%, darken(#999, 10%) 100%);
+    transform: none;
+    box-shadow: none;
     
     &:hover {
-      background-color: #999;
+      transform: none;
+      box-shadow: none;
     }
   }
 }
@@ -396,58 +457,64 @@ $primary-blue: #1a2533;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: $primary-bg;
+  background: linear-gradient(135deg, $primary-bg 0%, $light-blue 100%);
   z-index: 1000;
 }
 
 .payment-content {
   text-align: center;
-  padding: 40px;
-  max-width: 500px;
+  padding: 50px;
+  max-width: 600px;
   width: 90%;
-  background-color: $secondary-bg;
+  background-color: $white;
   border-radius: $border-radius;
   box-shadow: $shadow;
+  border: 3px solid $primary-color;
 
   .payment-icon {
-    margin-bottom: 24px;
+    margin-bottom: 30px;
 
     i {
-      font-size: 64px;
-      color: $accent-color;
+      font-size: 80px;
+      color: $primary-color;
     }
   }
 
   h2 {
-    font-size: 28px;
-    margin-bottom: 16px;
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: $primary-color;
+    font-weight: 700;
   }
 
   p {
-    margin-bottom: 24px;
-    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 30px;
+    color: $text-color;
+    font-size: 18px;
   }
 
   .payment-message {
     margin-top: 20px;
     font-weight: 600;
-    color: $accent-color;
+    color: $secondary-color;
+    font-size: 20px;
   }
 }
 
 .loader {
   width: 100%;
-  height: 8px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  height: 12px;
+  background-color: $light-blue;
+  border-radius: 8px;
   overflow: hidden;
-  margin: 24px 0;
+  margin: 30px 0;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 
   .loader-bar {
     height: 100%;
     width: 30%;
-    background-color: $accent-color;
-    border-radius: 4px;
+    background: linear-gradient(90deg, $primary-color, $secondary-color, $primary-color);
+    border-radius: 8px;
     animation: loading 1.5s infinite ease-in-out;
   }
 }
@@ -467,34 +534,37 @@ $primary-blue: #1a2533;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: $primary-bg;
+  background: linear-gradient(135deg, $primary-bg 0%, $light-blue 100%);
 }
 
 .success-message {
   text-align: center;
-  background-color: $secondary-bg;
-  padding: 40px;
+  background-color: $white;
+  padding: 50px;
   border-radius: $border-radius;
   box-shadow: $shadow;
-  max-width: 500px;
+  max-width: 600px;
   width: 90%;
+  border: 3px solid $primary-color;
 
   h1 {
-    color: $accent-color;
-    font-size: 28px;
-    margin-bottom: 20px;
+    color: $primary-color;
+    font-size: 36px;
+    margin-bottom: 25px;
+    font-weight: 700;
   }
 
   p {
-    margin-bottom: 16px;
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: $text-color;
   }
 
   .order-number {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
-    margin-bottom: 24px;
+    margin-bottom: 30px;
+    color: $secondary-color;
   }
 
   // Estilos para la animación de impresión de comprobante
@@ -505,9 +575,10 @@ $primary-blue: #1a2533;
     align-items: center;
 
     p {
-      margin-top: 10px;
-      color: $accent-color;
+      margin-top: 15px;
+      color: $primary-color;
       font-weight: 600;
+      font-size: 18px;
     }
   }
 
@@ -517,8 +588,8 @@ $primary-blue: #1a2533;
     height: 60px;
 
     i {
-      font-size: 42px;
-      color: $accent-color;
+      font-size: 50px;
+      color: $primary-color;
       position: relative;
       z-index: 2;
     }
@@ -550,19 +621,27 @@ $primary-blue: #1a2533;
     color: rgba(255, 255, 255, 0.8);
   }
 
-  .home-btn {
-    background-color: $accent-color;
-    color: $primary-bg;
+  .back-btn {
+    background: linear-gradient(135deg, var(--primary-color, #2997db) 0%, var(--secondary-color, #1054da) 100%);
+    color: $white;
     border: none;
     border-radius: $border-radius;
     font-weight: 600;
-    font-size: 16px;
-    padding: 12px 24px;
+    font-size: 18px;
+    padding: 15px 30px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.3s ease;
+    box-shadow: $shadow;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 
     &:hover {
-      background-color: darken($accent-color, 10%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    &:active {
+      transform: scale(0.98);
     }
   }
 }

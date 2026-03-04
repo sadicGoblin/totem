@@ -6,6 +6,6 @@ export const routes: Routes = [
     {path: 'category', loadComponent: () => import('./components/category/category.component').then(m => m.CategoryComponent)},
     {path: 'checkout', loadComponent: () => import('./pages/checkout/checkout.component').then(m => m.CheckoutComponent)},
     {path: 'payment', loadComponent: () => import('./pages/payment/payment.component').then(m => m.PaymentComponent)},
-    {path: '', redirectTo: 'welcome', pathMatch: 'full'},
-    {path: '**', redirectTo: 'welcome'}
+    {path: '', redirectTo: 'home', pathMatch: 'full'},
+    {path: '**', redirectTo: 'home'}
 ];

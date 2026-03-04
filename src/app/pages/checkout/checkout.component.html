@@ -56,6 +56,9 @@
       </button>
       <h1>Revisa aquí tu pedido</h1>
       <div class="spacer"></div>
+      <div class="store-logo" *ngIf="storeLogo">
+        <img [src]="storeLogo" alt="Store Logo" />
+      </div>
     </div>
 
     <div class="checkout-body">

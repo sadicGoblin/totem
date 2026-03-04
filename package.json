@@ -64,14 +64,19 @@
     ],
     "win": {
       "target": [
-        "portable",
         "nsis"
       ],
-      "icon": "src/favicon.ico"
+      "icon": "src/favicon.ico",
+      "signAndEditExecutable": false
     },
     "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "oneClick": true,
+      "perMachine": true,
+      "allowElevation": true,
+      "runAfterFinish": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Catálogo Kiosk"
     }
   }
 }
