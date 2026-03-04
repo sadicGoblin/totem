@@ -115,6 +115,36 @@ public class TransbankPosSerialImpl : ITransbankPos, IDisposable
         try
         {
             // ============================================
+            // PASO 0: Asegurar que el puerto serial esté abierto
+            // ============================================
+            if (_serialPort == null || !_serialPort.IsOpen)
+            {
+                var portName = _configuration["Transbank:PortName"] ?? "COM3";
+                _logger.LogInformation("🔌 Abriendo puerto serial {Port} para TMS...", portName);
+                
+                if (_serialPort != null)
+                {
+                    try { _serialPort.Close(); } catch { }
+                    _serialPort.Dispose();
+                }
+                
+                _serialPort = new SerialPort
+                {
+                    PortName = portName,
+                    BaudRate = 115200,
+                    DataBits = 8,
+                    Parity = Parity.None,
+                    StopBits = StopBits.One,
+                    ReadTimeout = TIMEOUT_RESPONSE_MS,
+                    WriteTimeout = 5000,
+                    Encoding = Encoding.ASCII
+                };
+                
+                _serialPort.Open();
+                _logger.LogInformation("✅ Puerto {Port} abierto exitosamente", portName);
+            }
+            
+            // ============================================
             // PASO A: Enviar comando 0070 (Iniciar TMS)
             // ============================================
             _logger.LogInformation("📤 Paso A: Enviando comando 0070 (Iniciar descarga TMS)...");
