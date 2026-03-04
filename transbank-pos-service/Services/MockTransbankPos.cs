@@ -27,6 +27,14 @@ public class MockTransbankPos : ITransbankPos
         return Task.FromResult(true);
     }
 
+    public async Task<bool> InitializeTmsAsync()
+    {
+        _logger.LogInformation("📡 [MOCK] Iniciando carga de parámetros TMS...");
+        await Task.Delay(2000);
+        _logger.LogInformation("✅ [MOCK] Parámetros TMS cargados exitosamente");
+        return true;
+    }
+
     public Task<bool> IsConnectedAsync()
     {
         return Task.FromResult(true);

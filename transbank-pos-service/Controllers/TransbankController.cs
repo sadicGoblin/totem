@@ -147,6 +147,56 @@ public class TransbankController : ControllerBase
     }
 
     /// <summary>
+    /// Inicializa el POS descargando parámetros TMS desde el servidor.
+    /// ⚠️ USAR cuando el POS muestra "NO PUEDE OPERAR SIN PARAMETROS TMS"
+    /// Este proceso puede tomar hasta 3 minutos ya que el POS se reinicia.
+    /// </summary>
+    /// <returns>Resultado de la inicialización</returns>
+    [HttpPost("inicializar-tms")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> InitializeTms()
+    {
+        _logger.LogInformation("📥 POST /api/transbank/inicializar-tms - Iniciando carga de parámetros TMS");
+
+        try
+        {
+            var result = await _transbankService.InitializeTmsAsync();
+            
+            if (result)
+            {
+                _logger.LogInformation("✅ Inicialización TMS completada exitosamente");
+                return Ok(new 
+                { 
+                    success = true, 
+                    message = "Parámetros TMS cargados exitosamente. El POS está listo para operar.",
+                    timestamp = DateTime.Now 
+                });
+            }
+            else
+            {
+                _logger.LogError("❌ Falló la inicialización TMS");
+                return StatusCode(500, new 
+                { 
+                    success = false, 
+                    message = "Error al cargar parámetros TMS. Revise la conexión a internet del POS.",
+                    timestamp = DateTime.Now 
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "💥 Error durante inicialización TMS");
+            return StatusCode(500, new 
+            { 
+                success = false, 
+                message = $"Error: {ex.Message}",
+                timestamp = DateTime.Now 
+            });
+        }
+    }
+
+    /// <summary>
     /// Health check del servicio
     /// </summary>
     [HttpGet("health")]

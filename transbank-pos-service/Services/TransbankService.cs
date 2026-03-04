@@ -65,6 +65,16 @@ public class TransbankService
     }
 
     /// <summary>
+    /// Inicializa el POS descargando parámetros TMS.
+    /// Usar cuando el POS muestra "NO PUEDE OPERAR SIN PARAMETROS TMS".
+    /// </summary>
+    public async Task<bool> InitializeTmsAsync()
+    {
+        _logger.LogInformation("📡 Iniciando carga de parámetros TMS...");
+        return await _pos.InitializeTmsAsync();
+    }
+
+    /// <summary>
     /// Obtiene el estado actual del sistema
     /// </summary>
     public async Task<StatusResponse> GetStatusAsync()

@@ -22,10 +22,15 @@ public class TransbankPosSerialImpl : ITransbankPos, IDisposable
     // Comandos
     private const string CMD_SALE = "0200";
     private const string CMD_POLL = "0100";
+    private const string CMD_TMS_INIT = "0070";      // Iniciar descarga de parámetros TMS
+    private const string CMD_TMS_RESULT = "0080";    // Obtener resultado de inicialización
+    private const string RESP_TMS_RESULT = "1080";   // Respuesta del resultado TMS
 
     // Timeouts
     private const int TIMEOUT_ACK_MS = 3000;           // 3 segundos para recibir ACK
     private const int TIMEOUT_RESPONSE_MS = 120000;    // 2 minutos para respuesta final
+    private const int TIMEOUT_TMS_POLLING_MS = 180000; // 3 minutos máximo para polling TMS (el POS se reinicia)
+    private const int POLLING_INTERVAL_MS = 5000;      // 5 segundos entre cada intento de polling
     private const int MAX_RETRIES = 2;                 // Reintentos en caso de NAK
 
     private SerialPort? _serialPort;
@@ -54,6 +59,13 @@ public class TransbankPosSerialImpl : ITransbankPos, IDisposable
             
             _logger.LogInformation("🔌 Inicializando conexión con POS Transbank en puerto {Port}...", portName);
 
+            // Cerrar puerto si estaba abierto
+            if (_serialPort?.IsOpen == true)
+            {
+                _serialPort.Close();
+                _serialPort.Dispose();
+            }
+
             _serialPort = new SerialPort
             {
                 PortName = portName,
@@ -75,18 +87,296 @@ public class TransbankPosSerialImpl : ITransbankPos, IDisposable
             if (connected)
             {
                 _logger.LogInformation("✅ POS Transbank conectado y respondiendo");
-            }
-            else
-            {
-                _logger.LogWarning("⚠️ Puerto abierto pero POS no responde al polling");
+                return true;
             }
             
-            return connected;
+            _logger.LogWarning("⚠️ Puerto abierto pero POS no responde al polling");
+            _logger.LogInformation("🔄 Intentando inicialización TMS (carga de parámetros)...");
+            
+            // Intentar inicialización TMS si el POS no responde
+            var tmsResult = await InitializeTmsAsync();
+            return tmsResult;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "❌ Error al inicializar conexión con POS Transbank");
             return false;
+        }
+    }
+
+    /// <summary>
+    /// Inicializa el POS descargando parámetros TMS.
+    /// Flujo: Comando 0070 -> Esperar ACK -> POS se reinicia -> Polling 0100 -> Comando 0080
+    /// </summary>
+    public async Task<bool> InitializeTmsAsync()
+    {
+        _logger.LogInformation("📡 ========== INICIANDO CARGA DE PARÁMETROS TMS ==========");
+        
+        try
+        {
+            // ============================================
+            // PASO A: Enviar comando 0070 (Iniciar TMS)
+            // ============================================
+            _logger.LogInformation("📤 Paso A: Enviando comando 0070 (Iniciar descarga TMS)...");
+            
+            var initMessage = BuildMessage(CMD_TMS_INIT);
+            
+            // Enviar comando y esperar SOLO ACK (no trama completa)
+            var ackReceived = await SendAndWaitAckOnlyAsync(initMessage, TIMEOUT_ACK_MS);
+            
+            if (!ackReceived)
+            {
+                _logger.LogError("❌ No se recibió ACK del comando 0070");
+                return false;
+            }
+            
+            _logger.LogInformation("✅ ACK recibido - POS iniciará descarga y se reiniciará...");
+            _logger.LogInformation("⏳ Esperando reinicio del POS (esto puede tomar 1-2 minutos)...");
+            
+            // ============================================
+            // PASO B: Polling con comando 0100
+            // ============================================
+            _logger.LogInformation("📤 Paso B: Iniciando polling (comando 0100) hasta que POS responda...");
+            
+            var posReady = await WaitForPosReadyAsync();
+            
+            if (!posReady)
+            {
+                _logger.LogError("❌ Timeout esperando que el POS esté listo después del reinicio");
+                return false;
+            }
+            
+            _logger.LogInformation("✅ POS respondió al polling - Está listo");
+            
+            // ============================================
+            // PASO C: Obtener resultado con comando 0080
+            // ============================================
+            _logger.LogInformation("📤 Paso C: Enviando comando 0080 (Obtener resultado TMS)...");
+            
+            var resultMessage = BuildMessage(CMD_TMS_RESULT);
+            var result = await SendAndWaitResponseAsync(resultMessage);
+            
+            if (result == null)
+            {
+                _logger.LogError("❌ No se recibió respuesta del comando 0080");
+                return false;
+            }
+            
+            // Parsear respuesta 1080|Código|Fecha|Hora
+            var tmsResponse = ParseTmsResponse(result);
+            
+            if (tmsResponse.success)
+            {
+                _logger.LogInformation("✅ ========== INICIALIZACIÓN TMS EXITOSA ==========");
+                _logger.LogInformation("📅 Fecha: {Fecha}, Hora: {Hora}", tmsResponse.date, tmsResponse.time);
+                return true;
+            }
+            else
+            {
+                _logger.LogError("❌ ========== INICIALIZACIÓN TMS FALLIDA ==========");
+                _logger.LogError("🚨 Código de error: {Code}", tmsResponse.code);
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "❌ Error durante inicialización TMS");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Espera hasta que el POS responda al polling (después del reinicio por TMS)
+    /// </summary>
+    private async Task<bool> WaitForPosReadyAsync()
+    {
+        var startTime = DateTime.Now;
+        var attempt = 0;
+        
+        while ((DateTime.Now - startTime).TotalMilliseconds < TIMEOUT_TMS_POLLING_MS)
+        {
+            attempt++;
+            _logger.LogDebug("🔄 Intento de polling #{Attempt}...", attempt);
+            
+            try
+            {
+                var pollMessage = BuildMessage(CMD_POLL);
+                
+                // Limpiar buffers antes de enviar
+                if (_serialPort?.IsOpen == true)
+                {
+                    _serialPort.DiscardInBuffer();
+                    _serialPort.DiscardOutBuffer();
+                    _serialPort.Write(pollMessage, 0, pollMessage.Length);
+                    
+                    // Esperar ACK con timeout corto
+                    var response = await ReadByteWithTimeoutAsync(TIMEOUT_ACK_MS, CancellationToken.None);
+                    
+                    if (response == ACK)
+                    {
+                        _logger.LogInformation("✅ POS respondió ACK al polling (intento #{Attempt})", attempt);
+                        return true;
+                    }
+                    else if (response == -1)
+                    {
+                        _logger.LogDebug("⏳ Sin respuesta... POS aún reiniciando");
+                    }
+                    else
+                    {
+                        _logger.LogDebug("❓ Respuesta inesperada: 0x{Response:X2}", response);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogDebug("⚠️ Error en polling: {Message}", ex.Message);
+            }
+            
+            // Esperar antes del siguiente intento
+            await Task.Delay(POLLING_INTERVAL_MS);
+        }
+        
+        return false;
+    }
+
+    /// <summary>
+    /// Envía comando y espera SOLO un ACK (sin trama de respuesta)
+    /// </summary>
+    private async Task<bool> SendAndWaitAckOnlyAsync(byte[] message, int timeoutMs)
+    {
+        await _portLock.WaitAsync();
+        try
+        {
+            _serialPort!.DiscardInBuffer();
+            _serialPort.DiscardOutBuffer();
+            _serialPort.Write(message, 0, message.Length);
+            
+            _logger.LogDebug("📤 Mensaje enviado ({Length} bytes): {Hex}", 
+                message.Length, 
+                BitConverter.ToString(message));
+            
+            var response = await ReadByteWithTimeoutAsync(timeoutMs, CancellationToken.None);
+            
+            if (response == ACK)
+            {
+                _logger.LogDebug("✅ ACK recibido (0x06)");
+                return true;
+            }
+            else if (response == NAK)
+            {
+                _logger.LogWarning("⚠️ NAK recibido (0x15)");
+                return false;
+            }
+            else if (response == -1)
+            {
+                _logger.LogWarning("⚠️ Timeout esperando ACK");
+                return false;
+            }
+            else
+            {
+                _logger.LogWarning("⚠️ Respuesta inesperada: 0x{Response:X2}", response);
+                return false;
+            }
+        }
+        finally
+        {
+            _portLock.Release();
+        }
+    }
+
+    /// <summary>
+    /// Envía comando, espera ACK, y luego espera la trama de respuesta completa
+    /// </summary>
+    private async Task<byte[]?> SendAndWaitResponseAsync(byte[] message)
+    {
+        await _portLock.WaitAsync();
+        try
+        {
+            _serialPort!.DiscardInBuffer();
+            _serialPort.DiscardOutBuffer();
+            _serialPort.Write(message, 0, message.Length);
+            
+            _logger.LogDebug("📤 Mensaje enviado ({Length} bytes)", message.Length);
+            
+            // Primero esperar ACK
+            var ackResponse = await ReadByteWithTimeoutAsync(TIMEOUT_ACK_MS, CancellationToken.None);
+            
+            if (ackResponse != ACK)
+            {
+                _logger.LogWarning("⚠️ No se recibió ACK, respuesta: 0x{Response:X2}", ackResponse);
+                return null;
+            }
+            
+            _logger.LogDebug("✅ ACK recibido, esperando trama de respuesta...");
+            
+            // Luego esperar trama completa
+            var response = await ReadMessageAsync(TIMEOUT_RESPONSE_MS, CancellationToken.None);
+            
+            if (response != null)
+            {
+                // Validar LRC
+                var receivedLrc = response[^1];
+                var calculatedLrc = CalculateLrcFromMessage(response, 1, response.Length - 2);
+                
+                if (receivedLrc == calculatedLrc)
+                {
+                    // Enviar ACK de confirmación
+                    _serialPort.Write(new[] { ACK }, 0, 1);
+                    _logger.LogDebug("✅ LRC válido, ACK enviado");
+                    return response;
+                }
+                else
+                {
+                    _logger.LogWarning("⚠️ LRC inválido. Esperado: 0x{Expected:X2}, Recibido: 0x{Received:X2}",
+                        calculatedLrc, receivedLrc);
+                    // Enviar NAK
+                    _serialPort.Write(new[] { NAK }, 0, 1);
+                    return null;
+                }
+            }
+            
+            return null;
+        }
+        finally
+        {
+            _portLock.Release();
+        }
+    }
+
+    /// <summary>
+    /// Parsea la respuesta del comando 0080 (resultado TMS)
+    /// Formato: 1080|Código|Fecha|Hora
+    /// Código 90 = Éxito, 91 = Fallo
+    /// </summary>
+    private (bool success, string code, string date, string time) ParseTmsResponse(byte[] message)
+    {
+        try
+        {
+            var data = Encoding.ASCII.GetString(message, 1, message.Length - 3);
+            var fields = data.Split('|');
+            
+            _logger.LogDebug("📝 Respuesta TMS: {Data}", data);
+            _logger.LogDebug("📝 Campos: {Fields}", string.Join(", ", fields));
+            
+            if (fields.Length >= 4 && fields[0] == RESP_TMS_RESULT)
+            {
+                var code = fields[1];
+                var date = fields[2];
+                var time = fields[3];
+                
+                // Código 90 = Inicialización exitosa
+                // Código 91 = Inicialización fallida
+                var success = code == "90";
+                
+                return (success, code, date, time);
+            }
+            
+            return (false, "PARSE_ERROR", "", "");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error parseando respuesta TMS");
+            return (false, "EXCEPTION", "", "");
         }
     }
 

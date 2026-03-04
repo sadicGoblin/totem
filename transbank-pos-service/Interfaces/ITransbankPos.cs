@@ -15,6 +15,14 @@ public interface ITransbankPos
     Task<bool> InitializeAsync();
     
     /// <summary>
+    /// Inicializa el POS descargando parámetros TMS desde el servidor.
+    /// Usar cuando el POS muestra "NO PUEDE OPERAR SIN PARAMETROS TMS".
+    /// Flujo: Comando 0070 -> Esperar reinicio -> Polling 0100 -> Comando 0080
+    /// </summary>
+    /// <returns>True si la inicialización TMS fue exitosa</returns>
+    Task<bool> InitializeTmsAsync();
+    
+    /// <summary>
     /// Verifica si el POS está conectado y disponible
     /// </summary>
     Task<bool> IsConnectedAsync();
