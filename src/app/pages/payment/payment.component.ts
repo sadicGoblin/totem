@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { CatalogueService } from '../../services/catalogue.service';
-import { PrinterService, ProductoTicket } from '../../services/printer.service';
+import { PrinterService, ProductoTicket, TransaccionTicket } from '../../services/printer.service';
 import { TransbankService, TransactionState, PaymentResponse } from '../../services/transbank.service';
 import { Subscription } from 'rxjs';
 
@@ -26,6 +26,11 @@ export class PaymentComponent implements OnDestroy {
   transbankState: TransactionState = 'IDLE';
   transbankMessage = '';
   transbankConnected = false;
+  
+  // Pantalla de éxito
+  paymentSuccess = false;
+  lastPaymentResponse: PaymentResponse | null = null;
+  receiptPrinted = false;
   
   // Subscripciones
   private stateSubscription?: Subscription;
@@ -59,8 +64,14 @@ export class PaymentComponent implements OnDestroy {
       this.transbankMessage = message;
     });
     
-    // Verificar conexión con servicio Transbank al iniciar
+    // Verificar conexión con servicio Transbank e iniciar pago directo
     this.checkTransbankConnection();
+    
+    // Auto-iniciar pago con tarjeta (solo tarjeta soportada)
+    this.selectedMethod = 'card';
+    this.transbankState = 'IDLE';
+    this.transbankMessage = '';
+    this.startCardPayment();
   }
   
   ngOnDestroy(): void {
@@ -92,37 +103,10 @@ export class PaymentComponent implements OnDestroy {
     this.selectedMethod = method;
     
     if(method === 'card') {
-      // Iniciar pago con Transbank
-      console.log('💳 Iniciando pago con Transbank...');
-      
-      this.transbankService.iniciarPago(this.cartTotal).subscribe({
-        next: (response: PaymentResponse) => {
-          console.log('🏦 Respuesta Transbank:', response);
-          
-          if (response.success) {
-            // Pago exitoso
-            console.log('✅ Pago APROBADO - Código:', response.authorizationCode);
-            this.completeOrder();
-          } else {
-            // Pago rechazado o error
-            console.log('❌ Pago rechazado:', response.message);
-            this.transbankMessage = response.message;
-            
-            // Volver a selección después de mostrar el mensaje
-            setTimeout(() => {
-              this.selectedMethod = null;
-              this.transbankState = 'IDLE';
-            }, 3000);
-          }
-        },
-        error: (error) => {
-          console.error('❌ Error en pago Transbank:', error);
-          this.transbankMessage = 'Error de conexión con el POS';
-          setTimeout(() => {
-            this.selectedMethod = null;
-          }, 3000);
-        }
-      });
+      // Resetear estado previo antes de iniciar
+      this.transbankState = 'IDLE';
+      this.transbankMessage = '';
+      this.startCardPayment();
     } else if(method === 'cash') {
       // Para pago en efectivo, generamos un número de pedido preliminar
       this.orderNumberPreview = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
@@ -143,7 +127,48 @@ export class PaymentComponent implements OnDestroy {
     }
   }
   
-  // Cancelar pago con tarjeta y volver a selección de método de pago
+  // Iniciar pago con tarjeta (usado al seleccionar y al reintentar)
+  private startCardPayment(): void {
+    console.log('💳 Iniciando pago con Transbank...');
+    
+    this.transbankService.iniciarPago(this.cartTotal).subscribe({
+      next: (response: PaymentResponse) => {
+        console.log('🏦 Respuesta Transbank:', response);
+        
+        if (response.success) {
+          console.log('✅ Pago APROBADO - Código:', response.authorizationCode);
+          this.lastPaymentResponse = response;
+          this.showPaymentSuccess();
+        } else {
+          console.log('❌ Pago rechazado:', response.message);
+          this.transbankMessage = response.message;
+        }
+      },
+      error: (error) => {
+        console.error('❌ Error en pago Transbank:', error);
+        this.transbankMessage = 'Error de conexión con el terminal de pago';
+        this.transbankState = 'ERROR';
+      }
+    });
+  }
+  
+  // Reintentar pago con tarjeta
+  retryCardPayment(): void {
+    console.log('🔄 Reintentando pago con tarjeta...');
+    this.transbankState = 'IDLE';
+    this.transbankMessage = '';
+    this.startCardPayment();
+  }
+  
+  // Volver al checkout desde pantalla de tarjeta
+  goBackFromCard(): void {
+    this.transbankState = 'IDLE';
+    this.transbankMessage = '';
+    this.transbankService.stopStatusPolling();
+    this.router.navigate(['/checkout']);
+  }
+  
+  // Cancelar pago con tarjeta y volver al checkout
   cancelCardPayment(): void {
     console.log('🚫 Cancelando pago con tarjeta...');
     
@@ -152,26 +177,23 @@ export class PaymentComponent implements OnDestroy {
       this.transbankService.cancelarPago().subscribe({
         next: (response) => {
           console.log('🚫 Respuesta cancelación:', response);
-          if (response.success) {
-            this.selectedMethod = null;
-            this.transbankState = 'IDLE';
-          } else {
-            // No se pudo cancelar (probablemente ESPERANDO_TARJETA)
-            console.log('⚠️ No se pudo cancelar:', response.failureReason);
-            this.transbankMessage = response.message;
-          }
+          this.transbankService.stopStatusPolling();
+          this.router.navigate(['/checkout']);
         },
         error: (error) => {
           console.error('❌ Error al cancelar:', error);
+          this.transbankService.stopStatusPolling();
+          this.router.navigate(['/checkout']);
         }
       });
     } else if (this.transbankState === 'ESPERANDO_TARJETA') {
       // No se puede cancelar desde la app cuando espera tarjeta
-      this.transbankMessage = 'Presione CANCELAR en el POS para salir';
-      console.log('⚠️ No se puede cancelar - POS esperando tarjeta');
+      this.transbankMessage = 'Presione el botón rojo en el lector para cancelar';
+      console.log('⚠️ No se puede cancelar - esperando tarjeta');
     } else {
       // Estado IDLE o finalizado, simplemente volver
-      this.selectedMethod = null;
+      this.transbankService.stopStatusPolling();
+      this.router.navigate(['/checkout']);
     }
   }
   
@@ -181,6 +203,21 @@ export class PaymentComponent implements OnDestroy {
       return this.transbankMessage;
     }
     return this.transbankService.getMessageForState(this.transbankState);
+  }
+  
+  // Obtener etiqueta amigable para el estado (sin guiones bajos)
+  getTransbankFriendlyState(): string {
+    const labels: Record<string, string> = {
+      'IDLE': 'Disponible',
+      'INICIANDO_PAGO': 'Iniciando pago',
+      'ESPERANDO_TARJETA': 'Esperando tarjeta',
+      'PROCESANDO': 'Procesando',
+      'APROBADO': 'Aprobado',
+      'RECHAZADO': 'Rechazado',
+      'CANCELADO': 'Cancelado',
+      'ERROR': 'Error'
+    };
+    return labels[this.transbankState] || this.transbankState;
   }
   
   // Método para imprimir el voucher en la impresora térmica
@@ -234,6 +271,67 @@ export class PaymentComponent implements OnDestroy {
     
     // Regresar al catálogo principal
     this.router.navigate(['/']);
+  }
+  
+  // Mostrar pantalla de éxito e imprimir boleta
+  private showPaymentSuccess(): void {
+    this.paymentSuccess = true;
+    this.selectedMethod = null;
+    this.transbankService.stopStatusPolling();
+    
+    // Generar número de orden
+    this.orderNumber = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    
+    // Imprimir boleta automáticamente
+    this.printTransactionReceipt();
+    
+    // Limpiar el carrito inmediatamente
+    this.cartService.clearCart();
+  }
+  
+  // Imprimir boleta de pago con tarjeta
+  private printTransactionReceipt(): void {
+    console.log('🖨️ Imprimiendo boleta de transacción...');
+    
+    const items = this.cartService.getCurrentCartItems();
+    const productos: ProductoTicket[] = items.map(item => ({
+      nombre: item.product.name,
+      cantidad: item.quantity,
+      precio: item.product.price
+    }));
+    
+    const transaccion: TransaccionTicket = {
+      codigoAutorizacion: this.lastPaymentResponse?.authorizationCode || '',
+      ultimosDigitos: this.lastPaymentResponse?.last4Digits?.toString() || '',
+      tipoTarjeta: this.lastPaymentResponse?.cardType === 'DB' ? 'DEBITO' : 'CREDITO',
+      monto: this.lastPaymentResponse?.amount || this.cartTotal,
+      operacionId: this.lastPaymentResponse?.operationId || '',
+      fecha: this.lastPaymentResponse?.realDate || '',
+      hora: this.lastPaymentResponse?.realTime || ''
+    };
+    
+    this.printerService.imprimirTicket(productos, undefined, this.orderNumber, transaccion).subscribe({
+      next: (response) => {
+        this.receiptPrinted = response.resultado === 'ok';
+        console.log('🖨️ Boleta:', response.resultado);
+      },
+      error: (error) => {
+        console.error('Error al imprimir boleta:', error);
+        this.receiptPrinted = false;
+      }
+    });
+  }
+  
+  // Volver al catálogo principal
+  goHome(): void {
+    this.cartService.clearCart();
+    this.router.navigate(['/home']);
+  }
+  
+  // Obtener tipo de tarjeta legible
+  getCardTypeLabel(): string {
+    if (!this.lastPaymentResponse?.cardType) return 'Tarjeta';
+    return this.lastPaymentResponse.cardType === 'DB' ? 'Tarjeta de Débito' : 'Tarjeta de Crédito';
   }
   
   // Completar el pedido después del pago

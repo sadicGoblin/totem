@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\User\\Desktop\\Rinno\\totem\\transbank-pos-service\\TransbankPosService.csproj": {}
+    "C:\\Users\\Soporte\\Desktop\\totem\\transbank-pos-service\\TransbankPosService.csproj": {}
   },
   "projects": {
-    "C:\\Users\\User\\Desktop\\Rinno\\totem\\transbank-pos-service\\TransbankPosService.csproj": {
+    "C:\\Users\\Soporte\\Desktop\\totem\\transbank-pos-service\\TransbankPosService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\User\\Desktop\\Rinno\\totem\\transbank-pos-service\\TransbankPosService.csproj",
+        "projectUniqueName": "C:\\Users\\Soporte\\Desktop\\totem\\transbank-pos-service\\TransbankPosService.csproj",
         "projectName": "TransbankPosService",
-        "projectPath": "C:\\Users\\User\\Desktop\\Rinno\\totem\\transbank-pos-service\\TransbankPosService.csproj",
-        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\User\\Desktop\\Rinno\\totem\\transbank-pos-service\\obj\\",
+        "projectPath": "C:\\Users\\Soporte\\Desktop\\totem\\transbank-pos-service\\TransbankPosService.csproj",
+        "packagesPath": "C:\\Users\\Soporte\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Soporte\\Desktop\\totem\\transbank-pos-service\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Soporte\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -37,8 +37,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "10.0.100"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -47,6 +46,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[10.1.0, )"
+            },
+            "System.IO.Ports": {
+              "target": "Package",
+              "version": "[8.0.0, )"
             }
           },
           "imports": [
@@ -60,6 +63,20 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
+              "version": "[8.0.24, 8.0.24]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Runtime.win-x64",
+              "version": "[8.0.24, 8.0.24]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
+              "version": "[8.0.24, 8.0.24]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -68,7 +85,12 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.418/PortableRuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "win-x64": {
+          "#import": []
         }
       }
     }

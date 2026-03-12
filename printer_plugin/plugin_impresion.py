@@ -79,7 +79,33 @@ def generar_ticket(pedido):
     ticket += centrar(f"TOTAL: ${total:,.0f}").encode("cp437") + NL
     ticket += centrar("-" * WIDTH).encode("cp437") + NL * 2
 
+    # Datos de transacción (si hay pago con tarjeta)
+    transaccion = pedido.get("transaccion", None)
+    if transaccion:
+        ticket += NL
+        ticket += centrar("DATOS DE TRANSACCION").encode("cp437") + NL
+        ticket += ("-" * WIDTH).encode("cp437") + NL
+        
+        tipo_tarjeta = transaccion.get("tipoTarjeta", "")
+        if tipo_tarjeta:
+            ticket += centrar(f"Tarjeta: {tipo_tarjeta}").encode("cp437") + NL
+        
+        ultimos = transaccion.get("ultimosDigitos", "")
+        if ultimos:
+            ticket += centrar(f"N de Tarjeta: ****{ultimos}").encode("cp437") + NL
+        
+        codigo_aut = transaccion.get("codigoAutorizacion", "")
+        if codigo_aut:
+            ticket += centrar(f"Cod. Autorizacion: {codigo_aut}").encode("cp437") + NL
+        
+        operacion = transaccion.get("operacionId", "")
+        if operacion:
+            ticket += centrar(f"N de Operacion: {operacion}").encode("cp437") + NL
+        
+        ticket += ("-" * WIDTH).encode("cp437") + NL
+
     # Footer
+    ticket += NL
     ticket += centrar("¡Gracias por su compra!").encode("cp437") + NL * 3
 
     # Avanzar papel y cortar

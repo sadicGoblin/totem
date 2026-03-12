@@ -1,114 +1,94 @@
-<div class="payment-bar">
-  <button class="back-btn" (click)="goBack()">
-    <span>&larr;</span> OLVIDÉ ALGO
-  </button>
-  <h1>¿Cómo quieres pagar?</h1>
-  <div class="spacer"></div>
-  <div class="store-logo" *ngIf="storeLogo">
-    <img [src]="storeLogo" alt="Store Logo" />
+<!-- Pantalla de procesamiento de pago con tarjeta -->
+<div class="payment-processing" *ngIf="!paymentSuccess">
+  <div class="payment-content">
+    <div class="payment-icon" [ngClass]="{
+      'state-waiting': transbankState === 'ESPERANDO_TARJETA',
+      'state-processing': transbankState === 'PROCESANDO',
+      'state-error': transbankState === 'ERROR' || transbankState === 'RECHAZADO'
+    }">
+      <i class="fas fa-credit-card"></i>
+    </div>
+    <h2>Paga tu pedido</h2>
+    
+    <!-- Mensaje dinámico según estado -->
+    <p class="pos-status">{{ getTransbankDisplayMessage() }}</p>
+    
+    <!-- Indicador de estado -->
+    <div class="state-indicator">
+      <span class="state-badge" [ngClass]="'state-' + transbankState.toLowerCase()">
+        {{ getTransbankFriendlyState() }}
+      </span>
+    </div>
+    
+    <div class="loader" *ngIf="transbankState !== 'ERROR' && transbankState !== 'RECHAZADO'">
+      <div class="loader-bar"></div>
+    </div>
+    
+    <!-- Total a pagar -->
+    <p class="payment-total">Total: <strong>{{ formatPrice(cartTotal) }}</strong></p>
+    
+    <!-- Botones para estado rechazado/error -->
+    <div class="rejected-actions" *ngIf="transbankState === 'RECHAZADO' || transbankState === 'ERROR'">
+      <button class="retry-payment-btn" (click)="retryCardPayment()">
+        REINTENTAR
+      </button>
+      <button class="cancel-payment-btn" (click)="goBackFromCard()">
+        VOLVER
+      </button>
+    </div>
+    
+    <!-- Botón cancelar durante proceso -->
+    <button class="cancel-payment-btn" (click)="cancelCardPayment()" *ngIf="transbankState !== 'RECHAZADO' && transbankState !== 'ERROR'">
+      CANCELAR
+    </button>
+    
+    <!-- Mensaje de advertencia -->
+    <p class="cancel-warning" *ngIf="transbankState === 'ESPERANDO_TARJETA'">
+      Para cancelar, presione el botón rojo en el lector
+    </p>
   </div>
 </div>
 
-<div class="payment-container"> 
-  <div class="payment-methods">
-    <div class="payment-method-card" (click)="selectPaymentMethod('cash')">
-      <div class="method-icon cash-icon"></div>
-      <div class="method-name">Pagar en Caja</div>
+<!-- Pantalla de pago exitoso -->
+<div class="payment-success" *ngIf="paymentSuccess">
+  <div class="success-content">
+    <div class="success-icon-large">
+      <i class="fas fa-check-circle"></i>
     </div>
-
-    <div class="payment-method-card" (click)="selectPaymentMethod('mercadopago')">
-      <div class="method-icon mercadopago-icon"></div>
-      <div class="method-name">Mercado Pago</div>
+    
+    <h1>¡Pago realizado con éxito!</h1>
+    <p class="success-subtitle">Tu compra ha sido procesada correctamente</p>
+    
+    <div class="transaction-details">
+      <div class="detail-row">
+        <span class="detail-label">Total cobrado:</span>
+        <span class="detail-value total-value">{{ formatPrice(lastPaymentResponse?.amount || cartTotal) }}</span>
+      </div>
+      <div class="detail-row" *ngIf="lastPaymentResponse?.authorizationCode">
+        <span class="detail-label">Código de autorización:</span>
+        <span class="detail-value">{{ lastPaymentResponse?.authorizationCode }}</span>
+      </div>
+      <div class="detail-row" *ngIf="lastPaymentResponse?.last4Digits">
+        <span class="detail-label">Tarjeta:</span>
+        <span class="detail-value">{{ getCardTypeLabel() }} ****{{ lastPaymentResponse?.last4Digits }}</span>
+      </div>
+      <div class="detail-row" *ngIf="lastPaymentResponse?.operationId">
+        <span class="detail-label">N° operación:</span>
+        <span class="detail-value">{{ lastPaymentResponse?.operationId }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Pedido:</span>
+        <span class="detail-value">#{{ orderNumber }}</span>
+      </div>
     </div>
-
-    <div class="payment-method-card" (click)="selectPaymentMethod('amipass')">
-      <div class="method-icon amipass-icon"></div>
-      <div class="method-name">Código QR<br>Amipass</div>
+    
+    <div class="receipt-status">
+      <i class="fas fa-print"></i>
+      <span>Imprimiendo tu comprobante...</span>
     </div>
-
-    <div class="payment-method-card" (click)="selectPaymentMethod('card')">
-      <div class="method-icon card-icon"></div>
-      <div class="method-name">Tarjeta de<br>Crédito o Débito</div>
-    </div>
-  </div>
-
-  <!-- Pantalla de procesamiento de pago general (para mercadopago/amipass) -->
-  <div class="processing-payment" *ngIf="processingPayment && selectedMethod !== 'card' && selectedMethod !== 'cash'">
-    <div class="spinner"></div>
-    <h2>Procesando pago...</h2>
-    <p>Por favor espera mientras procesamos tu pago</p>
-  </div>
-  
-  <!-- Pantalla específica para pago en efectivo (imprimiendo voucher) -->
-  <div class="voucher-printing" *ngIf="selectedMethod === 'cash'">
-    <div class="voucher-content">
-      <div class="voucher-icon">
-        <i class="fas fa-receipt"></i>
-      </div>
-      <h2 *ngIf="!voucherPrinted">Imprimiendo tu voucher...</h2>
-      <h2 *ngIf="voucherPrinted">¡Voucher impreso exitosamente!</h2>
-      
-      <div class="printer-animation" *ngIf="!voucherPrinted">
-        <div class="printer">
-          <div class="printer-top"></div>
-          <div class="printer-bottom"></div>
-          <div class="paper"></div>
-        </div>
-      </div>
-      
-      <div class="success-icon" *ngIf="voucherPrinted">
-        <i class="fas fa-check-circle"></i>
-      </div>
-      
-      <p *ngIf="!voucherPrinted">Por favor espera...</p>
-      <p *ngIf="voucherPrinted">Lleva tu voucher a caja para completar el pago</p>
-      
-      <div class="order-details">
-        <p class="order-number">Número de pedido: <strong>#{{ orderNumberPreview }}</strong></p>
-        <p class="order-total">Total a pagar: <strong>{{ formatPrice(cartTotal) }}</strong></p>
-      </div>
-      
-      <p *ngIf="voucherPrinted" class="redirect-message">Regresando al catálogo...</p>
-    </div>
-  </div>
-  
-  <!-- Pantalla específica para pago con tarjeta (Transbank POS) -->
-  <div class="payment-processing" *ngIf="selectedMethod === 'card'">
-    <div class="payment-content">
-      <div class="payment-icon" [ngClass]="{
-        'state-waiting': transbankState === 'ESPERANDO_TARJETA',
-        'state-processing': transbankState === 'PROCESANDO',
-        'state-error': transbankState === 'ERROR' || transbankState === 'RECHAZADO'
-      }">
-        <i class="fas fa-credit-card"></i>
-      </div>
-      <h2>Paga tu pedido</h2>
-      
-      <!-- Mensaje dinámico según estado del POS -->
-      <p class="pos-status">{{ getTransbankDisplayMessage() }}</p>
-      
-      <!-- Indicador de estado -->
-      <div class="state-indicator">
-        <span class="state-badge" [ngClass]="'state-' + transbankState.toLowerCase()">
-          {{ transbankState }}
-        </span>
-      </div>
-      
-      <div class="loader" *ngIf="transbankState !== 'ERROR' && transbankState !== 'RECHAZADO'">
-        <div class="loader-bar"></div>
-      </div>
-      
-      <!-- Total a pagar -->
-      <p class="payment-total">Total: <strong>{{ formatPrice(cartTotal) }}</strong></p>
-      
-      <button class="cancel-payment-btn" (click)="cancelCardPayment()">
-        CANCELAR
-      </button>
-      
-      <!-- Mensaje de advertencia cuando no se puede cancelar -->
-      <p class="cancel-warning" *ngIf="transbankState === 'ESPERANDO_TARJETA'">
-        ⚠️ Para cancelar, presione el botón rojo en el POS
-      </p>
-    </div>
+    
+    <button class="home-btn" (click)="goHome()">
+      VOLVER AL INICIO
+    </button>
   </div>
 </div>

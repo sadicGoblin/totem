@@ -13,12 +13,19 @@ export interface PaymentResponse {
   message: string;
   state: TransactionState;
   authorizationCode?: string;
-  cardLast4Digits?: string;
+  last4Digits?: string;
   cardType?: string;
   amount?: number;
-  transactionId?: string;
+  operationId?: string;
   timestamp?: string;
   responseCode?: string;
+  responseMessage?: string;
+  commerceCode?: string;
+  terminalId?: string;
+  cardBrand?: string;
+  realDate?: string;
+  realTime?: string;
+  ticket?: string;
 }
 
 export interface CancelResponse {
@@ -53,7 +60,7 @@ export type TransactionState =
   providedIn: 'root'
 })
 export class TransbankService {
-  private readonly baseUrl = 'http://localhost:7070/api/transbank';
+  private readonly baseUrl = 'http://localhost:8081/api/transbank';
   
   private currentState = new BehaviorSubject<TransactionState>('IDLE');
   private statusMessage = new BehaviorSubject<string>('');
@@ -173,23 +180,23 @@ export class TransbankService {
   getMessageForState(state: TransactionState): string {
     switch (state) {
       case 'IDLE':
-        return 'POS disponible';
+        return 'Preparando pago...';
       case 'INICIANDO_PAGO':
-        return 'Conectando con el POS...';
+        return 'Conectando con el terminal de pago...';
       case 'ESPERANDO_TARJETA':
-        return 'Por favor, inserte o acerque su tarjeta al POS';
+        return 'Por favor, inserte o acerque su tarjeta al lector';
       case 'PROCESANDO':
-        return 'Procesando transacción, por favor espere...';
+        return 'Procesando tu pago, por favor espera...';
       case 'APROBADO':
-        return '¡Pago aprobado!';
+        return '¡Pago aprobado exitosamente!';
       case 'RECHAZADO':
-        return 'Pago rechazado';
+        return 'El pago fue rechazado';
       case 'CANCELADO':
         return 'Pago cancelado';
       case 'ERROR':
-        return 'Error en la transacción';
+        return 'Ocurrió un error al procesar el pago';
       default:
-        return 'Estado desconocido';
+        return '';
     }
   }
 

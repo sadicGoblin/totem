@@ -1,3 +1,9 @@
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+
 // Variables - Colores por defecto (se sobrescriben con CSS variables desde la API)
 $primary-color: #2997db;
 $secondary-color: #1054da;
@@ -88,11 +94,14 @@ $accent-green: #54dc28;
 .payment-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 100px);
   padding: 24px;
+  padding-bottom: 120px;
   background: linear-gradient(135deg, $light-gray 0%, $white 100%);
   color: $text-color;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 // Estilos del encabezado
@@ -140,8 +149,9 @@ $accent-green: #54dc28;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 30px;
-  margin-top: 90px;
   padding: 30px;
+  max-width: 90%;
+  width: 100%;
   
   .payment-method-card {
     display: flex;
@@ -246,6 +256,7 @@ $accent-green: #54dc28;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  overflow: hidden;
 
   .payment-content {
     background-color: $white;
@@ -313,6 +324,36 @@ $accent-green: #54dc28;
       font-size: 20px;
     }
     
+    .rejected-actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 24px;
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .retry-payment-btn {
+      padding: 14px 30px;
+      background: linear-gradient(135deg, #28a745 0%, darken(#28a745, 10%) 100%);
+      color: $white;
+      border: none;
+      border-radius: 30px;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+      }
+      
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+
     .cancel-payment-btn {
       margin-top: 30px;
       padding: 14px 30px;
@@ -334,6 +375,10 @@ $accent-green: #54dc28;
       &:active {
         transform: scale(0.98);
       }
+    }
+    
+    .rejected-actions .cancel-payment-btn {
+      margin-top: 0;
     }
   }
 }
@@ -686,4 +731,163 @@ $accent-green: #54dc28;
   color: #856404;
   font-size: 1rem;
   font-weight: 500;
+}
+
+// ========================================
+// PANTALLA DE PAGO EXITOSO
+// ========================================
+
+.payment-success {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  overflow: hidden;
+  
+  .success-content {
+    background-color: $white;
+    border-radius: 20px;
+    padding: 50px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 520px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    border: 3px solid #4caf50;
+    
+    .success-icon-large {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 24px;
+      animation: scale-in 0.5s ease-out;
+      
+      i {
+        font-size: 60px;
+        color: $white;
+      }
+    }
+    
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #2e7d32;
+      margin: 0 0 8px 0;
+    }
+    
+    .success-subtitle {
+      font-size: 1.2rem;
+      color: $text-color;
+      margin-bottom: 24px;
+    }
+    
+    .transaction-details {
+      width: 100%;
+      background: #f1f8e9;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border: 1px solid #c5e1a5;
+      
+      .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        
+        &:last-child {
+          border-bottom: none;
+        }
+        
+        .detail-label {
+          font-size: 1rem;
+          color: #666;
+          font-weight: 500;
+        }
+        
+        .detail-value {
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: $text-color;
+          
+          &.total-value {
+            font-size: 1.4rem;
+            color: #2e7d32;
+            font-weight: 700;
+          }
+        }
+      }
+    }
+    
+    .receipt-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      background: #e3f2fd;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      
+      i {
+        font-size: 1.2rem;
+        color: $primary-color;
+      }
+      
+      span {
+        font-size: 1rem;
+        color: #1565c0;
+        font-weight: 500;
+      }
+    }
+    
+    .home-btn {
+      padding: 18px 50px;
+      background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+      color: $white;
+      border: none;
+      border-radius: 30px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+      letter-spacing: 1px;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5);
+      }
+      
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+  }
+}
+
+@keyframes scale-in {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }

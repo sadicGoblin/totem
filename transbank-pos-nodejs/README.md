@@ -21,7 +21,9 @@ npm install
 npm start
 ```
 
-El servidor se iniciará en `http://localhost:7070`
+El servidor se iniciará en `http://localhost:8081`
+
+> **Nota:** El puerto 7070 puede estar ocupado por AnyDesk. Si necesitas cambiar el puerto, edita la constante `PORT` en `server.js` o usa la variable de entorno `PORT`.
 
 ## Endpoints
 
@@ -45,19 +47,19 @@ El servidor se iniciará en `http://localhost:7070`
 ### 1. Conectar al POS
 
 ```bash
-curl -X POST http://localhost:7070/api/transbank/conectar
+curl -X POST http://localhost:8081/api/transbank/conectar
 ```
 
 ### 2. Cargar parámetros TMS (si el POS lo requiere)
 
 ```bash
-curl -X POST http://localhost:7070/api/transbank/inicializar-tms
+curl -X POST http://localhost:8081/api/transbank/inicializar-tms
 ```
 
 ### 3. Procesar un pago
 
 ```bash
-curl -X POST http://localhost:7070/api/transbank/pagar \
+curl -X POST http://localhost:8081/api/transbank/pagar \
   -H "Content-Type: application/json" \
   -d '{"monto": 1000, "numeroTicket": "TKT-001"}'
 ```
@@ -65,13 +67,13 @@ curl -X POST http://localhost:7070/api/transbank/pagar \
 ### 4. Verificar estado
 
 ```bash
-curl http://localhost:7070/api/transbank/estado
+curl http://localhost:8081/api/transbank/estado
 ```
 
 ## Integración con Angular
 
 El servicio es compatible con el `TransbankService` de Angular existente.
-Solo asegúrate de que la URL base apunte a `http://localhost:7070`.
+Solo asegúrate de que la URL base apunte a `http://localhost:8081`.
 
 ## Diferencias con el servicio .NET
 
@@ -104,5 +106,5 @@ python --version  # Debe ser 3.x
 
 Ejecuta:
 ```bash
-curl -X POST http://localhost:7070/api/transbank/inicializar-tms
+curl -X POST http://localhost:8081/api/transbank/inicializar-tms
 ```

@@ -8,11 +8,22 @@ export interface ProductoTicket {
   precio: number;
 }
 
+export interface TransaccionTicket {
+  codigoAutorizacion: string;
+  ultimosDigitos: string;
+  tipoTarjeta: string;
+  monto: number;
+  operacionId: string;
+  fecha: string;
+  hora: string;
+}
+
 export interface DatosTicket {
   productos: ProductoTicket[];
   total?: number;
   nombreImpresora?: string;
   numeroPedido?: string;
+  transaccion?: TransaccionTicket;
 }
 
 export interface RespuestaImpresion {
@@ -35,11 +46,12 @@ export class PrinterService {
    * @param numeroPedido Número del pedido (opcional)
    * @returns Observable con la respuesta del servidor de impresión
    */
-  imprimirTicket(productos: ProductoTicket[], nombreImpresora?: string, numeroPedido?: string): Observable<RespuestaImpresion> {
+  imprimirTicket(productos: ProductoTicket[], nombreImpresora?: string, numeroPedido?: string, transaccion?: TransaccionTicket): Observable<RespuestaImpresion> {
     const datosTicket: DatosTicket = {
       productos: productos,
       nombreImpresora: nombreImpresora,
-      numeroPedido: numeroPedido
+      numeroPedido: numeroPedido,
+      transaccion: transaccion
     };
 
     return this.http.post<RespuestaImpresion>(`${this.PRINTER_URL}/imprimir`, datosTicket);

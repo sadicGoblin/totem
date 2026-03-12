@@ -16,7 +16,7 @@ const cors = require('cors');
 const { POSAutoservicio } = require('transbank-pos-sdk');
 
 const app = express();
-const PORT = process.env.PORT || 7070;
+const PORT = process.env.PORT || 8081;
 
 // Middleware
 app.use(cors());
@@ -31,6 +31,55 @@ let currentState = 'IDLE';
 let lastTransaction = null;
 let isConnected = false;
 let connectedPort = null;
+let keysLoaded = false;
+let pollIntervalId = null;
+
+// Cargar llaves automáticamente después de conectar
+async function autoLoadKeys() {
+    try {
+        log('🔑', 'Cargando llaves TMS automáticamente...');
+        const response = await pos.loadKeys();
+        keysLoaded = true;
+        log('✅', 'Llaves TMS cargadas exitosamente', response);
+        return true;
+    } catch (err) {
+        log('❌', 'Error cargando llaves TMS:', err.message);
+        return false;
+    }
+}
+
+// Poll automático cada 5 minutos (requerido por Transbank)
+function startAutoPoll() {
+    if (pollIntervalId) {
+        clearInterval(pollIntervalId);
+    }
+    pollIntervalId = setInterval(async () => {
+        if (!isConnected) {
+            log('⏭️', 'Poll omitido - POS no conectado');
+            return;
+        }
+        if (currentState !== 'IDLE') {
+            log('⏭️', 'Poll omitido - transacción en curso');
+            return;
+        }
+        try {
+            log('🔄', 'Poll automático (cada 5 min)...');
+            const response = await pos.poll();
+            log('✅', 'Poll exitoso', response);
+        } catch (err) {
+            log('⚠️', 'Error en poll automático:', err.message);
+        }
+    }, 5 * 60 * 1000); // 5 minutos
+    log('⏰', 'Poll automático configurado cada 5 minutos');
+}
+
+function stopAutoPoll() {
+    if (pollIntervalId) {
+        clearInterval(pollIntervalId);
+        pollIntervalId = null;
+        log('⏹️', 'Poll automático detenido');
+    }
+}
 
 // Estados posibles
 const STATES = {
@@ -141,10 +190,23 @@ app.post('/api/transbank/conectar', async (req, res) => {
         connectedPort = port.path;
         log('✅', `Conectado al POS en ${connectedPort}`);
         
+        // Cargar llaves TMS en primera conexión del día
+        let keysResult = null;
+        if (!keysLoaded) {
+            keysResult = await autoLoadKeys();
+            // Esperar a que el POS esté listo después de cargar llaves
+            log('⏳', 'Esperando que el terminal esté listo...');
+            await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+        
+        // Iniciar poll automático
+        startAutoPoll();
+        
         res.json({
             success: true,
-            message: `Conectado exitosamente`,
-            port: connectedPort
+            message: `Conectado exitosamente${keysResult ? ' (llaves TMS cargadas)' : ''}`,
+            port: connectedPort,
+            keysLoaded: keysLoaded
         });
     } catch (err) {
         log('❌', 'Error conectando', err.message);
@@ -193,10 +255,12 @@ app.post('/api/transbank/desconectar', async (req, res) => {
     log('📥', 'POST /api/transbank/desconectar');
     
     try {
+        stopAutoPoll();
         await pos.disconnect();
         isConnected = false;
         connectedPort = null;
         currentState = STATES.IDLE;
+        keysLoaded = false;
         log('✅', 'Desconectado del POS');
         
         res.json({ success: true, message: 'Desconectado' });
@@ -271,16 +335,16 @@ app.get('/api/transbank/estado', (req, res) => {
 
 function getStateMessage(state) {
     const messages = {
-        [STATES.IDLE]: 'POS disponible',
-        [STATES.INICIANDO_PAGO]: 'Iniciando comunicación con el POS...',
-        [STATES.ESPERANDO_TARJETA]: 'Por favor, inserte o acerque su tarjeta al POS',
-        [STATES.PROCESANDO]: 'Procesando transacción, por favor espere...',
-        [STATES.APROBADO]: '¡Transacción aprobada!',
-        [STATES.RECHAZADO]: 'Transacción rechazada',
-        [STATES.CANCELADO]: 'Transacción cancelada',
-        [STATES.ERROR]: 'Error en la transacción'
+        [STATES.IDLE]: 'Preparando pago...',
+        [STATES.INICIANDO_PAGO]: 'Conectando con el terminal de pago...',
+        [STATES.ESPERANDO_TARJETA]: 'Por favor, inserte o acerque su tarjeta al lector',
+        [STATES.PROCESANDO]: 'Procesando tu pago, por favor espera...',
+        [STATES.APROBADO]: '¡Pago aprobado exitosamente!',
+        [STATES.RECHAZADO]: 'El pago fue rechazado',
+        [STATES.CANCELADO]: 'Pago cancelado',
+        [STATES.ERROR]: 'Ocurrió un error al procesar el pago'
     };
-    return messages[state] || 'Estado desconocido';
+    return messages[state] || '';
 }
 
 /**
@@ -296,6 +360,12 @@ app.post('/api/transbank/pagar', async (req, res) => {
             message: 'Monto inválido',
             state: STATES.ERROR
         });
+    }
+    
+    // Si el estado es terminal (RECHAZADO, ERROR, APROBADO, CANCELADO), resetearlo a IDLE
+    if ([STATES.RECHAZADO, STATES.ERROR, STATES.APROBADO, STATES.CANCELADO].includes(currentState)) {
+        log('🔄', `Reseteando estado ${currentState} a IDLE para nueva transacción`);
+        currentState = STATES.IDLE;
     }
     
     if (currentState !== STATES.IDLE) {
@@ -320,6 +390,16 @@ app.post('/api/transbank/pagar', async (req, res) => {
             }
             isConnected = true;
             connectedPort = port.path;
+            
+            // Cargar llaves TMS si es primera conexión
+            if (!keysLoaded) {
+                await autoLoadKeys();
+                // Esperar a que el POS esté listo después de cargar llaves
+                log('⏳', 'Esperando que el terminal esté listo...');
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+            // Iniciar poll automático
+            startAutoPoll();
         }
         
         currentState = STATES.INICIANDO_PAGO;
@@ -346,11 +426,17 @@ app.post('/api/transbank/pagar', async (req, res) => {
             success: success,
             amount: monto,
             authorizationCode: response.authorizationCode || null,
-            operationId: response.operationId || null,
+            operationId: response.operationId || response.operationNumber || null,
             cardType: response.cardType || null,
             last4Digits: response.last4Digits || null,
             responseCode: response.responseCode,
             responseMessage: response.responseMessage || response.message,
+            commerceCode: response.commerceCode || null,
+            terminalId: response.terminalId || null,
+            cardBrand: response.cardBrand ? response.cardBrand.trim() : null,
+            realDate: response.realDate || null,
+            realTime: response.realTime || null,
+            ticket: response.ticket || ticket,
             timestamp: new Date().toISOString()
         };
         
@@ -372,6 +458,12 @@ app.post('/api/transbank/pagar', async (req, res) => {
             last4Digits: lastTransaction.last4Digits,
             responseCode: lastTransaction.responseCode,
             responseMessage: lastTransaction.responseMessage,
+            commerceCode: lastTransaction.commerceCode,
+            terminalId: lastTransaction.terminalId,
+            cardBrand: lastTransaction.cardBrand,
+            realDate: lastTransaction.realDate,
+            realTime: lastTransaction.realTime,
+            ticket: lastTransaction.ticket,
             timestamp: lastTransaction.timestamp
         });
         

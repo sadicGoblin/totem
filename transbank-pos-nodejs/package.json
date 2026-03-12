@@ -10,7 +10,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "transbank-pos-sdk": "^3.0.0"
+    "transbank-pos-sdk": "^4.0.0"
   },
   "engines": {
     "node": ">=20.0.0"

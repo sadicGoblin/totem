@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "MJkWsaxfWGEPZx+cAhXgAKguayxbnXNqCSrSJ6pxqMA=",
+  "Source": "TransbankPosService",
+  "BasePath": "_content/TransbankPosService",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
