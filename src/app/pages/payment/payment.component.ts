@@ -5,6 +5,7 @@ import { CartService } from '../../services/cart.service';
 import { CatalogueService } from '../../services/catalogue.service';
 import { PrinterService, ProductoTicket, TransaccionTicket } from '../../services/printer.service';
 import { TransbankService, TransactionState, PaymentResponse } from '../../services/transbank.service';
+import { IdleService } from '../../services/idle.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -35,6 +36,7 @@ export class PaymentComponent implements OnDestroy {
   // Subscripciones
   private stateSubscription?: Subscription;
   private messageSubscription?: Subscription;
+  private paymentSubscription?: Subscription;
 
   get storeLogo(): string {
     return this.catalogueService.getClientConfiguration()?.logo_url || 
@@ -47,8 +49,11 @@ export class PaymentComponent implements OnDestroy {
     private cartService: CartService,
     private printerService: PrinterService,
     private catalogueService: CatalogueService,
-    private transbankService: TransbankService
+    private transbankService: TransbankService,
+    private idleService: IdleService
   ) {
+    // Pausar timer de inactividad mientras se procesa el pago
+    this.idleService.pause();
     // Obtener el total del carrito
     this.cartService.getCartTotal().subscribe(total => {
       this.cartTotal = total;
@@ -78,6 +83,19 @@ export class PaymentComponent implements OnDestroy {
     this.stateSubscription?.unsubscribe();
     this.messageSubscription?.unsubscribe();
     this.transbankService.stopStatusPolling();
+    
+    // Reanudar timer de inactividad al salir de la pantalla de pago
+    this.idleService.resume();
+    
+    // Si hay un pago pendiente al destruir el componente, cancelarlo
+    if (this.paymentSubscription) {
+      console.log('🚫 Componente destruido - abortando pago pendiente');
+      this.paymentSubscription.unsubscribe();
+      this.paymentSubscription = undefined;
+      
+      // Notificar al backend que cancele la transacción
+      this.transbankService.cancelarPago().subscribe();
+    }
   }
   
   // Verificar conexión con el servicio Transbank
@@ -131,7 +149,10 @@ export class PaymentComponent implements OnDestroy {
   private startCardPayment(): void {
     console.log('💳 Iniciando pago con Transbank...');
     
-    this.transbankService.iniciarPago(this.cartTotal).subscribe({
+    // Cancelar suscripción anterior si existe
+    this.paymentSubscription?.unsubscribe();
+    
+    this.paymentSubscription = this.transbankService.iniciarPago(this.cartTotal).subscribe({
       next: (response: PaymentResponse) => {
         console.log('🏦 Respuesta Transbank:', response);
         
@@ -172,29 +193,24 @@ export class PaymentComponent implements OnDestroy {
   cancelCardPayment(): void {
     console.log('🚫 Cancelando pago con tarjeta...');
     
-    // Verificar si se puede cancelar en el estado actual
-    if (this.transbankService.canCancelInState(this.transbankState)) {
-      this.transbankService.cancelarPago().subscribe({
-        next: (response) => {
-          console.log('🚫 Respuesta cancelación:', response);
-          this.transbankService.stopStatusPolling();
-          this.router.navigate(['/checkout']);
-        },
-        error: (error) => {
-          console.error('❌ Error al cancelar:', error);
-          this.transbankService.stopStatusPolling();
-          this.router.navigate(['/checkout']);
-        }
-      });
-    } else if (this.transbankState === 'ESPERANDO_TARJETA') {
-      // No se puede cancelar desde la app cuando espera tarjeta
-      this.transbankMessage = 'Presione el botón rojo en el lector para cancelar';
-      console.log('⚠️ No se puede cancelar - esperando tarjeta');
-    } else {
-      // Estado IDLE o finalizado, simplemente volver
-      this.transbankService.stopStatusPolling();
-      this.router.navigate(['/checkout']);
-    }
+    // Abortar la suscripción HTTP al endpoint /pagar
+    this.paymentSubscription?.unsubscribe();
+    this.paymentSubscription = undefined;
+    
+    // Siempre llamar al endpoint de cancelación en el backend
+    // Esto forzará al servidor a abortar la transacción en el POS
+    this.transbankService.cancelarPago().subscribe({
+      next: (response) => {
+        console.log('🚫 Respuesta cancelación:', response);
+      },
+      error: (error) => {
+        console.error('❌ Error al cancelar:', error);
+      }
+    });
+    
+    // Detener polling y navegar inmediatamente
+    this.transbankService.stopStatusPolling();
+    this.router.navigate(['/checkout']);
   }
   
   // Obtener mensaje de estado para mostrar en UI

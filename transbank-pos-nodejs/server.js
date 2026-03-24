@@ -31,6 +31,7 @@ let currentState = 'IDLE';
 let lastTransaction = null;
 let isConnected = false;
 let connectedPort = null;
+let cancelRequested = false;  // Flag para abortar transacción en curso
 let keysLoaded = false;
 let pollIntervalId = null;
 
@@ -484,29 +485,64 @@ app.post('/api/transbank/pagar', async (req, res) => {
 
 /**
  * Cancelar transacción actual
- * NOTA: En POS integrado esto generalmente no es posible una vez iniciada
+ * Fuerza la cancelación desconectando y reconectando el POS
  */
 app.post('/api/transbank/cancelar', async (req, res) => {
     log('📥', 'POST /api/transbank/cancelar');
+    log('🚫', `Estado actual: ${currentState}`);
     
-    if (currentState === STATES.ESPERANDO_TARJETA) {
-        return res.status(409).json({
-            success: false,
-            message: 'No se puede cancelar mientras se espera la tarjeta',
-            canCancel: false,
-            state: currentState
-        });
-    }
+    // Marcar flag de cancelación
+    cancelRequested = true;
     
-    // En POS Autoservicio no hay forma de cancelar una transacción en curso
-    // Solo podemos marcar el estado
+    const previousState = currentState;
     currentState = STATES.CANCELADO;
     
-    setTimeout(() => { currentState = STATES.IDLE; }, 2000);
+    // Si hay una transacción en curso, forzar la cancelación desconectando el POS
+    if (['INICIANDO_PAGO', 'ESPERANDO_TARJETA', 'PROCESANDO'].includes(previousState)) {
+        log('🔌', 'Forzando cancelación: desconectando POS...');
+        
+        try {
+            // Desconectar el POS para abortar la transacción
+            await pos.disconnect();
+            isConnected = false;
+            log('✅', 'POS desconectado - transacción abortada');
+            
+            // Esperar un momento y reconectar
+            setTimeout(async () => {
+                try {
+                    log('🔄', 'Reconectando al POS...');
+                    const port = await pos.autoconnect();
+                    if (port !== false) {
+                        isConnected = true;
+                        connectedPort = port.path;
+                        log('✅', `Reconectado a ${connectedPort}`);
+                    } else {
+                        log('⚠️', 'No se pudo reconectar automáticamente');
+                    }
+                } catch (err) {
+                    log('⚠️', 'Error al reconectar:', err.message);
+                }
+                currentState = STATES.IDLE;
+                cancelRequested = false;
+            }, 3000);
+        } catch (err) {
+            log('⚠️', 'Error al desconectar POS:', err.message);
+            isConnected = false;
+            currentState = STATES.IDLE;
+            cancelRequested = false;
+        }
+    } else {
+        // No hay transacción activa, solo resetear estado
+        setTimeout(() => { 
+            currentState = STATES.IDLE; 
+            cancelRequested = false;
+        }, 1000);
+    }
     
     res.json({
         success: true,
-        message: 'Cancelación solicitada',
+        message: 'Cancelación ejecutada',
+        previousState: previousState,
         state: currentState
     });
 });

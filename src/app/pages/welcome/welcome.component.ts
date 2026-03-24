@@ -19,7 +19,7 @@ export class WelcomeComponent implements OnInit, OnDestroy {
   // Playlist de videos
   videos: PlaylistVideo[] = [];
   currentVideoIndex = 0;
-  currentVideoUrl = 'assets/videos/home_video.mp4'; // Fallback por defecto
+  currentVideoUrl = 'assets/videos/home_video.mp3'; // Fallback por defecto
   
   // Control de tiempo para conservar video local
   private videoStartTime: number = 0;
