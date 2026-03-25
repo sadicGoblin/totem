@@ -99,8 +99,9 @@ export class PaymentComponent {
     }
 
     // Crear el payload que coincida con lo que el servidor Flask espera
-    const payload = {
-      productos: this.cartItemsForPrint
+    const payload: any = {
+      productos: this.cartItemsForPrint,
+      numeroPedido: this.orderNumberPreview || Math.floor(Math.random() * 10000).toString().padStart(4, '0')
     };
 
     console.log('Payload a enviar:', payload);

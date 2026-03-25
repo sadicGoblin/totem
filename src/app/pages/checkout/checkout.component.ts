@@ -123,6 +123,6 @@ export class CheckoutComponent implements OnInit {
   
   // Navegar a la página de métodos de pago
   goToPaymentPage(): void {
-    this.router.navigate(['/payment']);
+    this.router.navigate(['/payment-simple']);
   }
 }

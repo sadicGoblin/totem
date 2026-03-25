@@ -1,0 +1,107 @@
+<div class="payment-bar">
+  <button class="back-btn" (click)="goBack()">
+    <span>&larr;</span> OLVIDÉ ALGO
+  </button>
+  <h1>¿Cómo quieres pagar?</h1>
+  <div class="spacer"></div>
+</div>
+
+<div class="payment-container" *ngIf="!printingVoucher">
+  <div class="payment-methods">
+    <!-- Pagar en Caja - ACTIVO -->
+    <div class="payment-method-card active-card" (click)="payAtCounter()">
+      <div class="method-icon cash-icon"></div>
+      <div class="method-name">Pagar en Caja</div>
+    </div>
+
+    <!-- Mercado Pago - NO DISPONIBLE -->
+    <div class="payment-method-card disabled-card">
+      <div class="method-icon mercadopago-icon"></div>
+      <div class="method-name">Mercado Pago</div>
+      <div class="not-available">No disponible</div>
+    </div>
+
+    <!-- Código QR Amipass - NO DISPONIBLE -->
+    <div class="payment-method-card disabled-card">
+      <div class="method-icon amipass-icon"></div>
+      <div class="method-name">Código QR<br>Amipass</div>
+      <div class="not-available">No disponible</div>
+    </div>
+
+    <!-- Tarjeta - NO DISPONIBLE -->
+    <div class="payment-method-card disabled-card">
+      <div class="method-icon card-icon"></div>
+      <div class="method-name">Tarjeta de<br>Crédito o Débito</div>
+      <div class="not-available">No disponible</div>
+    </div>
+  </div>
+</div>
+
+<!-- Pantalla de impresión de voucher -->
+<div class="voucher-overlay" *ngIf="printingVoucher">
+  <div class="voucher-card">
+
+    <!-- Mascota animada arriba -->
+    <div class="mascot-section">
+      <div class="mascot-container" [class.bounce]="showMascot">
+        <img [src]="currentMascotImage" alt="Papa John's Mascot" class="animated-mascot">
+        <div class="message-bubble" [class.show]="showMessage">
+          <div class="bubble-content">
+            {{ currentMessage }}
+          </div>
+          <div class="bubble-tail"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido del voucher -->
+    <h2 *ngIf="!voucherPrinted && !printError">Imprimiendo voucher...</h2>
+    <h2 *ngIf="voucherPrinted" class="success-title">¡Tu voucher está listo!</h2>
+    <h2 *ngIf="printError" class="error-title">Error al imprimir</h2>
+
+    <!-- Animación de impresora -->
+    <div class="printer-animation" *ngIf="!voucherPrinted && !printError">
+      <div class="printer">
+        <div class="printer-top"></div>
+        <div class="printer-bottom"></div>
+        <div class="paper"></div>
+      </div>
+    </div>
+
+    <!-- Icono de éxito -->
+    <div class="success-icon" *ngIf="voucherPrinted">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="60" height="60">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+      </svg>
+    </div>
+
+    <!-- Icono de error -->
+    <div class="error-icon" *ngIf="printError">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="60" height="60">
+        <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/>
+      </svg>
+    </div>
+
+    <p *ngIf="!printError" class="instruction-text">
+      Por favor, lleva tu voucher a caja para completar tu pago
+    </p>
+
+    <p *ngIf="printError" class="error-text">
+      No se pudo conectar con la impresora. Puedes reintentar o dirigirte a caja directamente.
+    </p>
+
+    <div class="order-details">
+      <p class="order-number">Número de pedido: <strong>#{{ orderNumberPreview }}</strong></p>
+      <p class="order-total">Total a pagar: <strong>{{ formatPrice(cartTotal) }}</strong></p>
+    </div>
+
+    <div class="voucher-actions">
+      <button class="retry-btn" *ngIf="printError" (click)="retryPrint()">
+        REINTENTAR
+      </button>
+      <button class="confirm-btn" (click)="confirmAndGoHome()">
+        ENTENDIDO
+      </button>
+    </div>
+  </div>
+</div>
