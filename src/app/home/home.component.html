@@ -60,36 +60,38 @@
       'font-size': homeTheme.sidebar.title.fontSize,
       'font-weight': homeTheme.sidebar.title.fontWeight
     }">Categorías</div>
-    
-    <!-- Opción "Todos" -->
-    <div 
-      class="category-item" 
-      [class.active]="selectedCategoryId === null"
-      (click)="selectCategory(null)">
-      <div class="category-icon all-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M4 6h4v4H4V6zm6 0h4v4h-4V6zm6 0h4v4h-4V6zM4 12h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 18h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"/>
-        </svg>
+
+    <div class="categories-list">
+      <!-- Opción "Todos" -->
+      <div
+        class="category-item"
+        [class.active]="selectedCategoryId === null"
+        (click)="selectCategory(null)">
+        <div class="category-icon all-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M4 6h4v4H4V6zm6 0h4v4h-4V6zm6 0h4v4h-4V6zM4 12h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 18h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"/>
+          </svg>
+        </div>
+        <span class="category-name">Todos</span>
       </div>
-      <span class="category-name">Todos</span>
-    </div>
-    
-    <!-- Categorías dinámicas -->
-    <div 
-      class="category-item" 
-      *ngFor="let category of categories"
-      [class.active]="selectedCategoryId === category.id"
-      (click)="selectCategory(category.id)">
-      <div class="category-icon">
-        <img 
-          *ngIf="category.image || category.icon_file" 
-          [src]="category.icon_file || category.image" 
-          [alt]="category.name" />
-        <span *ngIf="!category.image && !category.icon_file" class="category-initial">
-          {{ category.name.charAt(0) }}
-        </span>
+
+      <!-- Categorías dinámicas -->
+      <div
+        class="category-item"
+        *ngFor="let category of categories"
+        [class.active]="selectedCategoryId === category.id"
+        (click)="selectCategory(category.id)">
+        <div class="category-icon">
+          <img
+            *ngIf="category.image || category.icon_file"
+            [src]="category.icon_file || category.image"
+            [alt]="category.name" />
+          <span *ngIf="!category.image && !category.icon_file" class="category-initial">
+            {{ category.name.charAt(0) }}
+          </span>
+        </div>
+        <span class="category-name">{{ category.name }}</span>
       </div>
-      <span class="category-name">{{ category.name }}</span>
     </div>
   </aside>
 

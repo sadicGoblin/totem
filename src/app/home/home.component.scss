@@ -197,20 +197,13 @@ $light-blue: #3c5066;
   min-width: 200px;
   background: linear-gradient(180deg, #ffffff 0%, #f5faff 100%);
   border-right: 1px solid #d6e6f3;
-  padding: 18px 0 100px 0; // Espacio extra al final para scroll
+  padding: 18px 0 12px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  overflow-y: auto;
+  overflow: hidden;
   height: 100%;
   -webkit-overflow-scrolling: touch; // Scroll suave en touch
-  
-  // Ocultar scrollbar pero mantener funcionalidad
-  scrollbar-width: none; // Firefox
-  -ms-overflow-style: none; // IE/Edge
-  &::-webkit-scrollbar {
-    display: none; // Chrome/Safari
-  }
   
   .sidebar-title {
     padding: 8px 16px 14px;
@@ -219,6 +212,20 @@ $light-blue: #3c5066;
     color: #325e81;
     text-transform: uppercase;
     letter-spacing: 1.1px;
+  }
+
+  .categories-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-bottom: 24px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
   
   .category-item {
