@@ -1,4 +1,4 @@
-// Variables de color - Nueva paleta azul
+// Variables de color - Modal UX para totem
 $primary-color: #2997db; 
 $secondary-black: #333333;
 $accent-color: #3771ae;
@@ -7,7 +7,8 @@ $dark-gray: #505f79;
 $light-gray: #f4f5f7;
 $white: #ffffff;
 $discount-red: #c44545;
-$accent-green: #54dc28;
+$primary-dark: #1e5faf;
+$primary-soft: #f4f8fc;
 
 // Modal backdrop (fondo oscuro)
 .modal-backdrop {
@@ -16,35 +17,36 @@ $accent-green: #54dc28;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(9, 30, 66, 0.7);
+  background-color: rgba(9, 30, 66, 0.74);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  padding: 22px;
   animation: fadeIn 0.2s ease-out;
 }
 
 // Contenedor del modal
 .modal-container {
   background-color: $white;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 800px;
-  max-height: 90vh;
+  border-radius: 20px;
+  width: min(96vw, 980px);
+  max-height: min(90vh, 960px);
   overflow: hidden;
   position: relative;
-  box-shadow: 0 10px 30px rgba(9, 30, 66, 0.3);
+  border: 1px solid #d6e7f7;
+  box-shadow: 0 18px 40px rgba(9, 30, 66, 0.32);
   animation: scaleIn 0.2s ease-out;
 }
 
 // Botón para cerrar
 .close-button {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 36px;
-  height: 36px;
-  border-radius: 10%;
+  top: 14px;
+  right: 14px;
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
   background-color: var(--primary-color, $primary-color);
   border: none;
   display: flex;
@@ -55,7 +57,7 @@ $accent-green: #54dc28;
   transition: background-color 0.2s;
   
   span {
-    font-size: 24px;
+    font-size: 32px;
     line-height: 1;
     color: $white;
   }
@@ -69,19 +71,22 @@ $accent-green: #54dc28;
 .modal-content {
   display: flex;
   flex-direction: row;
+  min-height: 560px;
   
-  @media (max-width: 600px) {
+  @media (max-width: 900px) {
     flex-direction: column;
+    min-height: auto;
   }
 }
 
 // Sección de imagen
 .product-image {
-  flex: 1;
-  min-height: 300px;
-  max-height: 450px;
+  flex: 0 0 46%;
+  min-height: 380px;
+  max-height: 700px;
   overflow: hidden;
   position: relative;
+  background: #0e1f30;
   
   img {
     width: 100%;
@@ -125,31 +130,49 @@ $accent-green: #54dc28;
 // Sección de detalles
 .product-details {
   flex: 1;
-  padding: 24px;
+  padding: 30px 28px;
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  
+  .details-header {
+    margin-bottom: 8px;
+  }
   
   .product-name {
-    font-size: 24px;
-    font-weight: 600;
+    font-size: 2.1rem;
+    font-weight: 700;
     color: var(--primary-color, $primary-color);
-    margin: 0 0 16px;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .touch-hint {
+    margin: 10px 0 0;
+    font-size: 1rem;
+    color: #5f7893;
+    font-weight: 500;
   }
   
   .product-description {
-    font-size: 16px;
-    line-height: 1.5;
+    font-size: 1.5rem;
+    line-height: 1.35;
     color: $dark-gray;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   
   .product-price {
-    margin-bottom: 24px;
+    margin-bottom: 18px;
     display: flex;
     align-items: center;
     
     .current-price {
-      font-size: 24px;
+      font-size: 2.5rem;
       font-weight: bold;
       color: var(--primary-color, $primary-color);
       
@@ -159,69 +182,115 @@ $accent-green: #54dc28;
     }
     
     .original-price {
-      font-size: 18px;
+      font-size: 1.3rem;
       text-decoration: line-through;
       color: $dark-gray;
       margin-left: 10px;
       opacity: 0.7;
     }
   }
+
+  .quantity-section {
+    margin-bottom: 12px;
+  }
+
+  .section-label {
+    display: block;
+    margin-bottom: 10px;
+    color: #5f7893;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
   
   .quantity-controls {
     display: flex;
-    align-items: center;
-    margin-bottom: 24px;
+    align-items: stretch;
+    justify-content: center;
+    height: 86px;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #d6e7f7;
+    background: #f8fcff;
     
     .quantity-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 4px;
-      border: 2px solid $accent-green;
-      background-color: $white;
+      flex-shrink: 0;
+      width: 96px;
+      height: auto;
+      align-self: stretch;
+      border-radius: 0;
+      border: none;
       display: flex;
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      font-size: 25px;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: $white;
+      transition: filter 0.2s;
+
+      &.decrease {
+        background: linear-gradient(180deg, #1e5faf 0%, #174a87 100%);
+      }
+
+      &.increase {
+        background: linear-gradient(180deg, #2997db 0%, #1d82c7 100%);
+      }
       
       &:hover {
-        background-color: $light-gray;
+        filter: brightness(0.95);
       }
       
       &:disabled {
-        opacity: 0.5;
+        opacity: 0.45;
         cursor: not-allowed;
       }
     }
     
     .quantity {
-      margin: 0 16px;
-      font-size: 25px;
-      font-weight: 600;
-      min-width: 30px;
+      flex: 1;
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      font-size: 2.4rem;
+      line-height: 1;
+      color: #173650;
+      font-weight: 700;
       text-align: center;
+      background: $primary-soft;
+      -webkit-font-smoothing: antialiased;
     }
   }
 
+  .quantity-feedback {
+    margin: 10px 0 16px;
+    min-height: 30px;
+  }
+
   .quantity-text {
-    font-size: 16px;
+    font-size: 1.25rem;
     color: var(--primary-color, $primary-color);
+    font-weight: 600;
   }
   
   .add-to-cart-btn {
-    padding: 14px;
-    background-color: var(--primary-color, $primary-color);
+    height: 68px;
+    padding: 0 20px;
+    background: linear-gradient(135deg, var(--primary-color, $primary-color) 0%, #1a8cda 100%);
     color: $white;
     border: none;
-    border-radius: 4px;
-    font-size: 22px;
-    font-weight: 600;
+    border-radius: 12px;
+    font-size: 2rem;
+    font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
+    transition: transform 0.1s, filter 0.2s;
     margin-top: auto;
     
     &:hover {
-      background-color: #262626;
+      filter: brightness(0.95);
     }
     
     &:active {

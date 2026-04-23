@@ -4,12 +4,11 @@
   (click)="onBackdropClick($event)"
 >
   <div class="modal-container">
-    <button class="close-button" (click)="closeModal()">
+    <button class="close-button" (click)="closeModal()" aria-label="Cerrar detalle">
       <span>&times;</span>
     </button>
 
     <div class="modal-content">
-      <!-- Imagen a la izquierda -->
       <div class="product-image">
         <img [src]="product.image" [alt]="product.name" />
         <div class="discount-tag" *ngIf="product.discount">
@@ -20,9 +19,11 @@
         </div>
       </div>
 
-      <!-- Detalles a la derecha -->
       <div class="product-details">
-        <h2 class="product-name">{{ product.name }}</h2>
+        <div class="details-header">
+          <h2 class="product-name">{{ product.name }}</h2>
+          <p class="touch-hint">Ajusta la cantidad tocando + o -</p>
+        </div>
 
         <p class="product-description" [innerHTML]="product.description"></p>
 
@@ -30,34 +31,40 @@
           <span class="current-price" [class.discounted]="product.discount">
             {{ formatPrice(product.price) }}
           </span>
-          <span class="original-price" *ngIf="product.discount">
-            {{ formatPrice((product.price * 100) / (100 - product.discount)) }}
+          <span class="original-price" *ngIf="product.originalPrice">
+            {{ formatPrice(product.originalPrice) }}
           </span>
         </div>
 
-        <div class="quantity-controls">
-          <button
-            class="quantity-btn"
-            (click)="decrease()"
-            [disabled]="localQuantity === 0"
-          >
-            <span>-</span>
-          </button>
-          <span class="quantity">{{ localQuantity }}</span>
-          <button class="quantity-btn" (click)="increase()">
-            <span>+</span>
-          </button>
+        <div class="quantity-section">
+          <span class="section-label">Cantidad</span>
+          <div class="quantity-controls">
+            <button
+              class="quantity-btn decrease"
+              (click)="decrease()"
+              [disabled]="localQuantity === 0"
+              aria-label="Disminuir cantidad"
+            >
+              <span>-</span>
+            </button>
+            <span class="quantity">{{ localQuantity }}</span>
+            <button class="quantity-btn increase" (click)="increase()" aria-label="Aumentar cantidad">
+              <span>+</span>
+            </button>
+          </div>
         </div>
 
-        <div>
-          <span class="quantity-text">* Llevas {{localQuantity}} {{localQuantity === 1 ? 'unidad' : 'unidades'}} en tu carrito * </span>
+        <div class="quantity-feedback">
+          <span class="quantity-text">
+            Llevas {{localQuantity}} {{localQuantity === 1 ? 'unidad' : 'unidades'}} en tu carrito
+          </span>
         </div>
 
         <button
           class="add-to-cart-btn"
           (click)="closeModal()"
         >
-          <span class="btn-text">Seguir Explorando</span>
+          <span class="btn-text">Listo</span>
         </button>
       </div>
     </div>

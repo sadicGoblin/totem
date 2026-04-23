@@ -2,88 +2,38 @@
   <button class="back-btn" (click)="goBack()">
     <span>&larr;</span> OLVIDÉ ALGO
   </button>
-  <h1>¿Cómo quieres pagar?</h1>
+  <h1>Pago con Tarjeta</h1>
   <div class="spacer"></div>
   <div class="store-logo" *ngIf="storeLogo">
     <img [src]="storeLogo" alt="Store Logo" />
   </div>
 </div>
 
-<div class="payment-container"> 
-  <div class="payment-methods">
-    <div class="payment-method-card" (click)="selectPaymentMethod('cash')">
-      <div class="method-icon cash-icon"></div>
-      <div class="method-name">Pagar en Caja</div>
+<div class="payment-container">
+  <div class="payment-content">
+    <div class="payment-summary-card">
+      <h2>Resumen de tu pedido</h2>
+      <div class="summary-row">
+        <span>Productos:</span>
+        <strong>{{ totalItems }}</strong>
+      </div>
+      <div class="summary-row total">
+        <span>Total:</span>
+        <strong>{{ formatPrice(cartTotal) }}</strong>
+      </div>
+
     </div>
 
-    <div class="payment-method-card" (click)="selectPaymentMethod('mercadopago')">
-      <div class="method-icon mercadopago-icon"></div>
-      <div class="method-name">Mercado Pago</div>
-    </div>
-
-    <div class="payment-method-card" (click)="selectPaymentMethod('amipass')">
-      <div class="method-icon amipass-icon"></div>
-      <div class="method-name">Código QR<br>Amipass</div>
-    </div>
-
-    <div class="payment-method-card" (click)="selectPaymentMethod('card')">
-      <div class="method-icon card-icon"></div>
-      <div class="method-name">Tarjeta de<br>Crédito o Débito</div>
-    </div>
-  </div>
-
-  <!-- Pantalla de procesamiento de pago general (para mercadopago/amipass) -->
-  <div class="processing-payment" *ngIf="processingPayment && selectedMethod !== 'card' && selectedMethod !== 'cash'">
-    <div class="spinner"></div>
-    <h2>Procesando pago...</h2>
-    <p>Por favor espera mientras procesamos tu pago</p>
-  </div>
-  
-  <!-- Pantalla específica para pago en efectivo (imprimiendo voucher) -->
-  <div class="voucher-printing" *ngIf="selectedMethod === 'cash'">
-    <div class="voucher-content">
-      <div class="voucher-icon">
-        <i class="fas fa-receipt"></i>
-      </div>
-      <h2 *ngIf="!voucherPrinted">Imprimiendo tu voucher...</h2>
-      <h2 *ngIf="voucherPrinted">¡Voucher impreso exitosamente!</h2>
-      
-      <div class="printer-animation" *ngIf="!voucherPrinted">
-        <div class="printer">
-          <div class="printer-top"></div>
-          <div class="printer-bottom"></div>
-          <div class="paper"></div>
-        </div>
-      </div>
-      
-      <div class="success-icon" *ngIf="voucherPrinted">
-        <i class="fas fa-check-circle"></i>
-      </div>
-      
-      <p *ngIf="!voucherPrinted">Por favor espera...</p>
-      <p *ngIf="voucherPrinted">Lleva tu voucher a caja para completar el pago</p>
-      
-      <div class="order-details">
-        <p class="order-number">Número de pedido: <strong>#{{ orderNumberPreview }}</strong></p>
-        <p class="order-total">Total a pagar: <strong>{{ formatPrice(cartTotal) }}</strong></p>
-      </div>
-      
-      <p *ngIf="voucherPrinted" class="redirect-message">Regresando al catálogo...</p>
-    </div>
-  </div>
-  
-  <!-- Pantalla específica para pago con tarjeta (máquina automática) -->
-  <div class="payment-processing" *ngIf="selectedMethod === 'card'">
-    <div class="payment-content">
+    <div class="payment-processing-card" *ngIf="processingPayment">
       <div class="payment-icon">
         <i class="fas fa-credit-card"></i>
       </div>
-      <h2>Paga tu pedido</h2>
-      <p>Por favor, utiliza la máquina de pago automática</p>
+      <h2>Procesando pago</h2>
+      <p class="payment-instruction">Inserta o acerca tu tarjeta en el terminal</p>
       <div class="loader">
         <div class="loader-bar"></div>
       </div>
-      <p class="payment-message">Procesando pago...</p>
+      <p class="payment-message">{{ paymentStatusMessage }}</p>
       <button class="cancel-payment-btn" (click)="cancelCardPayment()">
         CANCELAR
       </button>

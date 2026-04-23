@@ -11,8 +11,8 @@ import { ElectronService } from '../../services/electron.service';
   styleUrls: ['./admin-dialog.component.scss'],
 })
 export class AdminDialogComponent {
-  password: number = 0;
-  correctPassword: number = 1234;
+  /** Cadena para conservar ceros iniciales (ej. "0022"). */
+  password = '';
   errorMessage: string = '';
   showDialog: boolean = false;
   showPassword: boolean = false;
@@ -43,36 +43,28 @@ export class AdminDialogComponent {
   promptPassword(): void {
     this.showPassword = true;
     this.errorMessage = '';
-    this.password = 0;
+    this.password = '';
   }
   
   addDigit(digit: number): void {
-    // Si es un número entre 0-9, agregarlo al final
-    if (digit >= 0 && digit <= 9) {
-      // Convertir el password actual a string, agregar el dígito y volver a número
-      const currentStr = this.password.toString();
-      // Solo permitimos un máximo de 4 dígitos
-      if (currentStr.length < 4) {
-        this.password = Number(currentStr + digit.toString());
-      }
+    if (digit >= 0 && digit <= 9 && this.password.length < 4) {
+      this.password += digit.toString();
     }
   }
   
   clearPassword(): void {
-    this.password = 0;
+    this.password = '';
     this.errorMessage = '';
   }
 
   async exitKioskMode(): Promise<void> {
-    // Enviar password como string al servicio (Electron valida)
-    const passwordStr = this.password.toString();
-    const success = await this.electronService.exitKioskMode(passwordStr);
-    console.log("exitKioskMode result:", success, "password sent:", passwordStr);
-    
+    const success = await this.electronService.exitKioskMode(this.password);
+    console.log('exitKioskMode result:', success);
+
     if (success) {
       this.showDialog = false;
       this.showPassword = false;
-      this.password = 0;
+      this.password = '';
     } else {
       this.errorMessage = 'Contraseña incorrecta';
       // Efecto visual para feedback de error

@@ -13,16 +13,19 @@ import { CatalogueService, PlaylistVideo } from '../../services/catalogue.servic
 export class WelcomeComponent implements OnInit, OnDestroy {
   @ViewChild('videoPlayer') videoPlayer!: ElementRef<HTMLVideoElement>;
   
-  private refreshTimeout: any;
+  private refreshInterval: ReturnType<typeof setInterval> | null = null;
   private readonly REFRESH_DELAY = 5 * 60 * 1000; // 5 minutos
+  private readonly DEFAULT_FALLBACK_VIDEO = 'assets/videos/home_video.mp4';
   
   // Playlist de videos
   videos: PlaylistVideo[] = [];
   currentVideoIndex = 0;
-  currentVideoUrl = 'assets/videos/home_video.mp4'; // Fallback por defecto
+  currentVideoUrl = this.DEFAULT_FALLBACK_VIDEO;
+  fallbackVideoUrl = this.DEFAULT_FALLBACK_VIDEO;
   
   // Control de tiempo para conservar video local
   private videoStartTime: number = 0;
+  private userInteracted = false;
 
   constructor(
     private router: Router,
@@ -30,21 +33,39 @@ export class WelcomeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.fallbackVideoUrl = this.catalogueService.getMetadata<string>(
+      'welcome.fallbackVideoUrl',
+      this.DEFAULT_FALLBACK_VIDEO
+    );
+
     // Cargar videos de la playlist
     this.loadPlaylistVideos();
     
-    // Programar refresh del catálogo después de 5 minutos en el screensaver
-    this.refreshTimeout = setTimeout(() => {
+    // Refrescar catálogo cada 5 minutos mientras se esté en welcome.
+    this.refreshInterval = setInterval(() => {
       console.log('🔄 Refreshing catalogue after 5 minutes on welcome screen...');
       this.catalogueService.refreshCatalogue();
     }, this.REFRESH_DELAY);
   }
 
   ngOnDestroy(): void {
-    // Cancelar el refresh si el usuario sale del screensaver
-    if (this.refreshTimeout) {
-      clearTimeout(this.refreshTimeout);
-      this.refreshTimeout = null;
+    // Cancelar refresh periódico al salir de welcome
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
+      this.refreshInterval = null;
+    }
+  }
+
+  onVideoCanPlay(): void {
+    this.tryPlayVideo();
+  }
+
+  onVideoError(): void {
+    console.warn('⚠️ Video playback error. Falling back to local video asset.');
+    if (this.currentVideoUrl !== this.fallbackVideoUrl) {
+      this.currentVideoUrl = this.fallbackVideoUrl;
+      this.videoStartTime = Date.now();
+      this.tryPlayVideo(true);
     }
   }
 
@@ -61,6 +82,8 @@ export class WelcomeComponent implements OnInit, OnDestroy {
       console.log('🎬 Playlist loaded with', this.videos.length, 'videos');
       console.log('▶️ Playing:', this.videos[0].name);
     } else {
+      this.currentVideoUrl = this.fallbackVideoUrl;
+      this.videoStartTime = Date.now();
       console.log('⚠️ No playlist videos found, using fallback video');
     }
   }
@@ -103,7 +126,7 @@ export class WelcomeComponent implements OnInit, OnDestroy {
     // Forzar la recarga del video
     if (this.videoPlayer?.nativeElement) {
       this.videoPlayer.nativeElement.load();
-      this.videoPlayer.nativeElement.play();
+      this.tryPlayVideo();
     }
   }
 
@@ -113,11 +136,34 @@ export class WelcomeComponent implements OnInit, OnDestroy {
   private restartCurrentVideo(): void {
     if (this.videoPlayer?.nativeElement) {
       this.videoPlayer.nativeElement.currentTime = 0;
-      this.videoPlayer.nativeElement.play();
+      this.tryPlayVideo();
     }
   }
 
   navigateToCatalog() {
+    this.userInteracted = true;
     this.router.navigate(['/home']);
+  }
+
+  private tryPlayVideo(forceLoad = false): void {
+    const video = this.videoPlayer?.nativeElement;
+    if (!video) {
+      return;
+    }
+
+    if (forceLoad) {
+      video.load();
+    }
+
+    const playPromise = video.play();
+    if (playPromise) {
+      playPromise.catch(() => {
+        // Algunos entornos bloquean autoplay hasta la primera interacción.
+        if (this.userInteracted) {
+          video.muted = true;
+          void video.play();
+        }
+      });
+    }
   }
 }

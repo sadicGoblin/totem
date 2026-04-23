@@ -90,13 +90,13 @@
   "home": {
     "header": {
       "background": "linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%)",
-      "padding": "15px 20px",
+      "padding": "20px 30px",
       "logo": {
         "height": "500px"
       }
     },
     "promoSlides": {
-      "height": "180px",
+      "height": "260px",
       "backgroundColor": "#f5f5f5",
       "slideButton": {
         "backgroundColor": "var(--primary-color)",
@@ -112,26 +112,26 @@
       }
     },
     "sidebar": {
-      "width": "120px",
+      "width": "200px",
       "backgroundColor": "#ffffff",
       "borderColor": "#e0e0e0",
       "title": {
         "color": "#666666",
-        "fontSize": "0.85rem",
-        "fontWeight": "600"
+        "fontSize": "1.15rem",
+        "fontWeight": "700"
       },
       "categoryItem": {
         "activeBackground": "var(--light-color)",
         "activeBorderColor": "var(--primary-color)",
         "activeTextColor": "var(--primary-color)",
-        "iconSize": "50px",
-        "iconBorderRadius": "12px",
-        "nameSize": "0.75rem"
+        "iconSize": "72px",
+        "iconBorderRadius": "16px",
+        "nameSize": "1rem"
       }
     },
     "productsMain": {
       "backgroundColor": "#f8f9fa",
-      "padding": "20px",
+      "padding": "22px",
       "sectionHeader": {
         "titleColor": "var(--primary-color)",
         "titleSize": "1.5rem",
@@ -141,9 +141,9 @@
     },
     "productCard": {
       "backgroundColor": "#ffffff",
-      "borderRadius": "8px",
+      "borderRadius": "25px",
       "borderColor": "#DFE1E6",
-      "imageHeight": "250px",
+      "imageHeight": "280px",
       "specialTag": {
         "backgroundColor": "var(--primary-color)",
         "textColor": "#ffffff",
@@ -156,7 +156,7 @@
       },
       "name": {
         "color": "var(--primary-color)",
-        "fontSize": "25px",
+        "fontSize": "26px",
         "fontWeight": "600"
       },
       "description": {
@@ -165,23 +165,23 @@
       },
       "price": {
         "currentColor": "var(--primary-color)",
-        "currentSize": "30px",
+        "currentSize": "32px",
         "originalColor": "#1f2731",
         "originalSize": "14px"
       },
       "addToCartButton": {
         "backgroundColor": "var(--primary-color)",
         "textColor": "#ffffff",
-        "fontSize": "18px",
-        "height": "50px",
-        "borderRadius": "0 0 8px 8px"
+        "fontSize": "30px",
+        "height": "72px",
+        "borderRadius": "0 0 25px 25px"
       },
       "quantityControls": {
-        "backgroundColor": "var(--primary-color)",
-        "textColor": "#ffffff",
-        "decreaseColor": "#d91a1a",
-        "increaseColor": "#4dae26",
-        "fontSize": "24px"
+        "backgroundColor": "#f8fcff",
+        "textColor": "#173650",
+        "decreaseColor": "#1e5faf",
+        "increaseColor": "#2997db",
+        "fontSize": "34px"
       }
     }
   },

@@ -27,7 +27,9 @@ interface ProductWithCategory extends Product {
   },
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  private readonly REFRESH_AFTER_PURCHASE_FLAG = 'totem_refresh_after_purchase';
   isLandscapeMode: boolean = false;
+  isCatalogueLoading = false;
   selectedCategory: string | null = null;
   selectedCategoryId: number | null = null;
   hideNavButtons: boolean = false;
@@ -89,6 +91,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
     this.subscriptions.push(paramsSub);
 
+    const loadingSub = this.catalogueService.loading$.subscribe((isLoading) => {
+      this.isCatalogueLoading = isLoading;
+    });
+    this.subscriptions.push(loadingSub);
+
     // Suscribirse a cambios del catálogo para actualizar datos
     const catalogueSub = this.catalogueService.catalogue$.subscribe((catalogue) => {
       if (catalogue) {
@@ -98,6 +105,17 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     });
     this.subscriptions.push(catalogueSub);
+
+    // Si hay una compra reciente, forzar refresh al llegar a Home
+    if (localStorage.getItem(this.REFRESH_AFTER_PURCHASE_FLAG) === '1') {
+      this.catalogueService.refreshCatalogue()
+        .then(() => {
+          localStorage.removeItem(this.REFRESH_AFTER_PURCHASE_FLAG);
+        })
+        .catch(() => {
+          // Mantener flag para reintentar en próximo ingreso a Home
+        });
+    }
 
     // Auto-slide cada 5 segundos
     this.startSlideAutoPlay();
@@ -213,20 +231,25 @@ export class HomeComponent implements OnInit, OnDestroy {
    * Mapea un producto del catálogo al formato del componente
    */
   private mapCatalogueProduct(p: CatalogueProduct): ProductWithCategory {
-    const price = p.price_1 ? parseFloat(p.price_1) : 0;
-    const originalPrice = p.price_2 ? parseFloat(p.price_2) : undefined;
-    
-    // Calcular porcentaje de descuento si hay precio original mayor al precio actual
+    const regularPrice = p.price_1 ? parseFloat(p.price_1) : 0;
+    const offerPrice = p.price_2 ? parseFloat(p.price_2) : undefined;
+
+    // Si existe price_2, se considera precio vigente de oferta.
+    const hasOffer = typeof offerPrice === 'number' && offerPrice > 0;
+    const currentPrice = hasOffer ? offerPrice : regularPrice;
+    const originalPrice = hasOffer && regularPrice > currentPrice ? regularPrice : undefined;
+
+    // Calcular porcentaje de descuento cuando hay precio regular y precio oferta.
     let discountPercent: number | undefined;
-    if (originalPrice && originalPrice > price) {
-      discountPercent = Math.round(((originalPrice - price) / originalPrice) * 100);
+    if (originalPrice && originalPrice > currentPrice) {
+      discountPercent = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
     }
     
     return {
       id: p.id,
       name: p.name,
       description: p.short_description || p.description || '',
-      price: price,
+      price: currentPrice,
       originalPrice: discountPercent ? originalPrice : undefined,
       image: p.image || (p.images && p.images.length > 0 ? p.images[0].image : this.getPlaceholderImage(p.name)),
       category: p.categories && p.categories.length > 0 ? p.categories[0].name : '',

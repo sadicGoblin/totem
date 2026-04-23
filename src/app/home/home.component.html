@@ -1,6 +1,14 @@
 <!-- Componente compartido del carrito flotante -->
 <app-cart-floating></app-cart-floating>
 
+<div class="catalogue-loading-overlay" *ngIf="isCatalogueLoading && products.length === 0">
+  <div class="catalogue-loading-card">
+    <div class="catalogue-spinner"></div>
+    <h2>Actualizando catalogo...</h2>
+    <p>Cargando productos y configuración</p>
+  </div>
+</div>
+
 <!-- Header con logo -->
 <div class="top-header" [ngStyle]="{
   'background': homeTheme.header.background,
@@ -98,7 +106,6 @@
     <div class="products-grid">
       <div class="product-card" *ngFor="let product of getFilteredProducts()" [ngStyle]="{
         'background-color': homeTheme.productCard.backgroundColor,
-        'border-radius': homeTheme.productCard.borderRadius,
         'border-color': homeTheme.productCard.borderColor
       }">
         <!-- Special tag -->
@@ -159,10 +166,7 @@
             *ngIf="getItemQuantityInCart(product.id) === 0"
             [ngStyle]="{
               'background-color': homeTheme.productCard.addToCartButton.backgroundColor,
-              'color': homeTheme.productCard.addToCartButton.textColor,
-              'font-size': homeTheme.productCard.addToCartButton.fontSize,
-              'height': homeTheme.productCard.addToCartButton.height,
-              'border-radius': homeTheme.productCard.addToCartButton.borderRadius
+              'color': homeTheme.productCard.addToCartButton.textColor
             }">
             <span class="btn-text">Agregar</span>
             <span class="btn-icon">+</span>

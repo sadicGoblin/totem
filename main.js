@@ -2,6 +2,12 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const url = require('url');
 
+/** Contraseña para salir del kiosko: "00" + día del mes local (ej. día 22 → "0022"). */
+function getDailyKioskExitPassword(date = new Date()) {
+  const day = date.getDate();
+  return '00' + String(day);
+}
+
 // Mantener una referencia global del objeto window
 // para evitar que la ventana se cierre automáticamente 
 // cuando el objeto JavaScript sea eliminado por el recolector de basura.
@@ -113,8 +119,7 @@ app.on('activate', function () {
 
 // Configurar comunicación IPC para control de pantalla completa
 ipcMain.on('exit-kiosk-mode', (event, password) => {
-  // Verificar clave simple
-  if (password === '1234') {
+  if (password === getDailyKioskExitPassword()) {
     if (mainWindow) {
       mainWindow.setKiosk(false);
       mainWindow.setFullScreen(false);

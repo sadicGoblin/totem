@@ -6,6 +6,58 @@
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
+  /* Radio único para tarjeta + imagen + barra azul (evita API/metadata con 8px en línea). */
+  --product-card-radius: 25px;
+}
+
+.catalogue-loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 32, 58, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+}
+
+.catalogue-loading-card {
+  width: min(92vw, 520px);
+  padding: 30px 28px;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #d9e8f7;
+  box-shadow: 0 16px 34px rgba(9, 30, 66, 0.24);
+  text-align: center;
+
+  h2 {
+    margin: 12px 0 6px;
+    color: var(--primary-color, #2997db);
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: #567089;
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+}
+
+.catalogue-spinner {
+  width: 66px;
+  height: 66px;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 6px solid #e7f2fc;
+  border-top-color: var(--primary-color, #2997db);
+  animation: catalogue-spin 0.9s linear infinite;
+}
+
+@keyframes catalogue-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 // Variables - Colores por defecto (se sobrescriben con CSS variables desde la API)
@@ -27,7 +79,7 @@ $light-blue: #3c5066;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 15px 20px;
+  padding: 18px 28px;
   background: linear-gradient(135deg, var(--primary-color, #2997db) 0%, var(--secondary-color, #1054da) 100%);
   
   .store-logo {
@@ -43,7 +95,7 @@ $light-blue: #3c5066;
 .promo-slides {
   position: relative;
   width: 100%;
-  height: 180px;
+  height: 220px;
   overflow: hidden;
   background: #f5f5f5;
   
@@ -134,21 +186,21 @@ $light-blue: #3c5066;
 .main-layout {
   display: flex;
   flex: 1;
-  background: #f8f9fa;
+  background: linear-gradient(135deg, #f7fbff 0%, #eef6fd 100%);
   overflow: hidden; // Evita scroll del contenedor padre
   min-height: 0; // Importante para flexbox scroll
 }
 
 // Sidebar de categorías
 .categories-sidebar {
-  width: 120px;
-  min-width: 120px;
-  background: white;
-  border-right: 1px solid #e0e0e0;
-  padding: 15px 0 80px 0; // Espacio extra al final para scroll
+  width: 200px;
+  min-width: 200px;
+  background: linear-gradient(180deg, #ffffff 0%, #f5faff 100%);
+  border-right: 1px solid #d6e6f3;
+  padding: 18px 0 100px 0; // Espacio extra al final para scroll
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 10px;
   overflow-y: auto;
   height: 100%;
   -webkit-overflow-scrolling: touch; // Scroll suave en touch
@@ -161,34 +213,37 @@ $light-blue: #3c5066;
   }
   
   .sidebar-title {
-    padding: 10px 15px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #666;
+    padding: 8px 16px 14px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #325e81;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1.1px;
   }
   
   .category-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 12px 8px;
+    margin: 0 10px;
+    padding: 14px 10px;
     cursor: pointer;
     transition: all 0.2s ease;
-    border-left: 3px solid transparent;
+    border-left: 4px solid transparent;
+    border-radius: 14px;
     
     &:active {
       background: rgba(0, 0, 0, 0.05);
     }
     
     &.active {
-      background: var(--light-color, #e8f4fc);
+      background: linear-gradient(145deg, #e8f4fc 0%, #dbecfc 100%);
       border-left-color: var(--primary-color, #2997db);
+      box-shadow: 0 6px 14px rgba(18, 85, 151, 0.15);
       
       .category-name {
         color: var(--primary-color, #2997db);
-        font-weight: 600;
+        font-weight: 700;
       }
       
       .category-icon {
@@ -197,11 +252,11 @@ $light-blue: #3c5066;
     }
     
     .category-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
+      width: 72px;
+      height: 72px;
+      border-radius: 16px;
       overflow: hidden;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       background: #f5f5f5;
       display: flex;
       align-items: center;
@@ -225,17 +280,17 @@ $light-blue: #3c5066;
         background: var(--light-color, #e8f4fc);
         
         svg {
-          width: 28px;
-          height: 28px;
+          width: 34px;
+          height: 34px;
           fill: var(--primary-color, #2997db);
         }
       }
     }
     
     .category-name {
-      font-size: 0.75rem;
+      font-size: 1rem;
       text-align: center;
-      color: #333;
+      color: #1f2a37;
       line-height: 1.2;
       max-width: 100%;
       overflow: hidden;
@@ -251,7 +306,7 @@ $light-blue: #3c5066;
 // Contenido principal de productos
 .products-main {
   flex: 1;
-  padding: 20px;
+  padding: 24px;
   overflow-y: auto;
   height: 100%;
   -webkit-overflow-scrolling: touch; // Scroll suave en touch
@@ -576,9 +631,9 @@ $light-blue: #3c5066;
 // Products grid
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  padding: 12px 8px 130px;
   padding-bottom: 120px; // Añadir espacio adicional para evitar que el carrito oculte productos
   
   // Elemento fantasma para reservar espacio para el carrito
@@ -606,19 +661,19 @@ $light-blue: #3c5066;
 // Product card
 .product-card {
   background-color: $white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(9, 30, 66, 0.1);
+  border-radius: var(--product-card-radius);
+  box-shadow: 0 10px 22px rgba(9, 30, 66, 0.1);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   position: relative;
   transition: transform 0.2s, box-shadow 0.2s;
   height: 100%;
-  border: 1px solid #DFE1E6;
+  border: 1px solid #dce8f3;
   
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(9, 30, 66, 0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 14px 26px rgba(9, 30, 66, 0.16);
   }
   
   .special-tag {
@@ -639,7 +694,7 @@ $light-blue: #3c5066;
   .discount-tag {
     position: absolute;
     top: 10px;
-    left: 10px;
+    right: 10px;
     background-color: $discount-orange;
     color: $white;
     padding: 4px 8px;
@@ -652,9 +707,10 @@ $light-blue: #3c5066;
   }
   
   .product-image {
-    height: 250px; // Aumentado de 180px
+    height: 300px; // Más protagonismo visual en formato tótem
     overflow: hidden;
-    border-radius: 8px 8px 0 0;
+    border-radius: var(--product-card-radius) var(--product-card-radius) 0 0;
+
     cursor: pointer;
 
     img {
@@ -662,11 +718,12 @@ $light-blue: #3c5066;
       height: 100%;
       object-fit: cover;
       object-position: center;
+      border-radius: var(--product-card-radius) var(--product-card-radius) 0 0;
     }
   }
   
   .product-info {
-    padding: 14px;
+    padding: 18px;
     background-color: $white;
     border-top: 1px solid $medium-gray;
     flex-grow: 1;
@@ -674,34 +731,35 @@ $light-blue: #3c5066;
     flex-direction: column;
     
     .product-name {
-      font-size: 25px; 
+      font-size: 26px; 
       font-weight: 600;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       line-height: 1.3;
       color: var(--primary-color, #2997db);
     }
     
     .product-description {
-      font-size: 15px; // Aumentado de 13px
+      font-size: 15px; // Mantiene lectura sin exagerar proporción
       color: lighten($dark-gray, 15%);
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       line-height: 1.3;
+      min-height: 40px;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
-      line-clamp: 2;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
     
     .product-price {
-      margin-top: auto;
+      margin-top: 8px;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
       flex-wrap: wrap;
       
       .current-price {
-        font-size: 30px;
+        font-size: 32px;
         font-weight: bold;
         color: var(--primary-color, #2997db);
       }
@@ -774,37 +832,44 @@ $light-blue: #3c5066;
 // Estilos del contenedor principales del carrito
 .cart-controls {
   width: 100%;
+  height: 72px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-top: 1px solid $medium-gray;
+  border-top: none;
+  overflow: hidden;
   
   // Botón de agregar (cuando no hay productos)
   .add-to-cart-btn {
     margin: 0;
-    padding: 12px 0;
+    padding: 0 18px;
     width: 100%;
-    height: 50px;
-    background-color: var(--primary-color, #2997db);
+    height: 100%;
+    min-height: 100%;
+    background: linear-gradient(135deg, var(--primary-color, #2997db) 0%, #1a8cda 100%);
     color: $white;
     border: none;
-    font-size: 18px;
+    font-size: inherit;
     font-weight: bold;
-    border-radius: 0 0 8px 8px;
+    border-radius: 0 0 var(--product-card-radius) var(--product-card-radius);
     cursor: pointer;
+    box-sizing: border-box;
     transition: background-color 0.2s ease, transform 0.1s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
 
     .btn-text {
-      font-weight: 600;
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
     }
     
     .btn-icon {
-      font-size: 22px;
+      font-size: 42px;
       line-height: 1;
+      font-weight: 700;
     }
 
     .item-count {
@@ -830,20 +895,26 @@ $light-blue: #3c5066;
   // Controles de cantidad (cuando hay productos)
   .quantity-controls {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: space-between;
     width: 100%;
-    height: 50px;
-    background-color: var(--primary-color, #2997db);
-    border-radius: 0 0 8px 8px;
+    height: 100%;
+    min-height: 100%;
+    background-color: #f8fcff;
+    border-radius: 0 0 var(--product-card-radius) var(--product-card-radius);
+    box-sizing: border-box;
+    border-top: none;
     
     .quantity-btn {
+      flex-shrink: 0;
       background: none;
       border: none;
       color: white;
-      width: 60px;
-      height: 50px;
-      font-size: 24px;
+      width: 78px;
+      height: auto;
+      align-self: stretch;
+      min-height: 72px;
+      font-size: 38px;
       font-weight: bold;
       cursor: pointer;
       display: flex;
@@ -860,24 +931,29 @@ $light-blue: #3c5066;
       }
       
       &.decrease {
-        border-radius: 0 0 0 8px;
-        background-color: #d91a1a;
+        border-radius: 0 0 0 var(--product-card-radius);
+        background: linear-gradient(180deg, #1e5faf 0%, #174a87 100%);
       }
       
       &.increase {
-        border-radius: 0 0 8px 0;
-        background-color: #4dae26;
+        border-radius: 0 0 var(--product-card-radius) 0;
+        background: linear-gradient(180deg, #2997db 0%, #1d82c7 100%);
       }
     }
     
     .quantity-display {
       flex: 1;
+      align-self: stretch;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-size: 25px;
+      min-width: 0;
+      color: inherit;
+      font-size: 38px;
+      line-height: 1;
       font-weight: bold;
+      letter-spacing: 0.5px;
+      -webkit-font-smoothing: antialiased;
     }
   }
 }

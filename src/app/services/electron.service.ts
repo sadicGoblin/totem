@@ -48,13 +48,19 @@ export class ElectronService {
     return this._isVerticalOrientation;
   }
 
+  /** Misma regla que en main.js: "00" + día del mes (calendario local). */
+  private dailyKioskExitPassword(): string {
+    const day = new Date().getDate();
+    return '00' + String(day);
+  }
+
   exitKioskMode(password: string): Promise<boolean> {
     return new Promise((resolve) => {
       if (!this.isElectron) {
         console.warn('Modo de desarrollo: simulando salida del modo kiosko');
         // En modo desarrollo, simulamos verificación de password
         setTimeout(() => {
-          if (password === '1234') {
+          if (password === this.dailyKioskExitPassword()) {
             console.log('Simulación: Salida del modo kiosko exitosa');
             resolve(true);
           } else {
