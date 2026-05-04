@@ -5,6 +5,10 @@ export const CLIENT_CONFIG = {
   // Configuración de API
   apiBase: 'https://catalogue.favric.cl/api',
   apiTimeout: 10000,
+
+  // Microservicios locales del totem
+  printerBase: 'http://127.0.0.1:8000',
+  transbankBase: 'http://127.0.0.1:8081/api/transbank',
   
   // Intervalo de actualización del catálogo (en milisegundos)
   // Default: 5 minutos = 300000ms
