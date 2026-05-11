@@ -3,14 +3,18 @@ $secondary-color: #1054da;
 $light-gray: #f8f9fa;
 $white: #ffffff;
 $text-color: #243447;
-$shadow: 0 10px 28px rgba(9, 30, 66, 0.16);
+$success-color: #16a34a;
+$error-color: #dc2626;
+$shadow: 0 18px 48px rgba(9, 30, 66, 0.18);
 
 :host {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
   overflow: hidden;
 }
+
+/* ==================== Header ==================== */
 
 .payment-bar {
   height: 100px;
@@ -18,8 +22,8 @@ $shadow: 0 10px 28px rgba(9, 30, 66, 0.16);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px;
-  background: linear-gradient(135deg, var(--primary-color, #2997db) 0%, var(--secondary-color, #1054da) 100%);
+  padding: 20px 28px;
+  background: linear-gradient(135deg, var(--primary-color, #{$primary-color}) 0%, var(--secondary-color, #{$secondary-color}) 100%);
   box-shadow: $shadow;
   position: relative;
 
@@ -30,7 +34,7 @@ $shadow: 0 10px 28px rgba(9, 30, 66, 0.16);
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, var(--secondary-color, #1054da), #3771ae);
+    background: linear-gradient(90deg, var(--secondary-color, #{$secondary-color}), #3771ae);
   }
 
   h1 {
@@ -38,16 +42,26 @@ $shadow: 0 10px 28px rgba(9, 30, 66, 0.16);
     margin: 0;
     text-align: center;
     color: $white;
-    font-size: 2.2rem;
+    font-size: 2.1rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
   }
 
-  .store-logo img {
-    height: 60px;
-    width: auto;
-    object-fit: contain;
+  .store-logo {
+    width: 170px;
+    display: flex;
+    justify-content: flex-end;
+
+    img {
+      height: 60px;
+      width: auto;
+      object-fit: contain;
+    }
+  }
+
+  .back-spacer {
+    width: 170px;
   }
 }
 
@@ -56,15 +70,21 @@ $shadow: 0 10px 28px rgba(9, 30, 66, 0.16);
   align-items: center;
   gap: 8px;
   border: none;
-  border-radius: 12px;
-  padding: 12px 20px;
+  border-radius: 14px;
+  padding: 14px 22px;
   color: $white;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
   cursor: pointer;
-  background: linear-gradient(135deg, $secondary-color 0%, darken($secondary-color, 10%) 100%);
-  box-shadow: 0 5px 16px rgba(16, 84, 218, 0.3);
-  transition: transform 0.2s ease;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
 
   &:active {
     transform: scale(0.97);
@@ -76,164 +96,308 @@ $shadow: 0 10px 28px rgba(9, 30, 66, 0.16);
   }
 }
 
-.spacer {
-  width: 170px;
-}
+/* ==================== Container ==================== */
 
 .payment-container {
   flex: 1;
   min-height: 0;
-  background: linear-gradient(135deg, $light-gray 0%, $white 100%);
-  padding: 28px 30px;
+  background: linear-gradient(180deg, #eff6fc 0%, #f8fbff 100%);
+  padding: 40px 30px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
 }
 
-.payment-content {
-  width: min(1200px, 100%);
-  height: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1.1fr;
-  gap: 22px;
-  align-items: center;
-}
+/* ==================== Tarjeta principal ==================== */
 
-.payment-summary-card,
-.payment-processing-card {
-  background-color: $white;
-  border-radius: 16px;
-  border: 2px solid #d7e9fa;
+.payment-card {
+  width: min(720px, 100%);
+  background: $white;
+  border-radius: 24px;
   box-shadow: $shadow;
-}
-
-.payment-summary-card {
-  padding: 28px;
+  border: 1px solid #e2eef9;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 
-  h2 {
-    margin: 0 0 20px;
-    font-size: 2rem;
-    color: $primary-color;
+  &.approved {
+    border-color: rgba($success-color, 0.5);
+    box-shadow: 0 18px 48px rgba($success-color, 0.18);
   }
+  &.error {
+    border-color: rgba($error-color, 0.5);
+    box-shadow: 0 18px 48px rgba($error-color, 0.18);
+  }
+}
+
+/* Resumen del pedido */
+.summary-block {
+  padding: 28px 36px;
+  background: linear-gradient(135deg, #f8fbff 0%, #eff6fc 100%);
+  border-bottom: 1px solid #e2eef9;
 
   .summary-row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    font-size: 1.25rem;
-    border-bottom: 1px solid #eef5fc;
+    align-items: baseline;
+    padding: 6px 0;
+    color: #547089;
+    font-size: 1.1rem;
 
     strong {
-      font-size: 1.5rem;
       color: #16324a;
+      font-size: 1.4rem;
+      font-weight: 600;
     }
 
     &.total {
-      margin-top: 8px;
+      margin-top: 10px;
+      padding-top: 14px;
+      border-top: 1.5px dashed #cfe1f2;
+
+      span {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #16324a;
+      }
 
       strong {
-        font-size: 2rem;
+        font-size: 2.6rem;
+        font-weight: 800;
         color: $primary-color;
+        background: linear-gradient(135deg, $primary-color, $secondary-color);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
     }
   }
-
-  .summary-note {
-    margin-top: auto;
-    font-size: 1rem;
-    color: #53708a;
-  }
 }
 
-.payment-processing-card {
-  padding: 30px;
+/* Bloque de ilustración / animación */
+.state-block {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
+  padding: 36px 20px 12px;
+  min-height: 200px;
+}
 
-  .payment-icon {
-    width: 96px;
-    height: 96px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
-    margin-bottom: 20px;
+/* Tarjeta animada — esperando lectura */
+.card-illustration {
+  width: 220px;
+  animation: floatCard 2.5s ease-in-out infinite;
 
-    i {
-      color: $white;
-      font-size: 44px;
-    }
-  }
-
-  h2 {
-    margin: 0 0 12px;
-    font-size: 2rem;
-    color: $primary-color;
-  }
-
-  .payment-instruction {
-    margin: 0 0 18px;
-    font-size: 1.35rem;
-    color: $text-color;
-  }
-
-  .loader {
+  svg {
     width: 100%;
-    height: 12px;
-    background-color: #e7f2fc;
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 14px;
-
-    .loader-bar {
-      height: 100%;
-      width: 30%;
-      background: linear-gradient(90deg, $secondary-color, $primary-color, $secondary-color);
-      border-radius: 8px;
-      animation: loading 1.5s infinite ease-in-out;
-    }
+    height: auto;
+    overflow: visible;
   }
 
-  .payment-message {
-    margin: 0 0 18px;
-    font-size: 1.15rem;
-    color: $secondary-color;
-    font-weight: 600;
+  .card-body {
+    fill: url(#cardGradient) $primary-color;
+    fill: $primary-color;
+  }
+  .card-stripe {
+    fill: #1c4f8d;
+  }
+  .card-chip {
+    fill: #ffd968;
+    stroke: #b89232;
+    stroke-width: 0.8;
   }
 
-  .cancel-payment-btn {
-    margin-top: 8px;
-    height: 62px;
-    min-width: 220px;
-    border: none;
-    border-radius: 12px;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: $white;
-    background: linear-gradient(135deg, $secondary-color 0%, darken($secondary-color, 10%) 100%);
-    cursor: pointer;
-    transition: transform 0.2s ease;
+  .wave {
+    stroke: $primary-color;
+    opacity: 0;
+    animation: wavePulse 1.6s ease-out infinite;
+  }
+  .wave-1 { animation-delay: 0s; }
+  .wave-2 { animation-delay: 0.4s; }
+}
 
-    &:active {
-      transform: scale(0.98);
-    }
+@keyframes floatCard {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-8px) rotate(2deg); }
+}
+
+@keyframes wavePulse {
+  0%   { opacity: 0; transform: translateX(-6px); }
+  30%  { opacity: 0.9; }
+  100% { opacity: 0; transform: translateX(8px); }
+}
+
+/* Spinner — procesando */
+.spinner-illustration {
+  width: 110px;
+  height: 110px;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    animation: spinSpinner 1s linear infinite;
+  }
+
+  circle {
+    stroke: $primary-color;
+    stroke-dasharray: 110 40;
+    stroke-linecap: round;
   }
 }
 
-@keyframes loading {
-  0% {
-    transform: translateX(-100%);
+@keyframes spinSpinner {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Ícono de estado terminal (aprobado / error) */
+.status-illustration {
+  width: 130px;
+  height: 130px;
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+
+  svg {
+    width: 100%;
+    height: 100%;
   }
-  100% {
-    transform: translateX(350%);
+
+  &.approved {
+    circle { stroke: $success-color; }
+    path   { stroke: $success-color; }
   }
+
+  &.error {
+    circle { stroke: $error-color; }
+    path   { stroke: $error-color; }
+    animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  }
+}
+
+@keyframes popIn {
+  0%   { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shake {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(4px); }
+  30%, 50%, 70% { transform: translateX(-8px); }
+  40%, 60% { transform: translateX(8px); }
+}
+
+/* Bloque de texto */
+.text-block {
+  padding: 6px 36px 22px;
+  text-align: center;
+
+  .state-title {
+    margin: 0 0 10px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: $primary-color;
+    transition: color 0.3s ease;
+  }
+
+  .state-message {
+    margin: 0;
+    font-size: 1.2rem;
+    color: $text-color;
+    line-height: 1.4;
+    min-height: 1.4em;
+  }
+}
+
+.payment-card.approved   .state-title { color: $success-color; }
+.payment-card.error      .state-title { color: $error-color; }
+.payment-card.cancelled  .state-title { color: #d97706; }
+.payment-card.cancelling .state-title { color: #d97706; }
+
+.payment-card.cancelled,
+.payment-card.cancelling {
+  border-color: rgba(#d97706, 0.4);
+  box-shadow: 0 18px 48px rgba(#d97706, 0.15);
+}
+
+.spinner-illustration.cancelling circle {
+  stroke: #d97706;
+}
+
+.status-illustration.cancelled {
+  circle { stroke: #d97706; }
+  line   { stroke: #d97706; }
+}
+
+.actions-hint {
+  font-size: 1rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* Acciones */
+.actions-block {
+  padding: 6px 36px 32px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.cancel-payment-btn,
+.retry-payment-btn {
+  height: 64px;
+  min-width: 220px;
+  border-radius: 14px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.cancel-payment-btn {
+  border: 2px solid #e7eef6;
+  color: #547089;
+  background: $white;
+
+  &:hover {
+    border-color: $error-color;
+    color: $error-color;
+    background: #fff5f5;
+  }
+}
+
+.retry-payment-btn {
+  border: 2px solid transparent;
+  color: $white;
+  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  box-shadow: 0 8px 22px rgba($primary-color, 0.35);
+
+  &:hover {
+    box-shadow: 0 10px 28px rgba($primary-color, 0.45);
+    transform: translateY(-1px);
+  }
+}
+
+/* ==================== Layout vertical (totem 1080x1920) ==================== */
+
+@media (orientation: portrait) and (min-width: 768px) {
+  .payment-bar {
+    height: 140px;
+    h1 { font-size: 2.6rem; }
+  }
+  .payment-container { padding: 60px 40px; }
+  .payment-card { width: min(900px, 100%); }
+  .summary-block .summary-row.total strong { font-size: 3.6rem; }
+  .state-block { min-height: 280px; }
+  .card-illustration { width: 320px; }
+  .text-block .state-title { font-size: 2.6rem; }
+  .text-block .state-message { font-size: 1.5rem; }
+  .cancel-payment-btn,
+  .retry-payment-btn { height: 80px; min-width: 280px; font-size: 1.4rem; }
 }

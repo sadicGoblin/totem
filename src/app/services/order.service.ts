@@ -64,21 +64,29 @@ export class OrderService {
    * Construye un payload listo para enviar al backend a partir del carrito y la
    * respuesta del POS Transbank. La parte importante es `external_transaction_id`,
    * que actúa como llave de idempotencia.
+   *
+   * El `status` se infiere por defecto desde la respuesta del POS, pero se puede
+   * forzar (útil para guardar intentos fallidos sin respuesta del POS).
    */
   buildPayload(
     items: CartItem[],
     cartTotal: number,
     currency: string,
     tx?: TransbankPagoResponse | null,
-    overrides?: { localOrderNumber?: string; notes?: string }
+    overrides?: {
+      localOrderNumber?: string;
+      notes?: string;
+      status?: 'pending' | 'approved' | 'rejected' | 'voided' | 'failed';
+    }
   ): OrderCreatePayload {
     const externalId = this.computeExternalTransactionId(tx, cartTotal);
+    const inferredStatus = tx?.success ? 'approved' : 'rejected';
 
     return {
       catalogue_code: CLIENT_CONFIG.catalogueCode,
       external_transaction_id: externalId,
       local_order_number: overrides?.localOrderNumber,
-      status: tx?.success === false ? 'rejected' : 'approved',
+      status: overrides?.status ?? inferredStatus,
       currency,
       subtotal: cartTotal,
       total: cartTotal,
@@ -111,16 +119,18 @@ export class OrderService {
 
   /**
    * El "código entregado por el POS" no es una sola pieza: usamos la tupla
-   * `(terminalId, operationNumber, realDate)`. Si no llega ninguno (modo simulado),
-   * caemos en un id local determinístico.
+   * `(terminalId, operationNumber, realDate)`. Si no llega ninguno (intento
+   * fallido o sin POS), caemos en un id local + timestamp para evitar colisiones.
    */
   private computeExternalTransactionId(tx: TransbankPagoResponse | null | undefined, total: number): string {
-    if (tx?.terminalId && tx?.operationId) {
+    // operationNumber puede ser '0' / 0 — sólo lo usamos si el POS aprobó realmente
+    if (tx?.terminalId && tx?.operationId && tx?.success) {
       const parts = [tx.terminalId, tx.operationId, tx.realDate || tx.timestamp].filter(Boolean);
       return parts.join('-');
     }
-    // Sin POS real (testing) → id determinístico para evitar duplicados si reintenta
-    return `local-${Date.now()}-${Math.round(total)}`;
+    // Para intentos fallidos / sin POS → id local con timestamp.
+    // Le agregamos `attempt` para diferenciarlos visualmente de los confirmados.
+    return `attempt-${Date.now()}-${Math.round(total)}`;
   }
 
   create(payload: OrderCreatePayload): Observable<OrderResponse> {

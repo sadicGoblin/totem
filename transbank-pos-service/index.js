@@ -40,6 +40,17 @@ let connectedPort = null;
 let cancelRequested = false;
 let keysLoaded = false;
 let pollIntervalId = null;
+let heartbeatIntervalId = null;
+let lastPollAt = null;
+let lastStateMessage = null;
+
+// Configuración del heartbeat al backend
+const SERVICE_VERSION = '1.0.0';
+const HEARTBEAT_BASE_URL = process.env.BACKEND_URL || 'https://catalogue.favric.cl/api';
+const HEARTBEAT_CATALOGUE_CODE = process.env.CATALOGUE_CODE || 'CAT001';
+const HEARTBEAT_TERMINAL_CODE = process.env.TERMINAL_CODE || 'TOTEM-01';
+const HEARTBEAT_INTERVAL_MS = parseInt(process.env.HEARTBEAT_INTERVAL_MS || '60000', 10); // 1 min
+const HEARTBEAT_ENABLED = (process.env.HEARTBEAT_ENABLED || 'true').toLowerCase() !== 'false';
 
 // Estados posibles
 const STATES = {
@@ -89,6 +100,7 @@ function startAutoPoll() {
         try {
             log('🔄', 'Poll automático (cada 5 min)...');
             const response = await pos.poll();
+            lastPollAt = new Date().toISOString();
             log('✅', 'Poll exitoso', response);
         } catch (err) {
             log('⚠️', 'Error en poll automático:', err.message);
@@ -102,6 +114,65 @@ function stopAutoPoll() {
         clearInterval(pollIntervalId);
         pollIntervalId = null;
         log('⏹️', 'Poll automático detenido');
+    }
+}
+
+// ==================== Heartbeat al backend ====================
+
+async function sendHeartbeat() {
+    if (!HEARTBEAT_ENABLED) return;
+    const url = `${HEARTBEAT_BASE_URL}/terminal/heartbeat/`;
+
+    const lastTxTerminalId = lastTransaction?.terminalId || null;
+    const lastTxCommerceCode = lastTransaction?.commerceCode || null;
+
+    const payload = {
+        catalogue_code: HEARTBEAT_CATALOGUE_CODE,
+        code: HEARTBEAT_TERMINAL_CODE,
+        pos_terminal_id: lastTxTerminalId,
+        commerce_code: lastTxCommerceCode ? String(lastTxCommerceCode) : null,
+        port: connectedPort,
+        connected: isConnected,
+        keys_loaded: keysLoaded,
+        last_state: currentState,
+        last_state_message: lastStateMessage,
+        last_poll_at: lastPollAt,
+        service_version: SERVICE_VERSION,
+    };
+
+    try {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+            const text = await res.text().catch(() => '');
+            log('⚠️', `Heartbeat falló (HTTP ${res.status}): ${text.slice(0, 200)}`);
+            return;
+        }
+        // log silencioso para no llenar la consola
+    } catch (err) {
+        log('⚠️', 'Heartbeat — error de red:', err.message);
+    }
+}
+
+function startHeartbeat() {
+    if (!HEARTBEAT_ENABLED) {
+        log('⏸️', 'Heartbeat deshabilitado por env (HEARTBEAT_ENABLED=false)');
+        return;
+    }
+    if (heartbeatIntervalId) clearInterval(heartbeatIntervalId);
+    log('💓', `Heartbeat activado: ${HEARTBEAT_BASE_URL}/terminal/heartbeat/ cada ${HEARTBEAT_INTERVAL_MS / 1000}s · ${HEARTBEAT_CATALOGUE_CODE}/${HEARTBEAT_TERMINAL_CODE}`);
+    // Enviar uno de inmediato para registrarse en el backend
+    sendHeartbeat();
+    heartbeatIntervalId = setInterval(sendHeartbeat, HEARTBEAT_INTERVAL_MS);
+}
+
+function stopHeartbeat() {
+    if (heartbeatIntervalId) {
+        clearInterval(heartbeatIntervalId);
+        heartbeatIntervalId = null;
     }
 }
 
@@ -631,16 +702,49 @@ app.listen(PORT, () => {
     console.log('⏳ Esperando conexiones...');
     console.log('💡 Tip: Ejecuta POST /api/transbank/conectar para autoconectar al POS');
     console.log('');
+
+    // Iniciar el heartbeat al backend
+    startHeartbeat();
 });
 
-// Apagado limpio
-function gracefulShutdown(signal) {
+// Apagado limpio: avisa al backend que estamos OFFLINE antes de morir.
+async function gracefulShutdown(signal) {
     log('🛑', `Señal ${signal} recibida — apagando...`);
+    stopHeartbeat();
     stopAutoPoll();
-    if (isConnected) {
-        pos.disconnect().catch(() => { /* noop */ });
+
+    // Marcar al terminal como OFFLINE en el backend para que el admin lo vea
+    // de inmediato sin tener que esperar el timeout del heartbeat.
+    if (HEARTBEAT_ENABLED) {
+        try {
+            await Promise.race([
+                fetch(`${HEARTBEAT_BASE_URL}/terminal/heartbeat/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        catalogue_code: HEARTBEAT_CATALOGUE_CODE,
+                        code: HEARTBEAT_TERMINAL_CODE,
+                        connected: false,
+                        keys_loaded: keysLoaded,
+                        port: connectedPort,
+                        last_state: 'OFFLINE',
+                        last_state_message: 'Servicio detenido manualmente',
+                        service_version: SERVICE_VERSION,
+                    }),
+                }),
+                // Timeout de 1.5s — no nos quedamos colgados si el backend no responde
+                new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 1500)),
+            ]);
+            log('💓', 'Heartbeat OFFLINE enviado al backend');
+        } catch (err) {
+            log('⚠️', 'No se pudo notificar offline al backend:', err.message);
+        }
     }
-    setTimeout(() => process.exit(0), 500);
+
+    if (isConnected) {
+        try { await pos.disconnect(); } catch { /* noop */ }
+    }
+    setTimeout(() => process.exit(0), 200);
 }
 
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));

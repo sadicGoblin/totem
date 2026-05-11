@@ -28,7 +28,7 @@ export const CLIENT_CONFIG = {
   // Configuración de funcionalidades
   features: {
     printReceipts: true,
-    bypassPaxForTesting: true,
+    bypassPaxForTesting: false,
     qrCodeSupport: true,
     mobileCart: true,
     adminPanel: true

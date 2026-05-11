@@ -1,42 +1,127 @@
 <div class="payment-bar">
-  <button class="back-btn" (click)="goBack()">
+  <button class="back-btn" (click)="goBack()" *ngIf="!stateClass || stateClass === 'idle'">
     <span>&larr;</span> OLVIDÉ ALGO
   </button>
+  <div class="back-spacer" *ngIf="stateClass && stateClass !== 'idle'"></div>
   <h1>Pago con Tarjeta</h1>
-  <div class="spacer"></div>
   <div class="store-logo" *ngIf="storeLogo">
     <img [src]="storeLogo" alt="Store Logo" />
   </div>
+  <div class="store-logo" *ngIf="!storeLogo"></div>
 </div>
 
 <div class="payment-container">
-  <div class="payment-content">
-    <div class="payment-summary-card">
-      <h2>Resumen de tu pedido</h2>
+  <div class="payment-card" [ngClass]="stateClass">
+
+    <!-- Resumen del pedido -->
+    <div class="summary-block">
       <div class="summary-row">
-        <span>Productos:</span>
+        <span>Productos</span>
         <strong>{{ totalItems }}</strong>
       </div>
       <div class="summary-row total">
-        <span>Total:</span>
+        <span>Total a pagar</span>
         <strong>{{ formatPrice(cartTotal) }}</strong>
       </div>
+    </div>
+
+    <!-- Animación / icono según estado -->
+    <div class="state-block">
+      <ng-container [ngSwitch]="stateClass">
+
+        <!-- Esperando tarjeta / iniciando -->
+        <div *ngSwitchCase="'waiting'" class="card-illustration">
+          <svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+            <rect class="card-body" x="20" y="40" width="120" height="80" rx="10"/>
+            <rect class="card-stripe" x="20" y="58" width="120" height="14"/>
+            <rect class="card-chip" x="34" y="86" width="22" height="16" rx="3"/>
+            <path class="wave wave-1" d="M150 70 Q165 80 150 100" fill="none" stroke-width="4" stroke-linecap="round"/>
+            <path class="wave wave-2" d="M165 60 Q185 80 165 110" fill="none" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <!-- Procesando -->
+        <div *ngSwitchCase="'processing'" class="spinner-illustration">
+          <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="30" cy="30" r="24" fill="none" stroke-width="5"/>
+          </svg>
+        </div>
+
+        <!-- Cancelando -->
+        <div *ngSwitchCase="'cancelling'" class="spinner-illustration cancelling">
+          <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="30" cy="30" r="24" fill="none" stroke-width="5"/>
+          </svg>
+        </div>
+
+        <!-- Cancelado (terminal) -->
+        <div *ngSwitchCase="'cancelled'" class="status-illustration cancelled">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="40" cy="40" r="36" fill="none" stroke-width="5"/>
+            <line x1="22" y1="40" x2="58" y2="40" stroke-width="6" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <!-- Aprobado -->
+        <div *ngSwitchCase="'approved'" class="status-illustration approved">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="40" cy="40" r="36" fill="none" stroke-width="5"/>
+            <path d="M24 41 L36 53 L57 30" fill="none" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <!-- Rechazado / Error -->
+        <div *ngSwitchCase="'error'" class="status-illustration error">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="40" cy="40" r="36" fill="none" stroke-width="5"/>
+            <path d="M28 28 L52 52 M52 28 L28 52" fill="none" stroke-width="6" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <!-- Default (idle inicial) -->
+        <div *ngSwitchDefault class="card-illustration">
+          <svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg">
+            <rect class="card-body" x="20" y="40" width="120" height="80" rx="10"/>
+            <rect class="card-stripe" x="20" y="58" width="120" height="14"/>
+            <rect class="card-chip" x="34" y="86" width="22" height="16" rx="3"/>
+          </svg>
+        </div>
+
+      </ng-container>
+    </div>
+
+    <!-- Texto de estado -->
+    <div class="text-block">
+      <h2 class="state-title">{{ stateTitle }}</h2>
+      <p class="state-message">{{ paymentStatusMessage }}</p>
+    </div>
+
+    <!-- Acciones -->
+    <div class="actions-block" *ngIf="processingPayment">
+
+      <!-- Cancelando: sin botones, sólo nota -->
+      <ng-container *ngIf="stateClass === 'cancelling'">
+        <span class="actions-hint">Esperando confirmación del POS...</span>
+      </ng-container>
+
+      <!-- Estados terminales recuperables: REINTENTAR + VOLVER -->
+      <ng-container *ngIf="stateClass === 'error' || stateClass === 'cancelled'">
+        <button class="retry-payment-btn" (click)="retryCardPayment()">
+          REINTENTAR
+        </button>
+        <button class="cancel-payment-btn" (click)="cancelCardPayment()">
+          VOLVER AL CARRITO
+        </button>
+      </ng-container>
+
+      <!-- En vuelo (esperando / procesando): sólo CANCELAR -->
+      <ng-container *ngIf="stateClass === 'waiting' || stateClass === 'processing' || stateClass === 'idle'">
+        <button class="cancel-payment-btn" (click)="cancelCardPayment()">
+          CANCELAR
+        </button>
+      </ng-container>
 
     </div>
 
-    <div class="payment-processing-card" *ngIf="processingPayment">
-      <div class="payment-icon">
-        <i class="fas fa-credit-card"></i>
-      </div>
-      <h2>Procesando pago</h2>
-      <p class="payment-instruction">Inserta o acerca tu tarjeta en el terminal</p>
-      <div class="loader">
-        <div class="loader-bar"></div>
-      </div>
-      <p class="payment-message">{{ paymentStatusMessage }}</p>
-      <button class="cancel-payment-btn" (click)="cancelCardPayment()">
-        CANCELAR
-      </button>
-    </div>
   </div>
 </div>

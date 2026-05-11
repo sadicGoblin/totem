@@ -8,12 +8,12 @@
     "dev": "node --watch index.js"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.0.0"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "transbank-pos-sdk": "^1.6.5"
+    "transbank-pos-sdk": "^4.0.0"
   },
   "private": true
 }
