@@ -705,12 +705,33 @@ $light-blue: #3c5066;
     .store-logo img { filter: brightness(0) invert(1); }
   }
 
-  .checkout-body { background: transparent !important; padding: 24px 32px !important; }
+  .checkout-body {
+    background: transparent !important;
+    padding: 24px 32px !important;
+    /* Reserva espacio para el order-summary fijo abajo (~240px en vertical) */
+    padding-bottom: 280px !important;
+  }
 
+  /* Habilitamos scroll dentro del contenedor de items: con muchos productos
+     el listado crecía detrás del order-summary fijo y no se podía ver. */
   .cart-items-container {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
+    max-height: calc(100vh - 380px);
+    overflow-y: auto;
+    padding-right: 8px;
+
+    /* Scrollbar discreta acorde al tema */
+    &::-webkit-scrollbar { width: 8px; }
+    &::-webkit-scrollbar-track { background: transparent; }
+    &::-webkit-scrollbar-thumb {
+      background: var(--mn-border-strong);
+      border-radius: 4px;
+    }
+    &::-webkit-scrollbar-thumb:hover { background: var(--mn-dim); }
+    scrollbar-width: thin;
+    scrollbar-color: var(--mn-border-strong) transparent;
   }
 
   /* Fondo blanco de classic se filtraba aquí — limpiarlo */
