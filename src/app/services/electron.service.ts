@@ -54,6 +54,11 @@ export class ElectronService {
     return '00' + String(day);
   }
 
+  /** Valida el PIN de administrador sin salir del modo kiosko. */
+  isAdminPasswordValid(password: string): boolean {
+    return password === this.dailyKioskExitPassword();
+  }
+
   exitKioskMode(password: string): Promise<boolean> {
     return new Promise((resolve) => {
       if (!this.isElectron) {

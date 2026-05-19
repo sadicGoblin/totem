@@ -1,45 +1,235 @@
 <!-- Área invisible en la esquina inferior izquierda para activar el diálogo (requiere 5 clics) -->
 <div class="admin-trigger" (click)="toggleDialog()"></div>
 
-<!-- Modal de autenticación para administradores -->
-<div *ngIf="showDialog" class="admin-modal-overlay" (click)="toggleDialog()">
-  <div class="admin-modal" (click)="stopPropagation($event)">
-    <h2 *ngIf="!showPassword">¿Qué desea hacer?</h2>
-    <h2 *ngIf="showPassword">Ingrese la contraseña</h2>
-    
-    <div class="password-display" *ngIf="showPassword">
-      <div class="password-value">{{ password }}</div>
-      <div class="error-message" *ngIf="errorMessage">
-        {{ errorMessage }}
+<!-- Modal admin -->
+<div *ngIf="showDialog"
+     class="admin-modal-overlay"
+     (click)="closeDialog()"
+     (mousemove)="resetIdleTimer()"
+     (touchstart)="resetIdleTimer()"
+     (keydown)="resetIdleTimer()">
+  <div class="admin-modal"
+       [class.wide]="view === 'sales' || view === 'saleDetail'"
+       (click)="stopPropagation($event); resetIdleTimer()">
+
+    <!-- ============================== PIN ============================== -->
+    <ng-container *ngIf="view === 'password'">
+      <h2>Ingresa la contraseña</h2>
+      <div class="password-display">
+        <div class="password-value">{{ password }}</div>
+        <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
       </div>
-    </div>
-    
-    <div class="numeric-keyboard" *ngIf="showPassword">
-      <div class="keyboard-row">
-        <button class="number-key" (click)="addDigit(1)">1</button>
-        <button class="number-key" (click)="addDigit(2)">2</button>
-        <button class="number-key" (click)="addDigit(3)">3</button>
+      <div class="numeric-keyboard">
+        <div class="keyboard-row">
+          <button class="number-key" (click)="addDigit(1)">1</button>
+          <button class="number-key" (click)="addDigit(2)">2</button>
+          <button class="number-key" (click)="addDigit(3)">3</button>
+        </div>
+        <div class="keyboard-row">
+          <button class="number-key" (click)="addDigit(4)">4</button>
+          <button class="number-key" (click)="addDigit(5)">5</button>
+          <button class="number-key" (click)="addDigit(6)">6</button>
+        </div>
+        <div class="keyboard-row">
+          <button class="number-key" (click)="addDigit(7)">7</button>
+          <button class="number-key" (click)="addDigit(8)">8</button>
+          <button class="number-key" (click)="addDigit(9)">9</button>
+        </div>
+        <div class="keyboard-row">
+          <button class="number-key" (click)="clearPassword()">C</button>
+          <button class="number-key" (click)="addDigit(0)">0</button>
+          <button class="number-key confirm-key" (click)="validatePassword()">✓</button>
+        </div>
       </div>
-      <div class="keyboard-row">
-        <button class="number-key" (click)="addDigit(4)">4</button>
-        <button class="number-key" (click)="addDigit(5)">5</button>
-        <button class="number-key" (click)="addDigit(6)">6</button>
+      <div class="button-group">
+        <button class="cancel-btn" (click)="closeDialog()">Cancelar</button>
       </div>
-      <div class="keyboard-row">
-        <button class="number-key" (click)="addDigit(7)">7</button>
-        <button class="number-key" (click)="addDigit(8)">8</button>
-        <button class="number-key" (click)="addDigit(9)">9</button>
+    </ng-container>
+
+    <!-- ============================== Menú principal ============================== -->
+    <ng-container *ngIf="view === 'main'">
+      <h2>Configuraciones</h2>
+      <p class="subtitle">¿Qué deseas hacer?</p>
+
+      <div class="menu-grid">
+        <button class="menu-card" (click)="goToSales()">
+          <span class="menu-title">Últimas ventas</span>
+          <span class="menu-desc">Ver historial e impresiones</span>
+        </button>
+
+        <button class="menu-card" (click)="refreshCatalogue()">
+          <span class="menu-title">Actualizar catálogo</span>
+          <span class="menu-desc">Productos, precios y playlists</span>
+        </button>
+
+        <button class="menu-card danger" (click)="exitKiosk()">
+          <span class="menu-title">Salir del catálogo</span>
+          <span class="menu-desc">Modo administrador</span>
+        </button>
       </div>
-      <div class="keyboard-row">
-        <button class="number-key" (click)="clearPassword()">C</button>
-        <button class="number-key" (click)="addDigit(0)">0</button>
-        <button class="number-key confirm-key" (click)="exitKioskMode()">✓</button>
+
+      <div class="button-group">
+        <button class="cancel-btn" (click)="closeDialog()">Cerrar</button>
       </div>
-    </div>
-    
-    <div class="button-group">
-      <button class="cancel-btn" (click)="toggleDialog()">Cancelar</button>
-      <button class="submit-btn" *ngIf="!showPassword" (click)="promptPassword()">Salir del Catálogo</button>
+    </ng-container>
+
+    <!-- ============================== Refreshing ============================== -->
+    <ng-container *ngIf="view === 'refreshing'">
+      <h2>Actualizar catálogo</h2>
+      <div class="refresh-block">
+        <div class="spinner-large" *ngIf="!refreshError && !refreshMessage.startsWith('✅')"></div>
+        <p class="refresh-message" [class.success]="refreshMessage.startsWith('✅')">
+          {{ refreshError || refreshMessage }}
+        </p>
+      </div>
+      <div class="button-group">
+        <button class="cancel-btn" (click)="goBackToMenu()">Volver</button>
+      </div>
+    </ng-container>
+
+    <!-- ============================== Últimas ventas ============================== -->
+    <ng-container *ngIf="view === 'sales'">
+      <h2>Últimas ventas</h2>
+      <p class="subtitle" *ngIf="sales.length">{{ sales.length }} venta(s) en este totem</p>
+
+      <div class="sales-empty" *ngIf="sales.length === 0">
+        <p>No hay ventas registradas aún</p>
+      </div>
+
+      <div class="sales-list" *ngIf="sales.length > 0">
+        <div class="sale-row" *ngFor="let s of sales">
+          <button
+            type="button"
+            class="print-badge"
+            [ngClass]="s.printerStatus"
+            (click)="openSaleDetail(s)">
+            {{ printerStatusLabel(s.printerStatus) }}
+          </button>
+
+          <div class="sale-main" (click)="openSaleDetail(s)">
+            <div class="sale-header">
+              <strong>#{{ s.orderNumber }}</strong>
+              <span class="sale-date">{{ s.createdAt | date:'dd/MM HH:mm:ss' }}</span>
+            </div>
+            <div class="sale-meta">
+              <span>{{ s.itemsCount }} producto(s)</span>
+              <span class="sale-total">{{ formatPrice(s.total, s.currency) }}</span>
+            </div>
+            <div class="sale-tx" *ngIf="s.transaction">
+              <span *ngIf="s.transaction.cardBrand">{{ s.transaction.cardBrand }}</span>
+              <span *ngIf="s.transaction.last4Digits"> •••• {{ s.transaction.last4Digits }}</span>
+              <span *ngIf="s.transaction.authorizationCode"> · Auth {{ s.transaction.authorizationCode }}</span>
+            </div>
+          </div>
+
+          <div class="sale-actions">
+            <button
+              *ngIf="s.printerStatus !== 'disabled'"
+              class="reprint-btn"
+              (click)="reprintSale(s)"
+              [disabled]="reprintingId === s.id">
+              {{ reprintingId === s.id ? 'Enviando...' : 'Reimprimir' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button class="cancel-btn" (click)="goBackToMenu()">Volver al menú</button>
+      </div>
+    </ng-container>
+
+    <!-- ============================== Detalle de venta ============================== -->
+    <ng-container *ngIf="view === 'saleDetail' && selectedSale">
+      <h2>Venta #{{ selectedSale.orderNumber }}</h2>
+      <p class="subtitle">{{ selectedSale.createdAt | date:'dd/MM/yyyy HH:mm:ss' }}</p>
+
+      <div class="detail-block">
+        <div class="detail-row">
+          <span class="detail-label">Pago</span>
+          <span class="status-pill ok">✓ Aprobado</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label">Total</span>
+          <span class="detail-value strong">{{ formatPrice(selectedSale.total, selectedSale.currency) }}</span>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label">Productos</span>
+          <span class="detail-value">{{ selectedSale.itemsCount }}</span>
+        </div>
+
+        <div class="detail-row" *ngIf="selectedSale.transaction?.cardBrand">
+          <span class="detail-label">Tarjeta</span>
+          <span class="detail-value">
+            {{ selectedSale.transaction!.cardBrand }}
+            <span *ngIf="selectedSale.transaction!.last4Digits"> •••• {{ selectedSale.transaction!.last4Digits }}</span>
+          </span>
+        </div>
+
+        <div class="detail-row" *ngIf="selectedSale.transaction?.authorizationCode">
+          <span class="detail-label">Autorización</span>
+          <span class="detail-value mono">{{ selectedSale.transaction!.authorizationCode }}</span>
+        </div>
+
+        <div class="detail-row" *ngIf="selectedSale.transaction?.operationNumber">
+          <span class="detail-label">Operación</span>
+          <span class="detail-value mono">{{ selectedSale.transaction!.operationNumber }}</span>
+        </div>
+
+        <div class="detail-divider"></div>
+
+        <div class="detail-row">
+          <span class="detail-label">Impresión</span>
+          <span class="status-pill" [ngClass]="selectedSale.printerStatus">
+            {{ printerStatusLabel(selectedSale.printerStatus) }}
+          </span>
+        </div>
+
+        <div class="detail-row column" *ngIf="selectedSale.printerStatus === 'error' && selectedSale.printerMessage">
+          <span class="detail-label">Motivo</span>
+          <span class="detail-value error-text">{{ selectedSale.printerMessage }}</span>
+        </div>
+
+        <div class="detail-row column" *ngIf="selectedSale.printedAt && selectedSale.printerStatus === 'ok'">
+          <span class="detail-label">Impreso a las</span>
+          <span class="detail-value">{{ selectedSale.printedAt | date:'HH:mm:ss' }}</span>
+        </div>
+      </div>
+
+      <div class="detail-items">
+        <div class="detail-items-title">Productos</div>
+        <div class="detail-item" *ngFor="let it of selectedSale.items">
+          <span class="qty">{{ it.quantity }}×</span>
+          <span class="name">{{ it.name }}</span>
+          <span class="price">{{ formatPrice(it.price * it.quantity, selectedSale.currency) }}</span>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button class="cancel-btn" (click)="closeSaleDetail()">Volver</button>
+        <button
+          *ngIf="selectedSale.printerStatus !== 'disabled'"
+          class="reprint-btn primary"
+          (click)="reprintSale(selectedSale)"
+          [disabled]="reprintingId === selectedSale.id">
+          {{ reprintingId === selectedSale.id ? 'Enviando...' : 'Reimprimir' }}
+        </button>
+      </div>
+    </ng-container>
+
+  </div>
+
+  <!-- ============================== Prompt de inactividad ============================== -->
+  <div *ngIf="showExtendPrompt" class="extend-overlay" (click)="stopPropagation($event)">
+    <div class="extend-modal">
+      <h3>¿Sigues ahí?</h3>
+      <p>La sesión de administración se cerrará por inactividad.</p>
+      <div class="extend-actions">
+        <button class="extend-cancel" (click)="closeDialog()">Salir ahora</button>
+        <button class="extend-confirm" (click)="extendSession()">Necesito más tiempo</button>
+      </div>
     </div>
   </div>
 </div>

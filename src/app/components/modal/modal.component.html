@@ -5,7 +5,7 @@
 >
   <div class="modal-container">
     <button class="close-button" (click)="closeModal()" aria-label="Cerrar detalle">
-      <span>&times;</span>
+      <span aria-hidden="true">&times;</span>
     </button>
 
     <div class="modal-content">
@@ -21,36 +21,50 @@
 
       <div class="product-details">
         <div class="details-header">
+          <p class="product-breadcrumb" *ngIf="product.category">
+            <span class="breadcrumb-category">{{ product.category }}</span>
+            <span class="breadcrumb-tag" *ngIf="product.specialTag">· {{ product.specialTag }}</span>
+          </p>
           <h2 class="product-name">{{ product.name }}</h2>
           <p class="touch-hint">Ajusta la cantidad tocando + o -</p>
         </div>
 
         <p class="product-description" [innerHTML]="product.description"></p>
 
-        <div class="product-price">
-          <span class="current-price" [class.discounted]="product.discount">
-            {{ formatPrice(product.price) }}
-          </span>
-          <span class="original-price" *ngIf="product.originalPrice">
-            {{ formatPrice(product.originalPrice) }}
-          </span>
-        </div>
+        <div class="price-and-quantity">
+          <div class="product-price">
+            <span class="price-label">Precio unitario</span>
+            <span class="current-price" [class.discounted]="product.discount">
+              {{ formatPrice(product.price) }}
+            </span>
+            <span class="original-price" *ngIf="product.originalPrice">
+              {{ formatPrice(product.originalPrice) }}
+            </span>
+          </div>
 
-        <div class="quantity-section">
-          <span class="section-label">Cantidad</span>
-          <div class="quantity-controls">
-            <button
-              class="quantity-btn decrease"
-              (click)="decrease()"
-              [disabled]="localQuantity === 0"
-              aria-label="Disminuir cantidad"
-            >
-              <span>-</span>
-            </button>
-            <span class="quantity">{{ localQuantity }}</span>
-            <button class="quantity-btn increase" (click)="increase()" aria-label="Aumentar cantidad">
-              <span>+</span>
-            </button>
+          <div class="quantity-section">
+            <span class="section-label">Cantidad</span>
+            <div class="quantity-controls">
+              <button
+                class="quantity-btn decrease"
+                (click)="decrease()"
+                [disabled]="localQuantity === 0"
+                aria-label="Disminuir cantidad"
+              >
+                <span class="qty-text" aria-hidden="true">-</span>
+                <svg class="qty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true">
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+              </button>
+              <span class="quantity">{{ localQuantity }}</span>
+              <button class="quantity-btn increase" (click)="increase()" aria-label="Aumentar cantidad">
+                <span class="qty-text" aria-hidden="true">+</span>
+                <svg class="qty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true">
+                  <line x1="12" y1="5" x2="12" y2="19"/>
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -64,7 +78,11 @@
           class="add-to-cart-btn"
           (click)="closeModal()"
         >
-          <span class="btn-text">Listo</span>
+          <span class="btn-text btn-text-default">Listo</span>
+          <span class="btn-text btn-text-cart">
+            <span *ngIf="localQuantity > 0">Agregar {{ localQuantity }} al carrito · {{ formatPrice(product.price * localQuantity) }}</span>
+            <span *ngIf="localQuantity === 0">Agregar al carrito</span>
+          </span>
         </button>
       </div>
     </div>

@@ -2,7 +2,9 @@ export const CLIENT_CONFIG = {
   // ⭐ CAMBIAR SOLO ESTA LÍNEA POR CLIENTE - Código del catálogo
   catalogueCode: 'CAT001',
   
-  // Configuración de API
+  // Configuración de API.
+  // Producción: 'https://catalogue.favric.cl/api'
+  // Dev local : 'http://localhost:8050/api' (Docker local — comentar/descomentar antes del build).
   apiBase: 'https://catalogue.favric.cl/api',
   apiTimeout: 10000,
 

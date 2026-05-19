@@ -1,0 +1,37 @@
+// El idle ocupa todo el viewport por encima del layout del totem (sidebar, cart, etc.)
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: block;
+}
+
+.idle-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background: #000;
+  cursor: pointer;
+  z-index: 9000;
+}
+
+.background-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* =========================================================================
+   V1 MIDNIGHT — fondo solo, sin overlays sobre el video
+   ========================================================================= */
+:host-context(body.theme-v1-midnight) {
+  .idle-container {
+    background: var(--mn-bg);
+  }
+}

@@ -14,9 +14,11 @@
   'background': homeTheme.header.background,
   'padding': homeTheme.header.padding
 }">
+  <!-- Logo o nombre de la tienda -->
   <div class="store-logo" *ngIf="storeLogo">
     <img [src]="storeLogo" alt="Logo" [ngStyle]="{ 'height': homeTheme.header.logo.height }" />
   </div>
+  <div class="store-brand" *ngIf="!storeLogo">TICKETPRO</div>
 </div>
 
 <!-- Slides promocionales -->
@@ -25,17 +27,18 @@
   'background-color': homeTheme.promoSlides.backgroundColor
 }">
   <div class="slides-container">
-    <div 
-      class="slide-item" 
+    <div
+      class="slide-item"
       *ngFor="let slide of slides; let i = index"
       [class.active]="i === currentSlideIndex"
       (click)="onSlideClick(slide)">
-      <img [src]="slide.image" [alt]="slide.name" />
-      <!-- <div class="slide-content" *ngIf="slide.name || slide.description">
-        <h3>{{ slide.name }}</h3>
-        <p *ngIf="slide.description">{{ slide.description }}</p>
-        <span class="slide-btn" *ngIf="slide.button_text">{{ slide.button_text }}</span>
-      </div> -->
+      <img *ngIf="slide.image" [src]="slide.image" [alt]="slide.name" />
+      <div class="slide-content" *ngIf="slide.name || slide.description">
+        <span class="slide-badge" *ngIf="slide.description">
+          <span class="slide-badge-dot"></span>{{ slide.description }}
+        </span>
+        <h3 class="slide-headline">{{ slide.name }}</h3>
+      </div>
     </div>
   </div>
   <div class="slide-indicators" *ngIf="slides.length > 1">
@@ -182,7 +185,10 @@
             <button class="quantity-btn decrease" (click)="decreaseQuantity(product)" [ngStyle]="{
               'background-color': homeTheme.productCard.quantityControls.decreaseColor
             }">
-              <span>-</span>
+              <span class="qty-text" aria-hidden="true">-</span>
+              <svg class="qty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
             </button>
             <div class="quantity-display">
               {{ getItemQuantityInCart(product.id) }}
@@ -190,7 +196,11 @@
             <button class="quantity-btn increase" (click)="addToCart(product)" [ngStyle]="{
               'background-color': homeTheme.productCard.quantityControls.increaseColor
             }">
-              <span>+</span>
+              <span class="qty-text" aria-hidden="true">+</span>
+              <svg class="qty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
             </button>
           </div>
         </div>

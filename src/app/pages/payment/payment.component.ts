@@ -9,6 +9,8 @@ import { CartItem } from '../../models/products.model';
 import { PrinterService, ProductoTicket, TransactionInfo } from '../../services/printer.service';
 import { TransbankPagoResponse, TransbankService, TransbankState } from '../../services/transbank.service';
 import { OrderService } from '../../services/order.service';
+import { LocalSalesService, LocalSale, PrinterStatus } from '../../services/local-sales.service';
+import { TerminalAlertService } from '../../services/terminal-alert.service';
 import { CLIENT_CONFIG } from '../../../config/client.config';
 
 @Component({
@@ -36,7 +38,20 @@ export class PaymentComponent implements OnInit, OnDestroy {
   private destroyed = false;
 
   // Estado visual derivado para el template (clases CSS + título grande)
-  visualState: 'idle' | 'waiting' | 'processing' | 'cancelling' | 'cancelled' | 'approved' | 'error' = 'waiting';
+  visualState: 'idle' | 'waiting' | 'processing' | 'cancelling' | 'cancelled' | 'approved' | 'error' | 'reconnecting' = 'waiting';
+
+  // Estado de impresión visible en pantalla de aprobado
+  printerStatus: PrinterStatus = 'pending';
+  printerMessage = '';
+  reprintInFlight = false;
+  // Solicitud de atención al admin (cuando falla la impresión y el cliente lo pide)
+  attentionRequested = false;
+  attentionInFlight = false;
+  private currentSale: LocalSale | null = null;
+
+  get humanPrinterMessage(): string {
+    return this.humanizePrinterError(this.printerMessage);
+  }
 
   get storeLogo(): string {
     return this.catalogueService.getClientConfiguration()?.logo_url ||
@@ -44,19 +59,20 @@ export class PaymentComponent implements OnInit, OnDestroy {
            '';
   }
 
-  get stateClass(): 'idle' | 'waiting' | 'processing' | 'cancelling' | 'cancelled' | 'approved' | 'error' {
+  get stateClass(): 'idle' | 'waiting' | 'processing' | 'cancelling' | 'cancelled' | 'approved' | 'error' | 'reconnecting' {
     return this.visualState;
   }
 
   get stateTitle(): string {
     switch (this.visualState) {
-      case 'waiting':    return 'Acerca tu tarjeta';
-      case 'processing': return 'Procesando pago';
-      case 'cancelling': return 'Cancelando...';
-      case 'cancelled':  return 'Pago cancelado';
-      case 'approved':   return '¡Pago aprobado!';
-      case 'error':      return 'No se pudo procesar';
-      default:           return 'Pago con tarjeta';
+      case 'waiting':     return 'Acerca tu tarjeta';
+      case 'processing':  return 'Procesando pago';
+      case 'cancelling':  return 'Cancelando...';
+      case 'cancelled':   return 'Pago cancelado';
+      case 'approved':    return '¡Pago aprobado!';
+      case 'error':       return 'No se pudo procesar';
+      case 'reconnecting':return 'Reconectando con POS...';
+      default:            return 'Pago con tarjeta';
     }
   }
 
@@ -66,7 +82,9 @@ export class PaymentComponent implements OnInit, OnDestroy {
     private catalogueService: CatalogueService,
     private printerService: PrinterService,
     private transbankService: TransbankService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private localSales: LocalSalesService,
+    private terminalAlert: TerminalAlertService,
   ) {
     this.cartService.getCartTotal().subscribe(total => (this.cartTotal = total));
     this.cartService.getCartItems().subscribe(items => {
@@ -172,14 +190,102 @@ export class PaymentComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Reintenta la venta tras un error recuperable (lectura de tarjeta fallida,
-   * timeout, cancelación). Usa un ticket nuevo para evitar colisiones en el POS.
+   * Reintenta la venta tras un error recuperable.
+   *
+   * Antes de iniciar un nuevo /pagar, **cancela la transacción anterior del POS
+   * y espera a que vuelva al estado IDLE**. Sin esto, si el POS sigue
+   * esperando tarjeta o clave de la transacción previa, el nuevo /pagar
+   * devuelve "ACK has not been received in 2000 ms" + 500.
    */
-  retryCardPayment(): void {
+  async retryCardPayment(): Promise<void> {
     this.clearPaymentTimers();
     this.stopStatusPolling();
     this.lastTransaction = null;
+
+    // Modo simulado: no hay POS real, simplemente reiniciar.
+    if (this.bypassPaxForTesting) {
+      this.startCardPayment();
+      return;
+    }
+
+    this.visualState = 'reconnecting';
+    this.paymentStatusMessage = 'Cancelando transacción anterior en el POS...';
+
+    try {
+      await this.cancelAnyInFlightTransaction();
+    } catch (err) {
+      console.error('[Transbank] retry/cancelar falló:', err);
+      // Aunque la cancelación falle, igual intentamos esperar IDLE.
+    }
+
+    this.paymentStatusMessage = 'Verificando estado del terminal...';
+    const ok = await this.waitForPosIdle(8);
+
+    if (this.destroyed) return;
+
+    if (!ok) {
+      this.visualState = 'error';
+      this.paymentStatusMessage =
+        'El terminal POS sigue ocupado. Presiona el botón ROJO del POS para liberarlo y reintenta.';
+      return;
+    }
+
+    // POS libre → iniciar pago nuevo
     this.startCardPayment();
+  }
+
+  /** Pide al servicio cancelar la transacción del POS (si hubiera). */
+  private cancelAnyInFlightTransaction(): Promise<void> {
+    return new Promise((resolve) => {
+      this.transbankService.cancelar().subscribe({
+        next: () => resolve(),
+        error: () => resolve(), // si no había qué cancelar, igual seguimos
+      });
+    });
+  }
+
+  /**
+   * Hace polling al endpoint /estado del POS hasta que reporte IDLE o se agoten
+   * los intentos. Retorna true si quedó IDLE, false en otro caso.
+   */
+  private waitForPosIdle(maxAttempts: number): Promise<boolean> {
+    return new Promise((resolve) => {
+      let attempts = 0;
+
+      const tick = () => {
+        if (this.destroyed) {
+          resolve(false);
+          return;
+        }
+        attempts++;
+        this.transbankService.estado().subscribe({
+          next: (estado) => {
+            if (this.destroyed) {
+              resolve(false);
+              return;
+            }
+            const idle = estado.state === 'IDLE' || !estado.isTransactionInProgress;
+            if (idle) {
+              resolve(true);
+            } else if (attempts >= maxAttempts) {
+              resolve(false);
+            } else {
+              this.paymentStatusMessage = `Esperando que el POS termine (${estado.message || estado.state})...`;
+              setTimeout(tick, 1000);
+            }
+          },
+          error: () => {
+            if (attempts >= maxAttempts) {
+              resolve(false);
+            } else {
+              setTimeout(tick, 1200);
+            }
+          },
+        });
+      };
+
+      tick();
+    });
   }
 
   private runSimulatedPayment(): void {
@@ -198,7 +304,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
       this.orderNumber = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
       setTimeout(() => {
         this.cartService.clearCart();
-        this.router.navigate(['/home']);
+        this.router.navigate(['/welcome']);
       }, 1500);
     }, 3000);
   }
@@ -260,6 +366,16 @@ export class PaymentComponent implements OnInit, OnDestroy {
 
         console.error('[Transbank] Error en /pagar:', err);
         const errMsg = err?.error?.message || err?.message || 'No se pudo conectar con el terminal Transbank';
+
+        // Defensa en profundidad: el POS puede haber recibido la solicitud y
+        // seguir en vuelo (esperando tarjeta/clave) aunque el servicio Node
+        // haya respondido error/timeout. Enviamos cancelación silenciosa para
+        // que no quede pegado. Si no había transacción, el POS la ignora.
+        this.transbankService.cancelar().subscribe({
+          next: () => console.log('[Transbank] Cancelación preventiva enviada tras error /pagar'),
+          error: () => { /* noop: best effort */ },
+        });
+
         this.handleFailedPayment('ERROR', errMsg, null);
       }
     });
@@ -310,7 +426,7 @@ export class PaymentComponent implements OnInit, OnDestroy {
 
   private handleFailedPayment(state: TransbankState, message: string, tx: TransbankPagoResponse | null): void {
     this.visualState = 'error';
-    this.paymentStatusMessage = message || 'No se pudo procesar el pago. Intenta nuevamente.';
+    this.paymentStatusMessage = this.humanizePosError(message);
     // No auto-redirigimos: el usuario decide entre Reintentar o Cancelar.
     // processingPayment se mantiene en true para seguir mostrando el card de proceso.
 
@@ -356,11 +472,23 @@ export class PaymentComponent implements OnInit, OnDestroy {
     this.orderNumber = orderNumber;
     this.paymentStatusMessage = `Pedido #${orderNumber} confirmado`;
 
+    // Registrar venta local para consulta posterior desde el menú escondido.
+    const printerEnabled = CLIENT_CONFIG.features.printReceipts;
+    this.currentSale = this.localSales.recordSale({
+      orderNumber,
+      total: this.cartTotal,
+      currency,
+      items: this.cartItems,
+      transaction: tx ? this.buildTransactionInfo(tx) : null,
+      printerStatus: printerEnabled ? 'pending' : 'disabled',
+    });
+    this.printerStatus = this.currentSale.printerStatus;
+
     // Imprimir voucher en background (si está habilitado)
-    if (CLIENT_CONFIG.features.printReceipts) {
+    if (printerEnabled) {
       this.paymentStatusMessage = `Imprimiendo voucher · Pedido #${orderNumber}`;
+      this.sendVoucherToPrinter(orderNumber, tx);
     }
-    this.sendVoucherToPrinter(orderNumber, tx);
 
     localStorage.setItem(this.REFRESH_AFTER_PURCHASE_FLAG, '1');
     this.catalogueService.refreshCatalogue()
@@ -371,12 +499,100 @@ export class PaymentComponent implements OnInit, OnDestroy {
 
     this.orderService.retryPending().catch(() => { /* noop */ });
 
-    // Mantener la pantalla de "Aprobado" 2.5s para que el cliente vea la confirmación.
-    this.statusTimeout = setTimeout(() => {
-      this.processingPayment = false;
-      this.cartService.clearCart();
-      this.router.navigate(['/home']);
-    }, 2500);
+    // El cliente decide cuándo volver (botones "Ir al inicio" / "Comprar otra vez").
+    // El carrito se limpia al confirmar la salida.
+  }
+
+  goHome(): void {
+    this.clearPaymentTimers();
+    this.stopStatusPolling();
+    this.processingPayment = false;
+    this.cartService.clearCart();
+    this.router.navigate(['/welcome']);
+  }
+
+  buyAgain(): void {
+    this.clearPaymentTimers();
+    this.stopStatusPolling();
+    this.processingPayment = false;
+    this.cartService.clearCart();
+    this.router.navigate(['/catalogue']);
+  }
+
+  retryPrint(): void {
+    if (!this.currentSale || this.reprintInFlight) return;
+    if (!CLIENT_CONFIG.features.printReceipts) return;
+
+    this.reprintInFlight = true;
+    this.printerStatus = 'pending';
+    this.printerMessage = '';
+    // Si el reintento funciona, el cliente quizás ya no necesita asistencia.
+    this.attentionRequested = false;
+
+    const productos: ProductoTicket[] = this.currentSale.items.map((it) => ({
+      nombre: it.name,
+      cantidad: it.quantity,
+      precio: it.price,
+    }));
+
+    this.printerService.imprimirTicket(
+      productos,
+      undefined,
+      this.currentSale.orderNumber,
+      this.currentSale.transaction || undefined,
+    ).subscribe({
+      next: (response) => {
+        this.reprintInFlight = false;
+        if (response.resultado === 'ok') {
+          this.printerStatus = 'ok';
+          this.localSales.markPrinted(this.currentSale!.id);
+        } else {
+          this.printerStatus = 'error';
+          this.printerMessage = response.mensaje || 'La impresora respondió con error';
+          this.localSales.markPrintError(this.currentSale!.id, response.mensaje);
+        }
+      },
+      error: (err) => {
+        this.reprintInFlight = false;
+        this.printerStatus = 'error';
+        this.printerMessage = err?.error?.mensaje || err?.message || 'No se pudo conectar a la impresora';
+        this.localSales.markPrintError(this.currentSale!.id, this.printerMessage);
+      },
+    });
+  }
+
+  async requestAttention(): Promise<void> {
+    if (this.attentionInFlight || this.attentionRequested) return;
+    this.attentionInFlight = true;
+    const orderNumber = this.currentSale?.orderNumber || this.orderNumber || '—';
+    const message =
+      `Pedido #${orderNumber} pagado pero el voucher no se imprimió. ` +
+      `Motivo técnico: ${this.printerMessage || 'sin detalle'}.`;
+    try {
+      await this.terminalAlert.raise(message);
+      this.attentionRequested = true;
+    } catch (err) {
+      console.error('[Payment] No se pudo enviar la alerta:', err);
+      // Intento de reintento posible — el botón vuelve a quedar disponible
+      this.attentionRequested = false;
+    } finally {
+      this.attentionInFlight = false;
+    }
+  }
+
+  private buildTransactionInfo(tx: TransbankPagoResponse): TransactionInfo {
+    return {
+      authorizationCode: tx.authorizationCode,
+      operationNumber: tx.operationId,
+      terminalId: tx.terminalId,
+      commerceCode: tx.commerceCode,
+      cardBrand: tx.cardBrand,
+      cardType: tx.cardType,
+      last4Digits: tx.last4Digits,
+      realDate: tx.realDate,
+      realTime: tx.realTime,
+      ticket: tx.ticket,
+    };
   }
 
   private clearPaymentTimers(): void {
@@ -394,6 +610,8 @@ export class PaymentComponent implements OnInit, OnDestroy {
   private sendVoucherToPrinter(orderNumber: string, tx?: TransbankPagoResponse): void {
     if (!CLIENT_CONFIG.features.printReceipts) {
       console.log(`[Printer] Impresión deshabilitada (printReceipts=false). Pedido #${orderNumber} NO se enviará.`);
+      this.printerStatus = 'disabled';
+      if (this.currentSale) this.localSales.markPrintDisabled(this.currentSale.id);
       return;
     }
 
@@ -403,32 +621,90 @@ export class PaymentComponent implements OnInit, OnDestroy {
       precio: item.product.price
     }));
 
-    const transactionInfo: TransactionInfo | undefined = tx ? {
-      authorizationCode: tx.authorizationCode,
-      operationNumber: tx.operationId,
-      terminalId: tx.terminalId,
-      commerceCode: tx.commerceCode,
-      cardBrand: tx.cardBrand,
-      cardType: tx.cardType,
-      last4Digits: tx.last4Digits,
-      realDate: tx.realDate,
-      realTime: tx.realTime,
-      ticket: tx.ticket,
-    } : undefined;
+    const transactionInfo: TransactionInfo | undefined = tx ? this.buildTransactionInfo(tx) : undefined;
 
     console.log(`[Printer] Enviando voucher pedido #${orderNumber} a ${productos.length} líneas...`);
+    this.printerStatus = 'pending';
     this.printerService.imprimirTicket(productos, undefined, orderNumber, transactionInfo).subscribe({
       next: response => {
         if (response.resultado === 'ok') {
           console.log(`[Printer] ✅ Voucher impreso. Pedido #${orderNumber}`);
+          this.printerStatus = 'ok';
+          if (this.currentSale) this.localSales.markPrinted(this.currentSale.id);
           return;
         }
         console.error(`[Printer] ❌ El plugin respondió con error al imprimir pedido #${orderNumber}:`, response.mensaje);
+        this.printerStatus = 'error';
+        this.printerMessage = response.mensaje || 'La impresora respondió con error';
+        if (this.currentSale) this.localSales.markPrintError(this.currentSale.id, response.mensaje);
       },
       error: error => {
         console.error(`[Printer] ❌ Falló el envío del voucher para pedido #${orderNumber}:`, error);
+        this.printerStatus = 'error';
+        this.printerMessage = error?.error?.mensaje || error?.message || 'No se pudo conectar a la impresora';
+        if (this.currentSale) this.localSales.markPrintError(this.currentSale.id, this.printerMessage);
       }
     });
+  }
+
+  /**
+   * Convierte errores técnicos de la impresora en mensajes amistosos.
+   * El cliente está parado frente al totem; no debería leer URLs ni stack traces.
+   */
+  private humanizePrinterError(raw: string): string {
+    if (!raw) return 'No se pudo imprimir el voucher. Solicita ayuda al personal.';
+    const m = String(raw).toLowerCase();
+
+    if (m.includes('http failure') || m.includes('unknown error') || m.includes('0 unknown') ||
+        m.includes('econn') || m.includes('refused') || m.includes('failed to fetch')) {
+      return 'La impresora no respondió. Solicita ayuda al personal para retirar tu voucher.';
+    }
+    if (m.includes('timeout') || m.includes('time out')) {
+      return 'La impresora tardó demasiado en responder. Solicita ayuda al personal.';
+    }
+    if (m.includes('papel') || m.includes('paper')) {
+      return 'Sin papel en la impresora. Solicita ayuda al personal.';
+    }
+    if (m.includes('not found') || m.includes('404')) {
+      return 'Servicio de impresión no disponible. Solicita ayuda al personal.';
+    }
+    if (m.includes('500') || m.includes('internal server')) {
+      return 'La impresora reportó un error interno. Solicita ayuda al personal.';
+    }
+    // Fallback genérico SIN mostrar URLs ni códigos técnicos
+    return 'No se pudo imprimir el voucher. Solicita ayuda al personal para que te lo entreguen.';
+  }
+
+  /**
+   * Convierte errores técnicos del POS / servicio en mensajes amistosos
+   * para el cliente que está mirando el totem.
+   */
+  private humanizePosError(raw: string): string {
+    if (!raw) return 'No se pudo procesar el pago. Intenta nuevamente.';
+    const m = String(raw).toLowerCase();
+
+    if (m.includes('ack has not been received')) {
+      return 'El terminal POS no respondió a tiempo. Vamos a intentarlo nuevamente.';
+    }
+    if (m.includes('internal server error') || m.includes('http failure') || m.includes('status: 500')) {
+      return 'El terminal POS reportó un error interno. Reintenta el pago.';
+    }
+    if (m.includes('econn') || m.includes('network') || m.includes('failed to fetch')) {
+      return 'Sin conexión con el servicio del POS. Verifica el cable y reintenta.';
+    }
+    if (m.includes('busy') || m.includes('in progress') || m.includes('en curso')) {
+      return 'El POS tiene otra transacción en curso. Espera unos segundos o presiona ROJO en el POS.';
+    }
+    if (m.includes('cancel')) {
+      return 'Pago cancelado en el POS.';
+    }
+    if (m.includes('tarjeta') || m.includes('card')) {
+      return 'No se pudo leer la tarjeta. Inténtalo nuevamente.';
+    }
+    if (m.includes('saldo') || m.includes('rechaz')) {
+      return 'Pago rechazado por el banco. Prueba con otra tarjeta.';
+    }
+    return raw; // fallback: mensaje original
   }
 
   ngOnDestroy(): void {

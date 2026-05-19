@@ -18,7 +18,11 @@ export class ThemeService {
   }
 
   /**
-   * Carga la metadata del tema desde la API
+   * Carga la metadata del tema desde la API.
+   *
+   * El esquema canónico es `metadata.theme = { global, welcome, home, ... }`
+   * (post-migración 0013). Para clientes que aún no fueron migrados se acepta
+   * el esquema plano viejo (claves de theme en la raíz) como fallback.
    */
   loadFromAPIMetadata(metadata: Record<string, any> | undefined): void {
     if (!metadata) {
@@ -26,13 +30,17 @@ export class ThemeService {
       return;
     }
 
-    this.apiMetadata = metadata as Partial<ThemeConfig>;
+    const themePayload = (metadata['theme'] && typeof metadata['theme'] === 'object')
+      ? metadata['theme']
+      : metadata;
+
+    this.apiMetadata = themePayload as Partial<ThemeConfig>;
     const currentTheme = themeConfig as ThemeConfig;
-    const mergedTheme = this.deepMerge(currentTheme, metadata);
+    const mergedTheme = this.deepMerge(currentTheme, themePayload);
     this.themeSubject.next(mergedTheme as ThemeConfig);
     this.applyGlobalCSSVariables();
-    
-    console.log('🎨 Theme metadata loaded from API:', Object.keys(metadata));
+
+    console.log('🎨 Theme metadata loaded from API:', Object.keys(themePayload));
   }
 
   getTheme(): ThemeConfig {

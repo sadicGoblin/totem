@@ -42,7 +42,10 @@ let keysLoaded = false;
 let pollIntervalId = null;
 let heartbeatIntervalId = null;
 let lastPollAt = null;
-let lastStateMessage = null;
+// Mensaje informativo sobre el último cambio relevante. Se envía en el heartbeat
+// y aparece en el admin debajo del estado. Se inicializa con algo útil para que
+// el primer heartbeat sobrescriba mensajes viejos guardados (ej. "Servicio detenido").
+let lastStateMessage = 'Servicio iniciando';
 
 // Configuración del heartbeat al backend
 const SERVICE_VERSION = '1.0.0';
@@ -51,6 +54,13 @@ const HEARTBEAT_CATALOGUE_CODE = process.env.CATALOGUE_CODE || 'CAT001';
 const HEARTBEAT_TERMINAL_CODE = process.env.TERMINAL_CODE || 'TOTEM-01';
 const HEARTBEAT_INTERVAL_MS = parseInt(process.env.HEARTBEAT_INTERVAL_MS || '60000', 10); // 1 min
 const HEARTBEAT_ENABLED = (process.env.HEARTBEAT_ENABLED || 'true').toLowerCase() !== 'false';
+
+// Monitor de conexión al POS — corre siempre en background.
+// Si el POS no está conectado y no hay transacción en curso, intenta conectar.
+// Si la conexión se perdió, intenta reconectar.
+const POS_MONITOR_INTERVAL_MS = parseInt(process.env.POS_MONITOR_INTERVAL_MS || '15000', 10); // 15s
+let posMonitorIntervalId = null;
+let connectAttemptInFlight = false;
 
 // Estados posibles
 const STATES = {
@@ -173,6 +183,100 @@ function stopHeartbeat() {
     if (heartbeatIntervalId) {
         clearInterval(heartbeatIntervalId);
         heartbeatIntervalId = null;
+    }
+}
+
+// ==================== Monitor de conexión POS ====================
+
+/**
+ * Estados del POS donde NO debemos tocar la conexión (transacción en curso).
+ */
+function isBusyState() {
+    return currentState !== 'IDLE' &&
+           currentState !== 'OFFLINE' &&
+           currentState !== 'APROBADO' &&
+           currentState !== 'RECHAZADO' &&
+           currentState !== 'ERROR' &&
+           currentState !== 'CANCELADO';
+}
+
+/**
+ * Intenta auto-conectarse al POS y cargar las llaves TMS.
+ * Retorna true si quedó conectado, false en otro caso.
+ * Es idempotente: si ya está conectado, retorna true sin hacer nada.
+ */
+async function tryAutoConnect() {
+    if (isConnected) return true;
+    if (connectAttemptInFlight) {
+        log('⏳', 'Intento de conexión ya en curso, omitiendo');
+        return false;
+    }
+    if (isBusyState()) {
+        log('⏭️', `Conexión omitida — estado actual: ${currentState}`);
+        return false;
+    }
+
+    connectAttemptInFlight = true;
+    try {
+        log('🔍', 'Buscando POS en puertos disponibles...');
+        lastStateMessage = 'Buscando POS...';
+        const port = await pos.autoconnect();
+        if (port === false) {
+            log('⚠️', 'No se encontró POS. Reintentaré en background.');
+            lastStateMessage = 'POS no detectado, reintentando';
+            return false;
+        }
+        isConnected = true;
+        connectedPort = port.path;
+        lastStateMessage = `Conectado a ${connectedPort}`;
+        log('✅', `Conectado al POS en ${connectedPort}`);
+
+        if (!keysLoaded) {
+            await autoLoadKeys();
+            await new Promise(resolve => setTimeout(resolve, 1500));
+        }
+
+        startAutoPoll();
+        // Heartbeat inmediato para que el admin actualice sin esperar 60s.
+        sendHeartbeat();
+        return true;
+    } catch (err) {
+        log('❌', 'Error en conexión automática:', err.message);
+        lastStateMessage = `Error al conectar: ${err.message || 'desconocido'}`;
+        // En caso de excepción asumimos que la conexión no quedó válida
+        isConnected = false;
+        connectedPort = null;
+        return false;
+    } finally {
+        connectAttemptInFlight = false;
+    }
+}
+
+/**
+ * Arranca el monitor de conexión POS. Corre cada POS_MONITOR_INTERVAL_MS y:
+ *   - Si NO está conectado y NO hay transacción en curso → intenta conectar.
+ *   - Si SÍ está conectado, no hace nada (la lógica de pérdida la maneja el SDK
+ *     marcando isConnected=false desde otros handlers).
+ *
+ * Esto reemplaza el viejo scheduleAutoConnect(): un solo loop que vive desde
+ * el arranque del servicio hasta el shutdown.
+ */
+function startPosMonitor() {
+    if (posMonitorIntervalId) clearInterval(posMonitorIntervalId);
+    log('🛰️', `Monitor de conexión POS activado cada ${POS_MONITOR_INTERVAL_MS / 1000}s`);
+
+    posMonitorIntervalId = setInterval(() => {
+        if (isConnected) return;
+        if (isBusyState()) return;
+        // Fire and forget — los errores se logean dentro de tryAutoConnect
+        tryAutoConnect();
+    }, POS_MONITOR_INTERVAL_MS);
+}
+
+function stopPosMonitor() {
+    if (posMonitorIntervalId) {
+        clearInterval(posMonitorIntervalId);
+        posMonitorIntervalId = null;
     }
 }
 
@@ -685,10 +789,10 @@ app.get('/api/transbank/ultima-venta', async (req, res) => {
 app.listen(PORT, () => {
     console.log('');
     console.log('╔════════════════════════════════════════════════════════════╗');
-    console.log('║     🏦 TRANSBANK POS SERVICE (Node.js)                     ║');
+    console.log('║     🏦 TRANSBANK POS SERVICE (Node.js)                      ║');
     console.log('╠════════════════════════════════════════════════════════════╣');
-    console.log(`║  🌐 Servidor corriendo en: http://localhost:${PORT}          ║`);
-    console.log('║  📡 Endpoints disponibles:                                 ║');
+    console.log(`║  🌐 Servidor corriendo en: http://localhost:${PORT}            ║`);
+    console.log('║  📡 Endpoints disponibles:                                  ║');
     console.log('║     GET  /api/transbank/health                             ║');
     console.log('║     GET  /api/transbank/diagnostico                        ║');
     console.log('║     GET  /api/transbank/estado                             ║');
@@ -699,12 +803,15 @@ app.listen(PORT, () => {
     console.log('║     POST /api/transbank/cerrar-dia                         ║');
     console.log('╚════════════════════════════════════════════════════════════╝');
     console.log('');
-    console.log('⏳ Esperando conexiones...');
-    console.log('💡 Tip: Ejecuta POST /api/transbank/conectar para autoconectar al POS');
+    console.log('🔌 Auto-conexión al POS habilitada — buscando puerto...');
     console.log('');
 
     // Iniciar el heartbeat al backend
     startHeartbeat();
+
+    // Primer intento inmediato + monitor permanente en background.
+    tryAutoConnect();
+    startPosMonitor();
 });
 
 // Apagado limpio: avisa al backend que estamos OFFLINE antes de morir.
@@ -712,6 +819,7 @@ async function gracefulShutdown(signal) {
     log('🛑', `Señal ${signal} recibida — apagando...`);
     stopHeartbeat();
     stopAutoPoll();
+    stopPosMonitor();
 
     // Marcar al terminal como OFFLINE en el backend para que el admin lo vea
     // de inmediato sin tener que esperar el timeout del heartbeat.

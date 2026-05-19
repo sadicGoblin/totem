@@ -160,10 +160,30 @@ export interface ClientConfiguration {
   logo_url?: string;
   favicon_url?: string;
   metadata?: Record<string, any>;
+  theme_version?: ThemeVersion;
+  // Sugerencia/upsell configurable desde admin
+  upsell_enabled?: boolean;
+  upsell_product?: number | null;
+  upsell_product_detail?: UpsellProductDetail | null;
+  upsell_title?: string;
+  upsell_description?: string;
+  upsell_price?: number | null;
+  upsell_cta_label?: string;
   is_active: boolean;
   created: string;
   modified: string;
 }
+
+export interface UpsellProductDetail {
+  id: number;
+  name: string;
+  sku?: string | null;
+  price: number | null;
+  image: string | null;
+  short_description?: string | null;
+}
+
+export type ThemeVersion = 'classic' | 'v1-midnight' | 'v2-neon' | 'v3-vip' | 'v4-aurora';
 
 export interface PlaylistVideo {
   id: number;
@@ -425,6 +445,9 @@ export class CatalogueService {
     // Aplicar variables CSS
     this.applyCssVariables();
 
+    // Aplicar versión de diseño (clase global + data-attribute)
+    this.applyThemeVersion(config.theme_version);
+
     // Cargar metadata del tema si existe
     if (config.metadata) {
       this.themeService.loadFromAPIMetadata(config.metadata);
@@ -434,8 +457,27 @@ export class CatalogueService {
       primaryColor: CLIENT_CONFIG.branding.primaryColor,
       secondaryColor: CLIENT_CONFIG.branding.secondaryColor,
       storeName: CLIENT_CONFIG.branding.storeName,
+      themeVersion: config.theme_version || 'classic',
       hasMetadata: !!config.metadata
     });
+  }
+
+  /**
+   * Aplica la versión de diseño activa como data-attribute en <html>
+   * y clase global en <body>. Cada componente puede reaccionar con
+   * :host-context(.theme-<version>) { ... } en su SCSS.
+   */
+  private applyThemeVersion(version: ThemeVersion | undefined): void {
+    const active: ThemeVersion = version || 'classic';
+    const html = document.documentElement;
+    const body = document.body;
+
+    html.setAttribute('data-theme-version', active);
+
+    // Limpia clases theme-* previas, agrega la nueva
+    const supportedVersions: ThemeVersion[] = ['classic', 'v1-midnight', 'v2-neon', 'v3-vip', 'v4-aurora'];
+    supportedVersions.forEach(v => body.classList.remove(`theme-${v}`));
+    body.classList.add(`theme-${active}`);
   }
 
   /**
@@ -633,17 +675,21 @@ export class CatalogueService {
   }
 
   /**
-   * Obtiene un valor de metadata con un valor por defecto
-   * @param key Clave en formato dot notation (ej: 'texts.category_title')
-   * @param defaultValue Valor por defecto si no existe
+   * Obtiene un valor de metadata con un valor por defecto.
+   *
+   * - Navega `key` en notación dot (ej: 'texts.welcome.subtitle').
+   * - Si el valor encontrado tiene un tipo distinto del default (ej. esperabas string
+   *   y el JSON tiene un objeto), devuelve el default. Esto evita que un error de
+   *   schema en el metadata produzca `[object Object]` interpolado en el UI.
+   * - Para defaults `undefined`/`null` no se valida tipo (el caller asume el riesgo).
    */
   getMetadata<T>(key: string, defaultValue: T): T {
     const metadata = this.catalogueData?.client_configuration?.metadata;
     if (!metadata) return defaultValue;
-    
+
     const keys = key.split('.');
     let value: any = metadata;
-    
+
     for (const k of keys) {
       if (value && typeof value === 'object' && k in value) {
         value = value[k];
@@ -651,7 +697,14 @@ export class CatalogueService {
         return defaultValue;
       }
     }
-    
-    return value as T ?? defaultValue;
+
+    if (value === undefined || value === null) return defaultValue;
+
+    if (defaultValue !== undefined && defaultValue !== null && typeof value !== typeof defaultValue) {
+      console.warn(`⚠️ getMetadata('${key}') esperaba ${typeof defaultValue} pero metadata tiene ${typeof value}; usando default.`);
+      return defaultValue;
+    }
+
+    return value as T;
   }
 }

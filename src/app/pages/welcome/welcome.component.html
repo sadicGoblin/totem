@@ -1,17 +1,33 @@
-<div class="welcome-container" (click)="navigateToCatalog()">
-  <!-- Video de fondo dinámico desde playlist -->
-  <video 
-    #videoPlayer
-    autoplay 
-    muted 
-    playsinline 
-    preload="auto"
-    class="background-video"
-    [src]="currentVideoUrl"
-    (ended)="onVideoEnded()"
-    (canplay)="onVideoCanPlay()"
-    (error)="onVideoError()">
-    <!-- Mensaje de fallback si el navegador no soporta video -->
-    Tu navegador no soporta videos HTML5.
-  </video>
+<div class="welcome-screen" (click)="navigateToHome()">
+
+  <!-- Header con logo / nombre -->
+  <header class="welcome-header">
+    <ng-container *ngIf="storeLogo; else nameOnly">
+      <img class="welcome-logo" [src]="storeLogo" [alt]="storeName" />
+    </ng-container>
+    <ng-template #nameOnly>
+      <span class="welcome-brand">{{ storeName }}</span>
+    </ng-template>
+  </header>
+
+  <!-- Bloque central: estado, headline, subtítulo -->
+  <main class="welcome-body">
+    <div class="status-badge">
+      <span class="status-dot"></span>
+      <span class="status-text">{{ statusLabel }} · {{ currentTime }}</span>
+    </div>
+
+    <h1 class="welcome-headline">{{ tagline }}</h1>
+
+    <p class="welcome-subtitle">{{ subtitle }}</p>
+  </main>
+
+  <!-- Footer con CTA -->
+  <footer class="welcome-footer">
+    <button class="welcome-cta" type="button">
+      <span class="cta-text">{{ ctaLabel }}</span>
+      <span class="cta-arrow">→</span>
+    </button>
+  </footer>
+
 </div>

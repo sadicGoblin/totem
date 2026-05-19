@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap');
+
 :root {
   --primary-color: #2997db;
   --secondary-color: #1054da;
@@ -10,6 +12,54 @@ html {
   margin: 0;
   padding: 0;
   font-family: 'Poppins', sans-serif;
-
 }
 
+/* =========================================================================
+   V1 MIDNIGHT — tokens globales
+   Activados cuando ClientConfiguration.theme_version === 'v1-midnight'.
+   Aplicado por catalogue.service.ts → applyThemeVersion() como clase en <body>.
+   Componentes reaccionan con :host-context(body.theme-v1-midnight) { ... }
+   ========================================================================= */
+body.theme-v1-midnight {
+  /* Paleta */
+  --mn-bg:           #0A0E14;
+  --mn-surface:      #131A23;
+  --mn-surface-hi:   #1B2533;
+  --mn-border:       rgba(255, 255, 255, 0.08);
+  --mn-border-strong:rgba(255, 255, 255, 0.14);
+  --mn-text:         #F2F6FB;
+  --mn-dim:          #8A98AB;
+  --mn-primary:      #3BA8F0;
+  --mn-primary-deep: #1054DA;
+  --mn-accent:       #5EE6D0;
+  --mn-danger:       #FF6B6B;
+
+  /* Tipografía */
+  --mn-font-display: 'Space Grotesk', system-ui, sans-serif;
+  --mn-font-ui:      'Inter', system-ui, sans-serif;
+
+  /* Capas / formas */
+  --mn-radius-card:   28px;
+  --mn-radius-button: 22px;
+  --mn-radius-pill:   999px;
+  --mn-radius-input:  16px;
+
+  /* Sombras / glows */
+  --mn-shadow-sheet:  0 30px 80px -10px rgba(0, 0, 0, 0.7);
+  --mn-shadow-button: 0 14px 36px -10px var(--mn-primary);
+  --mn-glow-cta:      0 0 24px -4px rgba(59, 168, 240, 0.5);
+
+  background: var(--mn-bg);
+  color: var(--mn-text);
+  font-family: var(--mn-font-ui);
+
+  /* Glow ambiente — "luces de pista" */
+  background-image:
+    radial-gradient(900px 700px at 10% -5%,  rgba(59, 168, 240, 0.18), transparent 60%),
+    radial-gradient(700px 500px at 110% 100%, rgba(94, 230, 208, 0.10), transparent 60%),
+    radial-gradient(1200px 800px at 50% 50%, rgba(16, 84, 218, 0.05),  transparent 70%);
+  background-attachment: fixed;
+
+  /* Numerales tabulares para precios, contadores y totales */
+  font-feature-settings: 'tnum' 1, 'ss01' 1;
+}

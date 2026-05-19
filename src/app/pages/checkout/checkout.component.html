@@ -102,6 +102,22 @@
           <div class="empty-message">Tu carrito está vacío</div>
           <button class="continue-btn" (click)="goToCategory()">Volver a comprar</button>
         </div>
+
+        <!-- Tarjeta de sugerencia (upsell) configurable desde admin -->
+        <div class="upsell-card" *ngIf="shouldShowUpsell">
+          <div class="upsell-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2l2.39 4.84L20 7.65l-4 3.91.94 5.5L12 14.5l-4.94 2.56L8 11.56 4 7.65l5.61-.81L12 2z"/>
+            </svg>
+          </div>
+          <div class="upsell-body">
+            <div class="upsell-title">{{ upsellTitle }}</div>
+            <div class="upsell-description" *ngIf="upsellDescription">{{ upsellDescription }}</div>
+          </div>
+          <button class="upsell-cta" (click)="addUpsellToCart()" type="button">
+            {{ upsellCtaLabel }}
+          </button>
+        </div>
       </div>
 
     </div>

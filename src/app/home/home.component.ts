@@ -73,7 +73,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Scroll al inicio de la página
     window.scrollTo(0, 0);
-    
+
     // Cargar datos desde el catálogo
     this.loadProducts();
     this.loadCategories();

@@ -54,6 +54,13 @@
           </svg>
         </div>
 
+        <!-- Reconectando con POS (retry safe) -->
+        <div *ngSwitchCase="'reconnecting'" class="spinner-illustration reconnecting">
+          <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="30" cy="30" r="24" fill="none" stroke-width="5"/>
+          </svg>
+        </div>
+
         <!-- Cancelado (terminal) -->
         <div *ngSwitchCase="'cancelled'" class="status-illustration cancelled">
           <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
@@ -94,6 +101,16 @@
     <div class="text-block">
       <h2 class="state-title">{{ stateTitle }}</h2>
       <p class="state-message">{{ paymentStatusMessage }}</p>
+
+      <!-- Estado de impresión cuando ya está aprobado -->
+      <div *ngIf="stateClass === 'approved'" class="printer-status" [ngClass]="printerStatus">
+        <ng-container [ngSwitch]="printerStatus">
+          <span *ngSwitchCase="'pending'">Imprimiendo voucher...</span>
+          <span *ngSwitchCase="'ok'">Voucher impreso correctamente</span>
+          <span *ngSwitchCase="'error'">{{ humanPrinterMessage }}</span>
+          <span *ngSwitchCase="'disabled'">Impresión deshabilitada</span>
+        </ng-container>
+      </div>
     </div>
 
     <!-- Acciones -->
@@ -102,6 +119,11 @@
       <!-- Cancelando: sin botones, sólo nota -->
       <ng-container *ngIf="stateClass === 'cancelling'">
         <span class="actions-hint">Esperando confirmación del POS...</span>
+      </ng-container>
+
+      <!-- Reconectando: sin botones, solo nota informativa -->
+      <ng-container *ngIf="stateClass === 'reconnecting'">
+        <span class="actions-hint">Espera unos segundos...</span>
       </ng-container>
 
       <!-- Estados terminales recuperables: REINTENTAR + VOLVER -->
@@ -118,6 +140,33 @@
       <ng-container *ngIf="stateClass === 'waiting' || stateClass === 'processing' || stateClass === 'idle'">
         <button class="cancel-payment-btn" (click)="cancelCardPayment()">
           CANCELAR
+        </button>
+      </ng-container>
+
+      <!-- Pago aprobado: botones manuales para que el cliente decida -->
+      <ng-container *ngIf="stateClass === 'approved'">
+        <button
+          *ngIf="printerStatus === 'error'"
+          class="retry-print-btn"
+          (click)="retryPrint()"
+          [disabled]="reprintInFlight">
+          {{ reprintInFlight ? 'REINTENTANDO...' : 'REINTENTAR IMPRESIÓN' }}
+        </button>
+        <button
+          *ngIf="printerStatus === 'error' && !attentionRequested"
+          class="alert-btn"
+          (click)="requestAttention()"
+          [disabled]="attentionInFlight">
+          {{ attentionInFlight ? 'AVISANDO...' : 'SOLICITAR ATENCIÓN' }}
+        </button>
+        <span *ngIf="attentionRequested" class="alert-sent">
+          Un administrador fue notificado
+        </span>
+        <button class="buy-again-btn" (click)="buyAgain()">
+          COMPRAR DE NUEVO
+        </button>
+        <button class="home-btn" (click)="goHome()">
+          IR AL INICIO
         </button>
       </ng-container>
 

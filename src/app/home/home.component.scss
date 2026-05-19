@@ -81,13 +81,20 @@ $light-blue: #3c5066;
   justify-content: center;
   padding: 18px 28px;
   background: linear-gradient(135deg, var(--primary-color, #2997db) 0%, var(--secondary-color, #1054da) 100%);
-  
+
   .store-logo {
     img {
       height: 50px;
       width: auto;
       object-fit: contain;
     }
+  }
+
+  .store-brand {
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
   }
 }
 
@@ -928,20 +935,24 @@ $light-blue: #3c5066;
       align-items: center;
       justify-content: center;
       transition: background-color 0.2s ease;
-      
+
+      /* Por defecto (classic) usa el texto; el SVG está oculto.
+         En midnight invertimos: texto oculto, SVG visible. */
+      .qty-icon { display: none; }
+
       &:hover {
         background-color: rgba(255, 255, 255, 0.1);
       }
-      
+
       &:active {
         background-color: rgba(255, 255, 255, 0.2);
       }
-      
+
       &.decrease {
         border-radius: 0 0 0 var(--product-card-radius);
         background: linear-gradient(180deg, #1e5faf 0%, #174a87 100%);
       }
-      
+
       &.increase {
         border-radius: 0 0 var(--product-card-radius) 0;
         background: linear-gradient(180deg, #2997db 0%, #1d82c7 100%);
@@ -964,6 +975,424 @@ $light-blue: #3c5066;
     }
   }
 }
+/* =========================================================================
+   V1 MIDNIGHT — overrides
+   Activos cuando <body class="theme-v1-midnight">. Reescribe la apariencia
+   sin tocar la lógica del componente. Los [ngStyle] inline del template
+   se neutralizan con !important sólo donde compite con tokens nuevos.
+   ========================================================================= */
+:host-context(body.theme-v1-midnight) {
+  --product-card-radius: var(--mn-radius-card);
+
+  /* Header: solo logo / brand centrado */
+  .top-header {
+    background: transparent !important;
+    border-bottom: 1px solid var(--mn-border);
+    padding: 24px 32px !important;
+    min-height: 130px;
+    box-sizing: border-box;
+    justify-content: center !important;
+
+    .store-logo {
+      flex: 0 0 auto;
+      img {
+        height: 28px !important;
+        filter: brightness(0) invert(1);
+      }
+    }
+    .store-brand {
+      display: inline-block;
+      font-family: var(--mn-font-display);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.32em;
+      color: var(--mn-text);
+    }
+  }
+
+  /* Hero promo / slides — borde luminoso + radio grande
+     Base tiene width:100% (content-box) → al añadir margin lateral se desbordaba 64px
+     del viewport. width:auto + box-sizing:border-box deja que los márgenes constriñan
+     el ancho correctamente. */
+  .promo-slides {
+    background: var(--mn-surface) !important;
+    height: 220px !important;
+    width: auto !important;
+    box-sizing: border-box;
+    margin: 24px 32px 0;
+    border-radius: var(--mn-radius-card);
+    overflow: hidden;
+    border: 1px solid var(--mn-border-strong);
+    box-shadow: var(--mn-shadow-sheet);
+    /* Glow ambient dentro del card */
+    background-image:
+      radial-gradient(500px 220px at 90% 100%, rgba(59, 168, 240, 0.20), transparent 60%),
+      radial-gradient(400px 200px at 10% 0%,   rgba(94, 230, 208, 0.12), transparent 60%);
+
+    .slides-container, .slide-item {
+      height: 100%;
+    }
+
+    .slide-item img {
+      opacity: 0.35;
+      filter: contrast(1.05) saturate(1.1);
+    }
+
+    .slide-content {
+      position: absolute;
+      inset: 0;
+      padding: 28px 36px 44px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 14px;
+      background: none;
+      color: var(--mn-text);
+      pointer-events: none;
+    }
+
+    .slide-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      align-self: flex-start;
+      padding: 9px 18px;
+      border-radius: var(--mn-radius-pill);
+      background: var(--mn-surface-hi);
+      border: 1px solid var(--mn-primary);
+      color: var(--mn-primary);
+      font-family: var(--mn-font-ui);
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .slide-badge-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--mn-primary);
+      box-shadow: 0 0 10px rgba(59, 168, 240, 0.7);
+    }
+
+    .slide-headline {
+      margin: 0;
+      font-family: var(--mn-font-display);
+      font-size: 60px;
+      line-height: 1.05;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--mn-text);
+      max-width: 85%;
+    }
+
+    .slide-indicators {
+      bottom: 16px;
+
+      .indicator {
+        background: var(--mn-border-strong);
+        width: 28px;
+        height: 4px;
+        border-radius: 999px;
+
+        &.active {
+          background: var(--mn-primary);
+          width: 44px;
+          transform: none;
+          box-shadow: 0 0 10px rgba(59, 168, 240, 0.6);
+        }
+      }
+    }
+  }
+
+  /* Layout principal: dejar de ser flex horizontal con sidebar.
+     Categorías pasan arriba (horizontal scroll). */
+  .main-layout {
+    background: transparent !important;
+    flex-direction: column;
+  }
+
+  /* Sidebar de categorías → barra horizontal arriba del grid.
+     box-sizing:border-box hace que el padding lateral 32px quede DENTRO del 100%,
+     evitando overflow horizontal. */
+  .categories-sidebar {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box;
+    background: transparent !important;
+    border-right: none !important;
+    padding: 8px 32px 8px !important;
+    height: auto !important;
+    gap: 0;
+    overflow: visible !important;
+    position: relative;
+
+    /* Título "Categorías" + hint "DESLIZA →" */
+    .sidebar-title {
+      display: flex !important;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 0 4px 10px !important;
+      color: var(--mn-text) !important;
+      font-family: var(--mn-font-display) !important;
+      font-size: 22px !important;
+      font-weight: 600 !important;
+      letter-spacing: 0 !important;
+      text-transform: none !important;
+
+      &::after {
+        content: "DESLIZA →";
+        color: var(--mn-dim);
+        font-family: var(--mn-font-ui);
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.22em;
+      }
+    }
+
+    .categories-list {
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 6px 32px 18px 4px !important; /* padding-right grande para que el último item no quede pegado al fade */
+      /* scroll-snap proximity (no mandatory) — mandatory peleaba con flicks rápidos. */
+      scroll-snap-type: x proximity;
+      /* pan-x asegura que el swipe horizontal lo procese el contenedor (no la página) */
+      touch-action: pan-x;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      &::-webkit-scrollbar { display: none; }
+    }
+
+    /* Fade luminoso al borde derecho — pista visual de que hay más para deslizar */
+    &::after {
+      content: "";
+      position: absolute;
+      top: 44px;
+      right: 0;
+      bottom: 18px;
+      width: 56px;
+      pointer-events: none;
+      background: linear-gradient(to right, transparent, var(--mn-bg));
+      z-index: 1;
+    }
+
+    .category-item {
+      flex: 0 0 auto;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin: 0;
+      padding: 0 28px;
+      min-height: 64px;
+      height: 64px;
+      border-left: none;
+      border: 1.5px solid var(--mn-border);
+      border-radius: var(--mn-radius-pill);
+      background: var(--mn-surface);
+      scroll-snap-align: start;
+      /* pan-x también en el ítem: si el dedo aterriza sobre un pill, el browser
+         interpreta el gesto como scroll horizontal y no como tap-cancel. */
+      touch-action: pan-x;
+      transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+
+      &.active {
+        background: #ffffff;
+        border-color: #ffffff;
+        box-shadow: 0 8px 24px -10px rgba(255, 255, 255, 0.4);
+        .category-name { color: #0b0d10; font-weight: 700; }
+      }
+
+      &:active { transform: scale(0.97); background: var(--mn-surface-hi); }
+
+      // Pills simples: el icono se oculta en V1 Midnight
+      .category-icon { display: none !important; }
+
+      .category-name {
+        color: var(--mn-text);
+        font-family: var(--mn-font-ui);
+        font-size: 18px;
+        font-weight: 600;
+        text-align: center;
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+        max-width: 220px;
+        white-space: nowrap;
+        text-transform: none;
+        letter-spacing: 0;
+      }
+    }
+  }
+
+  /* Productos */
+  .products-main {
+    background: transparent !important;
+    padding: 8px 32px 32px !important;
+  }
+
+  .products-grid {
+    gap: 28px;
+    padding: 12px 0 280px; /* espacio para sticky cart 132 + safe area */
+  }
+
+  .product-card {
+    background: var(--mn-surface) !important;
+    border: 1px solid var(--mn-border) !important;
+    border-radius: var(--mn-radius-card);
+    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.45);
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    }
+
+    .special-tag {
+      background: rgba(10, 14, 20, 0.85) !important;
+      border: 1px solid var(--mn-primary);
+      color: var(--mn-primary) !important;
+      font-family: var(--mn-font-ui);
+      letter-spacing: 0.18em;
+      padding: 6px 12px;
+      border-radius: 8px;
+    }
+
+    .discount-tag {
+      background: var(--mn-accent) !important;
+      color: #06231F !important;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 8px;
+    }
+
+    .product-image {
+      height: 320px !important;
+      border-radius: var(--mn-radius-card) var(--mn-radius-card) 0 0;
+      img { border-radius: var(--mn-radius-card) var(--mn-radius-card) 0 0; }
+    }
+
+    .product-info {
+      background: transparent !important;
+      border-top: 1px solid var(--mn-border);
+      padding: 22px 24px;
+
+      .product-name {
+        font-family: var(--mn-font-display);
+        font-size: 28px !important;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: var(--mn-text) !important;
+      }
+
+      .product-description {
+        color: var(--mn-dim) !important;
+        font-size: 16px !important;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        min-height: 40px;
+      }
+
+      .product-price {
+        margin-top: 18px;
+        .current-price {
+          font-family: var(--mn-font-display);
+          font-size: 32px !important;
+          font-weight: 700;
+          color: var(--mn-text) !important;
+        }
+        .original-price {
+          font-size: 18px !important;
+          color: var(--mn-dim) !important;
+          opacity: 0.85;
+        }
+      }
+    }
+  }
+
+  /* CTA del card */
+  .cart-controls {
+    height: 76px;
+    padding: 0 18px 18px;
+    box-sizing: border-box;
+
+    .add-to-cart-btn {
+      background: linear-gradient(135deg, var(--mn-primary), var(--mn-primary-deep)) !important;
+      color: #fff !important;
+      border-radius: var(--mn-radius-button);
+      box-shadow: 0 10px 28px -10px rgba(59, 168, 240, 0.56);
+      height: 100%;
+
+      .btn-text { font-size: 22px !important; font-weight: 700; }
+      .btn-icon { font-size: 26px !important; }
+
+      &:active { transform: scale(0.97); }
+    }
+
+    .quantity-controls {
+      background: var(--mn-surface-hi) !important;
+      border: 1px solid var(--mn-border);
+      border-radius: var(--mn-radius-button);
+      height: 100%;
+      overflow: hidden; // recorta los corner radius al hover de los botones
+
+      .quantity-btn {
+        width: 76px;
+        background: transparent !important;
+        color: var(--mn-text);
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        /* En midnight, el SVG reemplaza al texto: stroke idéntico para ambos
+           botones, sin desbalance visual hyphen-minus vs plus. */
+        .qty-text { display: none; }
+        .qty-icon {
+          display: block;
+          width: 28px;
+          height: 28px;
+        }
+        &.decrease, &.increase { border-radius: 0; background: transparent !important; }
+        &.decrease { border-right: 1px solid var(--mn-border); color: var(--mn-text); }
+        &.increase { border-left:  1px solid var(--mn-border); color: var(--mn-primary); }
+      }
+
+      .quantity-display {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--mn-text);
+        font-family: var(--mn-font-display);
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: 0;
+      }
+    }
+  }
+
+  /* Loading overlay tonado oscuro */
+  .catalogue-loading-overlay {
+    background: rgba(10, 14, 20, 0.7);
+    .catalogue-loading-card {
+      background: var(--mn-surface);
+      border: 1px solid var(--mn-border);
+      color: var(--mn-text);
+      h2 { color: var(--mn-primary); }
+      p  { color: var(--mn-dim); }
+    }
+    .catalogue-spinner {
+      border-color: var(--mn-border-strong);
+      border-top-color: var(--mn-primary);
+    }
+  }
+}
+
 // Navigation buttons
 .nav-buttons {
   display: flex;

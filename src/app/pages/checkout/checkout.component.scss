@@ -661,3 +661,289 @@ $light-blue: #3c5066;
     transform: translateY(100%);
   }
 }
+
+/* Upsell card oculto por defecto (es una pieza del rediseño midnight; los
+   estilos completos están dentro del bloque :host-context más abajo). */
+.upsell-card { display: none; }
+
+/* =========================================================================
+   V1 MIDNIGHT — checkout fullscreen (Cart full)
+   ========================================================================= */
+:host-context(body.theme-v1-midnight) {
+  .checkout-container {
+    background: transparent !important;
+    color: var(--mn-text);
+    font-family: var(--mn-font-ui);
+  }
+
+  .checkout-header {
+    background: transparent !important;
+    border-bottom: 1px solid var(--mn-border);
+    padding: 26px 32px !important;
+    height: auto !important;
+
+    h1 {
+      color: var(--mn-text) !important;
+      font-family: var(--mn-font-display);
+      font-size: 38px !important;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .back-btn {
+      background: var(--mn-surface) !important;
+      border: 1px solid var(--mn-border) !important;
+      color: var(--mn-text) !important;
+      border-radius: var(--mn-radius-pill) !important;
+      padding: 14px 22px !important;
+      font-size: 16px !important;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .store-logo img { filter: brightness(0) invert(1); }
+  }
+
+  .checkout-body { background: transparent !important; padding: 24px 32px !important; }
+
+  .cart-items-container {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Fondo blanco de classic se filtraba aquí — limpiarlo */
+  .cart-items {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  /* Tarjeta sugerencia (upsell) — configurable desde admin */
+  .upsell-card {
+    display: flex !important;
+    align-items: center;
+    gap: 18px;
+    margin-top: 16px;
+    padding: 22px 24px;
+    background: linear-gradient(135deg, rgba(94, 230, 208, 0.06), rgba(59, 168, 240, 0.05));
+    border: 1px dashed rgba(94, 230, 208, 0.45);
+    border-radius: var(--mn-radius-card);
+    color: var(--mn-text);
+
+    .upsell-icon {
+      flex: 0 0 auto;
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: rgba(94, 230, 208, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--mn-accent);
+
+      svg { width: 28px; height: 28px; }
+    }
+
+    .upsell-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .upsell-title {
+      font-family: var(--mn-font-display);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--mn-text);
+      margin: 0 0 4px;
+      line-height: 1.2;
+    }
+
+    .upsell-description {
+      font-family: var(--mn-font-ui);
+      font-size: 15px;
+      color: var(--mn-dim);
+      line-height: 1.4;
+    }
+
+    .upsell-cta {
+      flex: 0 0 auto;
+      background: var(--mn-accent) !important;
+      color: #06231F !important;
+      border: none;
+      border-radius: var(--mn-radius-pill);
+      padding: 14px 28px;
+      font-family: var(--mn-font-ui);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      box-shadow: 0 8px 24px -6px rgba(94, 230, 208, 0.45);
+      transition: transform 0.15s ease;
+
+      &:active { transform: scale(0.97); }
+    }
+  }
+
+  .clear-cart-container {
+    justify-content: flex-end;
+    padding: 8px 0 16px;
+
+    .clear-cart-btn {
+      background: transparent !important;
+      color: var(--mn-danger) !important;
+      border: 1px solid var(--mn-border) !important;
+      box-shadow: none !important;
+      border-radius: var(--mn-radius-pill) !important;
+      padding: 12px 22px !important;
+      font-size: 16px !important;
+      letter-spacing: 0.04em;
+    }
+  }
+
+  .cart-items .cart-item {
+    background: var(--mn-surface) !important;
+    border: 1px solid var(--mn-border) !important;
+    border-radius: var(--mn-radius-card) !important;
+    margin-bottom: 16px;
+    padding: 22px 24px !important;
+
+    .delete-item-btn {
+      background: var(--mn-surface-hi) !important;
+      border: 1px solid var(--mn-border) !important;
+      color: var(--mn-danger) !important;
+      box-shadow: none !important;
+      width: 44px !important; height: 44px !important;
+    }
+
+    .item-image { border-radius: 16px !important; }
+
+    .item-name {
+      color: var(--mn-text) !important;
+      font-family: var(--mn-font-display);
+      font-size: 24px !important;
+    }
+    .item-price {
+      color: var(--mn-dim) !important;
+      font-size: 18px !important;
+    }
+
+    .item-quantity .quantity-btn {
+      background: var(--mn-surface-hi) !important;
+      border: 1px solid var(--mn-border-strong) !important;
+      color: var(--mn-text) !important;
+      width: 56px !important; height: 56px !important;
+      font-size: 28px !important;
+    }
+
+    .quantity {
+      color: var(--mn-text) !important;
+      font-family: var(--mn-font-display);
+      font-size: 26px !important;
+    }
+
+    .item-total {
+      color: var(--mn-text) !important;
+      font-family: var(--mn-font-display);
+      font-size: 26px !important;
+    }
+  }
+
+  .cart-empty {
+    background: transparent !important;
+    .empty-message {
+      color: var(--mn-dim) !important;
+      font-family: var(--mn-font-display);
+      font-size: 32px !important;
+    }
+    .continue-btn {
+      background: linear-gradient(135deg, var(--mn-primary), var(--mn-primary-deep)) !important;
+      color: #fff !important;
+      border-radius: var(--mn-radius-pill) !important;
+      font-size: 22px !important;
+      padding: 18px 36px !important;
+    }
+  }
+
+  .order-summary-container {
+    background: var(--mn-surface) !important;
+    border-top: 1px solid var(--mn-border-strong) !important;
+  }
+
+  .order-summary {
+    background: transparent !important;
+    padding: 24px 32px 36px !important;
+
+    .order-footer { background: transparent !important; }
+
+    .total-row {
+      color: var(--mn-text) !important;
+      font-family: var(--mn-font-display);
+
+      .total-label { color: var(--mn-dim) !important; font-size: 24px !important; }
+      .total-amount { color: var(--mn-text) !important; font-size: 56px !important; font-weight: 700; }
+    }
+
+    .complete-order-btn {
+      background: linear-gradient(135deg, var(--mn-primary), var(--mn-primary-deep)) !important;
+      color: #fff !important;
+      border-radius: var(--mn-radius-button) !important;
+      height: 96px !important;
+      font-family: var(--mn-font-ui);
+      font-size: 28px !important;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      box-shadow: 0 14px 36px -10px rgba(59, 168, 240, 0.55);
+
+      &:disabled { opacity: 0.4; }
+    }
+  }
+
+  /* Estado processing payment */
+  .payment-processing {
+    background: var(--mn-bg) !important;
+    color: var(--mn-text);
+
+    .payment-content {
+      background: var(--mn-surface) !important;
+      border: 1px solid var(--mn-border) !important;
+      border-radius: var(--mn-radius-card) !important;
+      box-shadow: var(--mn-shadow-sheet);
+
+      h2 { color: var(--mn-text) !important; font-family: var(--mn-font-display); }
+      p, .payment-message { color: var(--mn-dim) !important; }
+    }
+
+    .payment-icon {
+      background: linear-gradient(135deg, var(--mn-primary), var(--mn-primary-deep)) !important;
+      color: #fff;
+    }
+
+    .loader { background: var(--mn-surface-hi) !important; }
+    .loader-bar { background: linear-gradient(90deg, var(--mn-primary-deep), var(--mn-primary), var(--mn-primary-deep)) !important; }
+  }
+
+  /* Estado order complete */
+  .order-complete {
+    background: var(--mn-bg) !important;
+    color: var(--mn-text);
+
+    .success-message {
+      background: var(--mn-surface) !important;
+      border: 1px solid var(--mn-border) !important;
+      border-radius: var(--mn-radius-card) !important;
+
+      h1 { color: var(--mn-text) !important; font-family: var(--mn-font-display); }
+      .order-number { color: var(--mn-accent) !important; font-family: var(--mn-font-display); font-size: 64px !important; }
+      p { color: var(--mn-dim) !important; }
+
+      .back-btn {
+        background: linear-gradient(135deg, var(--mn-primary), var(--mn-primary-deep)) !important;
+        color: #fff !important;
+        border-radius: var(--mn-radius-pill) !important;
+      }
+    }
+  }
+}

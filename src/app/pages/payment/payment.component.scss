@@ -309,10 +309,11 @@ $shadow: 0 18px 48px rgba(9, 30, 66, 0.18);
   }
 }
 
-.payment-card.approved   .state-title { color: $success-color; }
-.payment-card.error      .state-title { color: $error-color; }
-.payment-card.cancelled  .state-title { color: #d97706; }
-.payment-card.cancelling .state-title { color: #d97706; }
+.payment-card.approved    .state-title { color: $success-color; }
+.payment-card.error       .state-title { color: $error-color; }
+.payment-card.cancelled   .state-title { color: #d97706; }
+.payment-card.cancelling  .state-title { color: #d97706; }
+.payment-card.reconnecting .state-title { color: #2563eb; }
 
 .payment-card.cancelled,
 .payment-card.cancelling {
@@ -320,8 +321,17 @@ $shadow: 0 18px 48px rgba(9, 30, 66, 0.18);
   box-shadow: 0 18px 48px rgba(#d97706, 0.15);
 }
 
+.payment-card.reconnecting {
+  border-color: rgba(#2563eb, 0.4);
+  box-shadow: 0 18px 48px rgba(#2563eb, 0.18);
+}
+
 .spinner-illustration.cancelling circle {
   stroke: #d97706;
+}
+
+.spinner-illustration.reconnecting circle {
+  stroke: #2563eb;
 }
 
 .status-illustration.cancelled {
@@ -345,7 +355,11 @@ $shadow: 0 18px 48px rgba(9, 30, 66, 0.18);
 }
 
 .cancel-payment-btn,
-.retry-payment-btn {
+.retry-payment-btn,
+.home-btn,
+.buy-again-btn,
+.retry-print-btn,
+.alert-btn {
   height: 64px;
   min-width: 220px;
   border-radius: 14px;
@@ -358,6 +372,89 @@ $shadow: 0 18px 48px rgba(9, 30, 66, 0.18);
   &:active {
     transform: scale(0.98);
   }
+}
+
+.alert-btn {
+  border: 2px solid #fbbf24;
+  color: #78350f;
+  background: #fef3c7;
+
+  &:hover:not([disabled]) {
+    background: #fde68a;
+    border-color: #f59e0b;
+  }
+
+  &[disabled] {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.alert-sent {
+  display: inline-flex;
+  align-items: center;
+  padding: 14px 22px;
+  border-radius: 14px;
+  background: #ecfdf5;
+  border: 2px solid #10b981;
+  color: #064e3b;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.home-btn {
+  border: 2px solid transparent;
+  color: $white;
+  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  box-shadow: 0 8px 22px rgba($primary-color, 0.35);
+
+  &:hover {
+    box-shadow: 0 10px 28px rgba($primary-color, 0.45);
+    transform: translateY(-1px);
+  }
+}
+
+.buy-again-btn {
+  border: 2px solid #cbd5e1;
+  color: #243447;
+  background: $white;
+
+  &:hover {
+    border-color: $primary-color;
+    color: $primary-color;
+    background: #f0f9ff;
+  }
+}
+
+.retry-print-btn {
+  border: 2px solid #f97316;
+  color: $white;
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  box-shadow: 0 8px 22px rgba(249, 115, 22, 0.35);
+
+  &:hover:not([disabled]) {
+    box-shadow: 0 10px 28px rgba(249, 115, 22, 0.45);
+    transform: translateY(-1px);
+  }
+
+  &[disabled] {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.printer-status {
+  margin-top: 16px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 10px;
+  display: inline-block;
+
+  &.pending { background: #fef3c7; color: #92400e; }
+  &.ok      { background: #dcfce7; color: #166534; }
+  &.error   { background: #fee2e2; color: #991b1b; }
+  &.disabled{ background: #f1f5f9; color: #475569; }
 }
 
 .cancel-payment-btn {
@@ -399,5 +496,252 @@ $shadow: 0 18px 48px rgba(9, 30, 66, 0.18);
   .text-block .state-title { font-size: 2.6rem; }
   .text-block .state-message { font-size: 1.5rem; }
   .cancel-payment-btn,
-  .retry-payment-btn { height: 80px; min-width: 280px; font-size: 1.4rem; }
+  .retry-payment-btn,
+  .home-btn,
+  .buy-again-btn,
+  .retry-print-btn,
+  .alert-btn { height: 80px; min-width: 280px; font-size: 1.4rem; }
+}
+
+/* =========================================================================
+   V1 MIDNIGHT — payment + estados (success al final)
+   ========================================================================= */
+:host-context(body.theme-v1-midnight) {
+  .payment-bar {
+    background: transparent !important;
+    border-bottom: 1px solid var(--mn-border);
+    padding: 26px 32px !important;
+    height: auto !important;
+
+    h1 {
+      color: var(--mn-text) !important;
+      font-family: var(--mn-font-display);
+      font-size: 38px !important;
+      font-weight: 700;
+    }
+
+    .back-btn {
+      background: var(--mn-surface) !important;
+      border: 1px solid var(--mn-border) !important;
+      color: var(--mn-text) !important;
+      border-radius: var(--mn-radius-pill) !important;
+      padding: 14px 22px !important;
+      font-size: 16px !important;
+      letter-spacing: 0.12em;
+    }
+
+    .store-logo img { filter: brightness(0) invert(1); }
+  }
+
+  .payment-container {
+    background: transparent !important;
+  }
+
+  .payment-card {
+    background: var(--mn-surface) !important;
+    border: 1px solid var(--mn-border) !important;
+    border-radius: var(--mn-radius-card) !important;
+    box-shadow: var(--mn-shadow-sheet);
+    padding: 36px 40px !important;
+  }
+
+  .summary-block {
+    background: transparent !important;
+    border-bottom: 1px solid var(--mn-border) !important;
+
+    .summary-row {
+      color: var(--mn-dim) !important;
+      font-family: var(--mn-font-ui);
+
+      span { color: var(--mn-dim) !important; font-size: 18px !important; letter-spacing: 0.12em; text-transform: uppercase; }
+      strong { color: var(--mn-text) !important; font-family: var(--mn-font-display); font-size: 28px !important; }
+
+      &.total strong {
+        font-size: 72px !important;
+        font-weight: 700;
+        color: var(--mn-text) !important;
+      }
+    }
+  }
+
+  .state-block {
+    /* Illustration colors */
+    .card-illustration {
+      .card-body { fill: var(--mn-surface-hi); stroke: var(--mn-border-strong); }
+      .card-stripe { fill: var(--mn-bg); }
+      .card-chip { fill: var(--mn-primary); }
+      .wave { stroke: var(--mn-primary); }
+    }
+
+    .spinner-illustration circle {
+      stroke: var(--mn-primary);
+      stroke-dasharray: 120;
+      stroke-dashoffset: 90;
+      animation: midnight-spin 1.4s linear infinite;
+    }
+    .spinner-illustration.cancelling circle { stroke: var(--mn-danger); }
+    .spinner-illustration.reconnecting circle { stroke: var(--mn-primary); }
+
+    .status-illustration.approved {
+      circle { stroke: var(--mn-accent); }
+      path { stroke: var(--mn-accent); }
+    }
+    .status-illustration.error,
+    .status-illustration.cancelled {
+      circle { stroke: var(--mn-danger); }
+      path, line { stroke: var(--mn-danger); }
+    }
+  }
+
+  .text-block {
+    .state-title {
+      color: var(--mn-text) !important;
+      font-family: var(--mn-font-display);
+      font-size: 38px !important;
+      font-weight: 700;
+    }
+    .state-message {
+      color: var(--mn-dim) !important;
+      font-size: 22px !important;
+    }
+  }
+
+  .actions-block {
+    .cancel-payment-btn {
+      background: transparent !important;
+      color: var(--mn-text) !important;
+      border: 1px solid var(--mn-border-strong) !important;
+      border-radius: var(--mn-radius-button) !important;
+      font-family: var(--mn-font-ui);
+      font-size: 22px !important;
+      letter-spacing: 0.04em;
+      height: 88px !important;
+
+      &:hover { background: var(--mn-surface-hi) !important; }
+    }
+
+    .retry-payment-btn {
+      background: linear-gradient(135deg, var(--mn-primary), var(--mn-primary-deep)) !important;
+      color: #fff !important;
+      border-radius: var(--mn-radius-button) !important;
+      box-shadow: 0 14px 36px -10px rgba(59, 168, 240, 0.55);
+      font-family: var(--mn-font-ui);
+      font-size: 22px !important;
+      letter-spacing: 0.04em;
+      height: 88px !important;
+    }
+
+    /* ====== Acciones post-aprobación (V1 Midnight) ====== */
+
+    /* CTA principal: ir al inicio */
+    .home-btn {
+      background: linear-gradient(135deg, var(--mn-primary), var(--mn-primary-deep)) !important;
+      color: #fff !important;
+      border: none !important;
+      border-radius: var(--mn-radius-button) !important;
+      box-shadow: 0 14px 36px -10px rgba(59, 168, 240, 0.55);
+      font-family: var(--mn-font-ui);
+      font-size: 22px !important;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      height: 88px !important;
+
+      &:hover { box-shadow: 0 18px 42px -10px rgba(59, 168, 240, 0.7); }
+    }
+
+    /* Secundario neutro: comprar de nuevo */
+    .buy-again-btn {
+      background: var(--mn-surface) !important;
+      color: var(--mn-text) !important;
+      border: 1px solid var(--mn-border-strong) !important;
+      border-radius: var(--mn-radius-button) !important;
+      font-family: var(--mn-font-ui);
+      font-size: 22px !important;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      height: 88px !important;
+
+      &:hover {
+        background: var(--mn-surface-hi) !important;
+        border-color: var(--mn-primary) !important;
+      }
+    }
+
+    /* Warning sutil: reintentar impresión */
+    .retry-print-btn {
+      background: var(--mn-surface) !important;
+      color: var(--mn-danger) !important;
+      border: 1px solid rgba(255, 107, 107, 0.45) !important;
+      border-radius: var(--mn-radius-button) !important;
+      box-shadow: none !important;
+      font-family: var(--mn-font-ui);
+      font-size: 22px !important;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      height: 88px !important;
+
+      &:hover:not([disabled]) {
+        background: rgba(255, 107, 107, 0.08) !important;
+        border-color: var(--mn-danger) !important;
+        transform: none;
+      }
+
+      &[disabled] { opacity: 0.6; }
+    }
+
+    /* Alerta: solicitar atención */
+    .alert-btn {
+      background: var(--mn-surface) !important;
+      color: #fbbf24 !important;
+      border: 1px solid rgba(251, 191, 36, 0.45) !important;
+      border-radius: var(--mn-radius-button) !important;
+      font-family: var(--mn-font-ui);
+      font-size: 22px !important;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      height: 88px !important;
+
+      &:hover:not([disabled]) {
+        background: rgba(251, 191, 36, 0.08) !important;
+        border-color: #fbbf24 !important;
+      }
+
+      &[disabled] { opacity: 0.6; }
+    }
+
+    /* Confirmación de alerta enviada */
+    .alert-sent {
+      background: rgba(94, 230, 208, 0.1) !important;
+      color: var(--mn-accent) !important;
+      border: 1px solid rgba(94, 230, 208, 0.4) !important;
+      border-radius: var(--mn-radius-button) !important;
+      font-family: var(--mn-font-ui);
+      font-size: 20px !important;
+      font-weight: 600;
+      padding: 0 24px;
+      height: 88px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .actions-hint { color: var(--mn-dim) !important; }
+  }
+
+  /* Estados terminales: efectos extra */
+  .payment-card.approved {
+    border-color: var(--mn-accent) !important;
+    box-shadow: 0 24px 60px -10px rgba(94, 230, 208, 0.4), var(--mn-shadow-sheet);
+
+    .text-block .state-title { color: var(--mn-accent) !important; }
+  }
+
+  .payment-card.error,
+  .payment-card.cancelled {
+    border-color: var(--mn-danger) !important;
+    .text-block .state-title { color: var(--mn-danger) !important; }
+  }
+}
+
+@keyframes midnight-spin {
+  to { transform: rotate(360deg); transform-origin: center; }
 }

@@ -1,0 +1,16 @@
+<div class="idle-container" (click)="navigateToHome()">
+  <video
+    #videoPlayer
+    autoplay
+    muted
+    [loop]="videos.length <= 1"
+    playsinline
+    preload="auto"
+    class="background-video"
+    [src]="currentVideoUrl"
+    (ended)="onVideoEnded()"
+    (canplay)="onVideoCanPlay()"
+    (error)="onVideoError()">
+    Tu navegador no soporta videos HTML5.
+  </video>
+</div>

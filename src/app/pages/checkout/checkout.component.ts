@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
-import { CatalogueService } from '../../services/catalogue.service';
-import { CartItem } from '../../models/products.model';
+import { CatalogueService, ClientConfiguration, UpsellProductDetail } from '../../services/catalogue.service';
+import { CartItem, Product } from '../../models/products.model';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
 
 @Component({
@@ -19,27 +19,79 @@ export class CheckoutComponent implements OnInit {
   orderComplete: boolean = false;
   processingPayment: boolean = false;
   orderNumber: string = '';
-  
+
   // Para el modal de confirmación
   showConfirmModal: boolean = false;
   confirmMessage: string = '¿Estás seguro de que deseas vaciar todo el carrito?';
 
   constructor(
-    private cartService: CartService, 
+    private cartService: CartService,
     private router: Router,
     private catalogueService: CatalogueService
   ) {}
 
   get storeLogo(): string {
-    return this.catalogueService.getClientConfiguration()?.logo_url || 
-           this.catalogueService.getClientConfiguration()?.logo || 
+    return this.catalogueService.getClientConfiguration()?.logo_url ||
+           this.catalogueService.getClientConfiguration()?.logo ||
            '';
+  }
+
+  // ===== Upsell (sugerencia configurable desde admin) =====
+  get clientConfig(): ClientConfiguration | null {
+    return this.catalogueService.getClientConfiguration();
+  }
+
+  get upsellDetail(): UpsellProductDetail | null {
+    return this.clientConfig?.upsell_product_detail || null;
+  }
+
+  /** Muestra la tarjeta sólo si está habilitada, hay producto y aún no está en el carrito. */
+  get shouldShowUpsell(): boolean {
+    const cfg = this.clientConfig;
+    if (!cfg?.upsell_enabled || !this.upsellDetail) return false;
+    if (this.cartItems.length === 0) return false;
+    return !this.cartItems.some(i => i.product.id === this.upsellDetail!.id);
+  }
+
+  get upsellTitle(): string {
+    return this.clientConfig?.upsell_title?.trim() || '¿Sumas algo más?';
+  }
+
+  get upsellDescription(): string {
+    return this.clientConfig?.upsell_description?.trim() || '';
+  }
+
+  get upsellCtaLabel(): string {
+    return this.clientConfig?.upsell_cta_label?.trim() || 'Sumar';
+  }
+
+  /** Precio efectivo del upsell: usa upsell_price si está, sino el del producto. */
+  get upsellEffectivePrice(): number {
+    const override = this.clientConfig?.upsell_price;
+    if (override !== null && override !== undefined && Number(override) > 0) {
+      return Number(override);
+    }
+    return this.upsellDetail?.price ?? 0;
+  }
+
+  addUpsellToCart(): void {
+    const detail = this.upsellDetail;
+    if (!detail) return;
+    const product: Product = {
+      id: detail.id,
+      name: detail.name,
+      price: this.upsellEffectivePrice,
+      category: '',
+      image: detail.image || '',
+      description: detail.short_description || '',
+    };
+    this.cartService.addToCart(product);
   }
 
   ngOnInit(): void {
     this.cartService.getCartItems().subscribe(items => {
       this.cartItems = items;
-      
+
       // Si el carrito está vacío, redirigimos a home
       // if (this.cartItems.length === 0) {
       //   this.router.navigate(['/']);
@@ -90,7 +142,7 @@ export class CheckoutComponent implements OnInit {
   // Iniciar proceso de pago
   startPayment(): void {
     this.processingPayment = true;
-    
+
     // Simulamos un proceso de pago que toma tiempo
     // En un caso real, aquí se comunicaría con el terminal de pago
     setTimeout(() => {
@@ -102,14 +154,14 @@ export class CheckoutComponent implements OnInit {
   completeOrder(): void {
     // Ocultamos la pantalla de pago
     this.processingPayment = false;
-    
+
     // Generamos un número de orden aleatorio
     this.orderNumber = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
     this.orderComplete = true;
-    
+
     // Opcional: En un caso real, aquí enviarías los datos a un servidor
     // this.orderService.sendOrder(this.cartItems, this.cartTotal).subscribe(...);
-    
+
     // Limpiar el carrito
     setTimeout(() => {
       this.cartService.clearCart();
@@ -120,18 +172,18 @@ export class CheckoutComponent implements OnInit {
   goToCategory(): void {
     this.router.navigate(['/home']);
   }
-  
+
   // Mostrar modal para vaciar el carrito completamente
   clearCart(): void {
     this.showConfirmModal = true;
   }
-  
+
   // Método que se ejecuta cuando se confirma vaciar el carrito
   confirmClearCart(): void {
     this.cartService.clearCart();
     // El observable del servicio actualizará automáticamente this.cartItems
   }
-  
+
   // Navegar a la página de métodos de pago
   goToPaymentPage(): void {
     this.router.navigate(['/payment']);

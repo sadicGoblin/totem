@@ -6,7 +6,7 @@ import { CatalogueService } from './catalogue.service';
 @Injectable({ providedIn: 'root' })
 export class IdleService {
   private timeout: ReturnType<typeof setTimeout> | null = null;
-  private idleTime = 5 * 60 * 1000; // 5 minutos de inactividad
+  private idleTime = 2 * 60 * 1000; // 2 minutos de inactividad → screensaver de videos
   private readonly activityEvents = [
     'mousemove',
     'mousedown',
@@ -46,8 +46,9 @@ export class IdleService {
       this.ngZone.run(() => {
         this.catalogueService.refreshCatalogue()
           .finally(() => {
-            if (this.router.url !== '/welcome') {
-              this.router.navigate(['/welcome']);
+            // No relanzar el idle si ya estamos en pantallas de atract / screensaver.
+            if (this.router.url !== '/idle' && this.router.url !== '/welcome') {
+              this.router.navigate(['/idle']);
             }
           });
       });
